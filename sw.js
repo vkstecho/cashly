@@ -1,5 +1,5 @@
-/* MoneyFlow service worker – basic offline shell */
-const CACHE = "moneyflow-v2";
+/* Cashly service worker – basic offline shell */
+const CACHE = "cashly-v1";
 const ASSETS = [
   "/",
   "/index.html",
@@ -14,7 +14,7 @@ const ASSETS = [
   "/js/settings.js",
   "/js/init.js",
   "/manifest.json",
-  "/assets/icon.jpeg",
+  "/assets/icon-192.png",
   "/assets/logo.jpeg"
 ];
 

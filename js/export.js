@@ -1,4 +1,4 @@
-/* MoneyFlow – export.js */
+/* Cashly – export.js */
 // PDF EXPORT
 function exportPDF(fromD,toD){
   toast("Generating statement...");
@@ -25,7 +25,7 @@ function exportPDF(fromD,toD){
     try{doc.addImage(MF_LOGO,"JPEG",M,7,26,26)}catch(e){}
     doc.setTextColor(255,255,255);
     doc.setFont("helvetica","bold");doc.setFontSize(20);
-    doc.text("MoneyFlow",M+31,16.5);
+    doc.text("Cashly",M+31,16.5);
     doc.setFont("helvetica","normal");doc.setFontSize(8.5);
     doc.setTextColor(LILAC[0],LILAC[1],LILAC[2]);
     doc.text("Powered by VKS Tech",M+31,22);
@@ -119,15 +119,15 @@ function exportPDF(fromD,toD){
       var fy=H-9;
       doc.setDrawColor(232,228,240);doc.line(M,fy-4.5,W-M,fy-4.5);
       doc.setFontSize(7.5);doc.setFont("helvetica","bold");doc.setTextColor(PURPLE[0],PURPLE[1],PURPLE[2]);
-      var bw=doc.getTextWidth("MoneyFlow");
-      doc.text("MoneyFlow",M,fy);
+      var bw=doc.getTextWidth("Cashly");
+      doc.text("Cashly",M,fy);
       doc.setFont("helvetica","normal");doc.setTextColor(GREY[0],GREY[1],GREY[2]);
       doc.text(" - Powered by VKS Tech",M+bw,fy);
-      doc.text("moneyflow.vkstech.com",W/2,fy,{align:"center"});
+      doc.text("cashly.vkstech.com",W/2,fy,{align:"center"});
       doc.text("Page "+p+" of "+pages,W-M,fy,{align:"right"});
     }
 
-    doc.save("MoneyFlow_Statement_"+(fromD||"all")+"_to_"+(toD||"now")+".pdf");
+    doc.save("Cashly_Statement_"+(fromD||"all")+"_to_"+(toD||"now")+".pdf");
     toast("Statement downloaded!");
   }catch(e){toast("Error: "+(e.message||e))}},300);
 }
@@ -138,7 +138,7 @@ function backupJSON(){
   var blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   var url=URL.createObjectURL(blob);
   var a=document.createElement("a");a.href=url;
-  a.download="MoneyFlow_Backup_"+new Date().toISOString().slice(0,10)+".json";
+  a.download="Cashly_Backup_"+new Date().toISOString().slice(0,10)+".json";
   a.click();URL.revokeObjectURL(url);
   toast("Backup downloaded!");
 }

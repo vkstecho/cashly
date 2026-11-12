@@ -1,4 +1,4 @@
-/* MoneyFlow – data.js */
+/* Cashly – data.js */
 function goApp(){
   $("LS").classList.add("hidden");
   $("AS").classList.remove("hidden");

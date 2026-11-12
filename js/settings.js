@@ -1,4 +1,4 @@
-/* MoneyFlow – settings.js */
+/* Cashly – settings.js */
 // SETTINGS
 function rStM(){
   var hasPic=ad&&ad.pic;
@@ -10,7 +10,7 @@ function rStM(){
   var h='<div class="mh"><span class="xmt">Settings</span><button class="xmc" onclick="cM()">\u00D7</button></div>';
   
   // Profile section
-  h+='<div style="text-align:center;padding:8px 0 20px"><div class="profile-pic-wrap" onclick="uploadProfilePic()"><div class="profile-pic">'+(hasPic?'<img src="'+ad.pic+'">':ini)+'</div><div class="profile-edit">\u270F\uFE0F</div></div><div style="font-weight:700;font-size:18px;color:#1a1a1a">'+esc(nm)+'</div><div style="color:#999;font-size:13px;margin-top:2px">'+(hasPhone?"+91 "+ad.phone:"No mobile linked")+'</div><button class="eb" style="margin-top:10px;padding:8px 20px;font-size:12px;background:#EDE7F6;color:#3E277A;font-weight:600" onclick="cM();editProfile()">\u270F\uFE0F Edit Profile</button></div>';
+  h+='<div style="text-align:center;padding:8px 0 20px"><div class="profile-pic-wrap" onclick="uploadProfilePic()"><div class="profile-pic">'+(hasPic?'<img src="'+ad.pic+'">':ini)+'</div><div class="profile-edit">\u270F\uFE0F</div></div><div style="font-weight:700;font-size:18px;color:#1a1a1a">'+esc(nm)+'</div><div style="color:#999;font-size:13px;margin-top:2px">'+(hasPhone?"+91 "+ad.phone:"No mobile linked")+'</div><button class="eb" style="margin-top:10px;padding:8px 20px;font-size:12px;background:#DCFCE7;color:#16A34A;font-weight:600" onclick="cM();editProfile()">\u270F\uFE0F Edit Profile</button></div>';
   
   // Account section
   h+='<div class="section-divider">Account</div>';
@@ -71,14 +71,14 @@ if(notifP==="granted"){h+='<div class="set-card"><div class="set-icon" style="ba
 else{h+='<div class="set-card" onclick="requestNotifPerm()"><div class="set-icon" style="background:#FFF3E0">\u{1F514}</div><div class="set-text"><div class="set-title">Enable Notifications</div><div class="set-sub">Get daily reminders & alerts</div></div><div class="set-toggle"></div></div>';}
 // Premium
 h+='<div class="section-divider">Premium</div>';
-h+='<div class="set-card" onclick="showPremiumModal()" style="background:linear-gradient(135deg,#FFD700,#FFA000);color:#000"><div class="set-icon" style="background:rgba(0,0,0,.1);color:#000">\u{1F48E}</div><div class="set-text"><div class="set-title" style="color:#000">MoneyFlow Premium</div><div class="set-sub" style="color:rgba(0,0,0,.7)">Unlock all features</div></div><div class="set-arrow" style="color:#000">\u203A</div></div>';
+h+='<div class="set-card" onclick="showPremiumModal()" style="background:linear-gradient(135deg,#FFD700,#FFA000);color:#000"><div class="set-icon" style="background:rgba(0,0,0,.1);color:#000">\u{1F48E}</div><div class="set-text"><div class="set-title" style="color:#000">Cashly Premium</div><div class="set-sub" style="color:rgba(0,0,0,.7)">Unlock all features</div></div><div class="set-arrow" style="color:#000">\u203A</div></div>';
 h+='<div class="section-divider">Data</div>';
-  h+='<div class="set-card" onclick="cM();oM(\'pdfrange\')"><div class="set-icon" style="background:#EDE7F6">\u{1F4C4}</div><div class="set-text"><div class="set-title">Export Statement</div><div class="set-sub">Download PDF report</div></div><div class="set-arrow">\u203A</div></div>';
+  h+='<div class="set-card" onclick="cM();oM(\'pdfrange\')"><div class="set-icon" style="background:#DCFCE7">\u{1F4C4}</div><div class="set-text"><div class="set-title">Export Statement</div><div class="set-sub">Download PDF report</div></div><div class="set-arrow">\u203A</div></div>';
   h+='<div class="set-card" onclick="cM();importPDF()"><div class="set-icon" style="background:#FFF3E0">\u{1F4E5}</div><div class="set-text"><div class="set-title">Import data from other app</div><div class="set-sub">Migrate transactions from another finance app</div></div><div class="set-arrow">\u203A</div></div>';
   
   // Sharing
   h+='<div class="set-card" onclick="cM();backupJSON()"><div class="set-icon" style="background:#E1F5FE">\u{1F4BE}</div><div class="set-text"><div class="set-title">Backup Data</div><div class="set-sub">Download as JSON file</div></div><div class="set-arrow">\u203A</div></div>';h+='<div class="set-card" onclick="cM();restoreJSON()"><div class="set-icon" style="background:#F3E5F5">\u{1F504}</div><div class="set-text"><div class="set-title">Restore Backup</div><div class="set-sub">Import from JSON file</div></div><div class="set-arrow">\u203A</div></div>';h+='<div class="section-divider">Share</div>';
-  h+='<div class="set-card" onclick="cM();shareApp()"><div class="set-icon" style="background:#E8F5E9">\u{1F4F2}</div><div class="set-text"><div class="set-title">Share App</div><div class="set-sub">Tell your friends about MoneyFlow</div></div><div class="set-arrow">\u203A</div></div>';
+  h+='<div class="set-card" onclick="cM();shareApp()"><div class="set-icon" style="background:#E8F5E9">\u{1F4F2}</div><div class="set-text"><div class="set-title">Share App</div><div class="set-sub">Tell your friends about Cashly</div></div><div class="set-arrow">\u203A</div></div>';
   
   // Stats
   h+='<div style="text-align:center;color:#999;font-size:12px;margin:20px 0">'+D.transactions.length+' transactions \u00B7 '+D.splits.length+' splits \u00B7 '+D.recurring.length+' bills</div>';
@@ -86,9 +86,9 @@ h+='<div class="section-divider">Data</div>';
   // Danger zone
   h+='<div class="section-divider" style="color:#E53935">Danger Zone</div>';
   h+='<div class="set-card" onclick="clearAll()"><div class="set-icon" style="background:#FFEBEE">\u{1F5D1}\uFE0F</div><div class="set-text"><div class="set-title" style="color:#E53935">Clear All Data</div><div class="set-sub">Permanently delete everything</div></div></div>';
-  h+='<div class="set-card" onclick="cM();logout()"><div class="set-icon" style="background:#FFEBEE">\u{1F6AA}</div><div class="set-text"><div class="set-title" style="color:#E53935">Logout</div><div class="set-sub">Sign out of MoneyFlow</div></div></div>';
+  h+='<div class="set-card" onclick="cM();logout()"><div class="set-icon" style="background:#FFEBEE">\u{1F6AA}</div><div class="set-text"><div class="set-title" style="color:#E53935">Logout</div><div class="set-sub">Sign out of Cashly</div></div></div>';
   
-  h+='<div style="text-align:center;color:#bbb;font-size:11px;margin-top:24px;padding-top:16px;border-top:1px solid #f0f0f0">Powered by VKS Tech<br>moneyflow.vkstech.com</div>';
+  h+='<div style="text-align:center;color:#bbb;font-size:11px;margin-top:24px;padding-top:16px;border-top:1px solid #f0f0f0">Powered by VKS Tech<br>cashly.vkstech.com</div>';
   
   return h;
 }

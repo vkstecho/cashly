@@ -1,4 +1,4 @@
-/* MoneyFlow – auth.js */
+/* Cashly – auth.js */
 // AUTH
 var AK="mf_auth",ad=null;try{var x=localStorage.getItem(AK);if(x)ad=JSON.parse(x)}catch(e){}
 var lPh="",oTm=0,oInt=null,lSt="phone",sending=false,verifying=false;
@@ -11,24 +11,24 @@ function rL(){
   if(isBiometricEnabled()&&isBiometricSupported()&&!(ad&&ad["in"])){
     var bioUser=JSON.parse(localStorage.getItem("mf_bio_user")||"null");
     var bnm=bioUser?bioUser.name:"User";
-    c.innerHTML='<div style="text-align:center;padding:10px 0 20px"><div style="font-size:60px;margin-bottom:8px">\u{1F510}</div><div style="font-size:18px;font-weight:700;color:#3E277A">Welcome back, '+esc(bnm)+'!</div><div style="color:#888;font-size:13px;margin-top:4px">Use fingerprint to unlock</div></div><button class="xbtn xbp" onclick="loginBiometric()">\u{1F510} Unlock with Fingerprint</button><button class="xbtn xbo" onclick="localStorage.removeItem(\'mf_bio_id\');localStorage.removeItem(\'mf_bio_user\');rL()">Use Password Instead</button>';
+    c.innerHTML='<div style="text-align:center;padding:10px 0 20px"><div style="font-size:60px;margin-bottom:8px">\u{1F510}</div><div style="font-size:18px;font-weight:700;color:#16A34A">Welcome back, '+esc(bnm)+'!</div><div style="color:#888;font-size:13px;margin-top:4px">Use fingerprint to unlock</div></div><button class="xbtn xbp" onclick="loginBiometric()">\u{1F510} Unlock with Fingerprint</button><button class="xbtn xbo" onclick="localStorage.removeItem(\'mf_bio_id\');localStorage.removeItem(\'mf_bio_user\');rL()">Use Password Instead</button>';
     return;
   }
 
   if(ad&&ad.phone&&ad["in"]&&lSt==="phone"){goApp();return}
   if(ad&&ad.phone&&lSt==="phone")lSt="returning";
   if(lSt==="phone"){
-    c.innerHTML='<div style="font-size:17px;font-weight:700;margin-bottom:4px">Welcome!</div><div style="font-size:13px;color:#999;margin-bottom:20px">Enter your phone number to get started</div><div class="xpw"><span class="xpp">🇮🇳 +91</span><input class="xpi" id="PI" type="tel" maxlength="10" placeholder="Phone number" inputmode="numeric"></div><div id="LE" class="xerr" style="display:none"></div><button class="xbtn xbp" id="SB" onclick="sOTP()">Get OTP →</button><div style=\"display:flex;align-items:center;gap:10px;margin:18px 0 8px\"><div style=\"flex:1;height:1px;background:#eee\"></div><span style=\"color:#999;font-size:11px;font-weight:600\">OR</span><div style=\"flex:1;height:1px;background:#eee\"></div></div><button class=\"xbtn xbo\" id=\"GB\" onclick=\"signInGoogle()\" style=\"display:flex;align-items:center;justify-content:center;gap:10px;border:2px solid #EDE7F6;background:#fff;color:#3E277A\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 48 48\"><path fill=\"#EA4335\" d=\"M24 9.5c3.5 0 6.7 1.2 9.2 3.6l6.8-6.8C35.9 2.4 30.5 0 24 0 14.6 0 6.5 5.4 2.6 13.2l8 6.2C12.4 13.7 17.7 9.5 24 9.5z\"/><path fill=\"#4285F4\" d=\"M47 24.5c0-1.6-.2-3.1-.4-4.5H24v9h12.9c-.6 3-2.3 5.5-4.8 7.2l7.7 6c4.5-4.2 7.1-10.4 7.1-17.7z\"/><path fill=\"#FBBC05\" d=\"M10.5 28.6c-.5-1.5-.8-3-.8-4.6s.3-3.1.8-4.6l-8-6.2C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.8l7.9-6.2z\"/><path fill=\"#34A853\" d=\"M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.7-6c-2.2 1.5-4.9 2.3-8.2 2.3-6.3 0-11.6-4.2-13.5-9.9l-8 6.2C6.5 42.6 14.6 48 24 48z\"/></svg>Sign in with Google</button>';
+    c.innerHTML='<div style="font-size:17px;font-weight:700;margin-bottom:4px">Welcome!</div><div style="font-size:13px;color:#999;margin-bottom:20px">Enter your phone number to get started</div><div class="xpw"><span class="xpp">🇮🇳 +91</span><input class="xpi" id="PI" type="tel" maxlength="10" placeholder="Phone number" inputmode="numeric"></div><div id="LE" class="xerr" style="display:none"></div><button class="xbtn xbp" id="SB" onclick="sOTP()">Get OTP →</button><div style=\"display:flex;align-items:center;gap:10px;margin:18px 0 8px\"><div style=\"flex:1;height:1px;background:#eee\"></div><span style=\"color:#999;font-size:11px;font-weight:600\">OR</span><div style=\"flex:1;height:1px;background:#eee\"></div></div><button class=\"xbtn xbo\" id=\"GB\" onclick=\"signInGoogle()\" style=\"display:flex;align-items:center;justify-content:center;gap:10px;border:2px solid #DCFCE7;background:#fff;color:#16A34A\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 48 48\"><path fill=\"#EA4335\" d=\"M24 9.5c3.5 0 6.7 1.2 9.2 3.6l6.8-6.8C35.9 2.4 30.5 0 24 0 14.6 0 6.5 5.4 2.6 13.2l8 6.2C12.4 13.7 17.7 9.5 24 9.5z\"/><path fill=\"#4285F4\" d=\"M47 24.5c0-1.6-.2-3.1-.4-4.5H24v9h12.9c-.6 3-2.3 5.5-4.8 7.2l7.7 6c4.5-4.2 7.1-10.4 7.1-17.7z\"/><path fill=\"#FBBC05\" d=\"M10.5 28.6c-.5-1.5-.8-3-.8-4.6s.3-3.1.8-4.6l-8-6.2C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.8l7.9-6.2z\"/><path fill=\"#34A853\" d=\"M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.7-6c-2.2 1.5-4.9 2.3-8.2 2.3-6.3 0-11.6-4.2-13.5-9.9l-8 6.2C6.5 42.6 14.6 48 24 48z\"/></svg>Sign in with Google</button>';
     setTimeout(function(){var p=$("PI");if(p){p.focus();p.oninput=function(){this.value=this.value.replace(/[^0-9]/g,"")}}},100);mkRc();
   }else if(lSt==="otp"){
     var mk=lPh.slice(0,2)+"******"+lPh.slice(8);
-    c.innerHTML='<div style="font-size:17px;font-weight:700;margin-bottom:4px">Verify OTP</div><div style="text-align:center;font-size:14px;color:#888;margin-bottom:4px">Sent to <strong>+91 '+mk+'</strong></div><div style="color:#6A4BBC;font-size:13px;cursor:pointer;text-align:center;font-weight:600;margin-bottom:12px" onclick="lSt=\'phone\';cRes=null;rL()">Change number</div><div class="xow" id="OW"></div><div id="OTT" class="xotm"></div><div id="OE" class="xerr" style="display:none"></div><button class="xbtn xbp" id="VB" onclick="vOTP()">Verify & Continue</button>';
+    c.innerHTML='<div style="font-size:17px;font-weight:700;margin-bottom:4px">Verify OTP</div><div style="text-align:center;font-size:14px;color:#888;margin-bottom:4px">Sent to <strong>+91 '+mk+'</strong></div><div style="color:#16A34A;font-size:13px;cursor:pointer;text-align:center;font-weight:600;margin-bottom:12px" onclick="lSt=\'phone\';cRes=null;rL()">Change number</div><div class="xow" id="OW"></div><div id="OTT" class="xotm"></div><div id="OE" class="xerr" style="display:none"></div><button class="xbtn xbp" id="VB" onclick="vOTP()">Verify & Continue</button>';
     var ow=$("OW");for(var i=1;i<=6;i++){var b=document.createElement("input");b.className="xob";b.id="O"+i;b.maxLength=1;b.inputMode="numeric";b.setAttribute("data-idx",i);ow.appendChild(b)}
     ow.addEventListener("input",function(e){var el=e.target;if(!el.classList.contains("xob"))return;el.value=el.value.replace(/[^0-9]/g,"");var idx=parseInt(el.getAttribute("data-idx"));if(el.value&&idx<6){var nx=$("O"+(idx+1));if(nx)nx.focus()}if(idx===6&&el.value)vOTP()});
     ow.addEventListener("keydown",function(e){var el=e.target;if(!el.classList.contains("xob"))return;if(e.key==="Backspace"&&!el.value){var idx=parseInt(el.getAttribute("data-idx"));if(idx>1){var pv=$("O"+(idx-1));if(pv){pv.focus();pv.value=""}}}});
     setTimeout(function(){var o=$("O1");if(o)o.focus()},100);sTm();
   }else if(lSt==="returning"){
-    c.innerHTML='<div style="text-align:center;padding:20px 0"><div style="font-size:18px;font-weight:700;color:#3E277A">Welcome back, '+esc(ad.name)+'!</div><div style="color:#888;font-size:13px;margin-top:4px">+91 '+ad.phone+'</div></div><button class="xbtn xbp" onclick="lSt=\'phone\';lPh=ad.phone;rL()">Login with OTP</button><button class="xbtn xbo" onclick="lSt=\'phone\';lPh=\'\';ad=null;localStorage.removeItem(AK);rL()">Use Different Number</button>';
+    c.innerHTML='<div style="text-align:center;padding:20px 0"><div style="font-size:18px;font-weight:700;color:#16A34A">Welcome back, '+esc(ad.name)+'!</div><div style="color:#888;font-size:13px;margin-top:4px">+91 '+ad.phone+'</div></div><button class="xbtn xbp" onclick="lSt=\'phone\';lPh=ad.phone;rL()">Login with OTP</button><button class="xbtn xbo" onclick="lSt=\'phone\';lPh=\'\';ad=null;localStorage.removeItem(AK);rL()">Use Different Number</button>';
   }
 }
 function sOTP(){if(sending||!fbOk)return;var pi=$("PI");if(!pi)return;lPh=pi.value.trim();if(lPh.length!==10){shE("LE","Enter valid 10-digit number");return}sending=true;var btn=$("SB");btn.disabled=true;btn.innerHTML='<span class="xspn"></span> Sending...';hiE("LE");mkRc();auth.signInWithPhoneNumber("+91"+lPh,rcv).then(function(r){cRes=r;sending=false;lSt="otp";rL()}).catch(function(e){sending=false;btn.disabled=false;btn.innerHTML="Get OTP →";var m=e.code==="auth/too-many-requests"?"Too many attempts.":e.code==="auth/invalid-phone-number"?"Invalid number.":"Failed: "+(e.message||"");shE("LE",m);rcv=null;$("rcc").innerHTML="";mkRc()})}
@@ -53,8 +53,8 @@ function addAccount(){
   var type=prompt("Type: cash / bank / credit / wallet / savings / loan","bank")||"bank";
   type=type.toLowerCase().trim();
   if(!icons[type])type="bank";
-  var colors={cash:"#2E7D32",bank:"#1565C0",credit:"#E65100",wallet:"#6A4BBC",savings:"#00897B",loan:"#C62828"};
-  D.accounts.push({id:genId(),name:name.trim().slice(0,24),type:type,balance:0,color:colors[type]||"#3E277A",icon:icons[type]});
+  var colors={cash:"#2E7D32",bank:"#1565C0",credit:"#E65100",wallet:"#16A34A",savings:"#00897B",loan:"#C62828"};
+  D.accounts.push({id:genId(),name:name.trim().slice(0,24),type:type,balance:0,color:colors[type]||"#16A34A",icon:icons[type]});
   sv();toast("Account added");rC();
 }
 function editAccount(id){
@@ -117,7 +117,7 @@ function scheduleReminder(){
   if(lastReminder===today)return;
   var now=new Date();var hour=now.getHours();
   if(hour>=20){
-    new Notification("MoneyFlow Reminder",{body:"Don't forget to log today's expenses!",icon:"/assets/icon.jpeg",badge:"/assets/icon.jpeg"});
+    new Notification("Cashly Reminder",{body:"Don't forget to log today's expenses!",icon:"/assets/icon-192.png",badge:"/assets/icon-192.png"});
     localStorage.setItem("mf_last_reminder",today);
   }
 }
@@ -128,7 +128,7 @@ function checkBudgetAlert(){
   var pct=D.monthlyBudget>0?spent/D.monthlyBudget*100:0;
   var lastAlert=localStorage.getItem("mf_last_budget_alert")||"";
   if(pct>=90&&lastAlert!==cm+"-90"){
-    new Notification("Budget Alert!",{body:"You've used "+pct.toFixed(0)+"% of your monthly budget",icon:"/assets/icon.jpeg"});
+    new Notification("Budget Alert!",{body:"You've used "+pct.toFixed(0)+"% of your monthly budget",icon:"/assets/icon-192.png"});
     localStorage.setItem("mf_last_budget_alert",cm+"-90");
   }
 }
@@ -140,13 +140,13 @@ function trackShare(){var s=getReferralStats();s.shared++;localStorage.setItem("
 // PREMIUM (placeholder)
 function isPremium(){return localStorage.getItem("mf_premium")==="1"}
 function showPremiumModal(){
-  var html='<div class="bio-prompt" id="premModal" onclick="document.getElementById(\'premModal\').remove()"><div class="bio-card" onclick="event.stopPropagation()"><div class="bio-icon" style="background:linear-gradient(135deg,#FFD700,#FFA000);font-size:42px">\u{1F48E}</div><div style="font-size:22px;font-weight:700;color:#3E277A;margin-bottom:12px">MoneyFlow Premium</div><div style="text-align:left;color:#666;font-size:14px;line-height:1.8;margin-bottom:20px"><div>\u2713 Unlimited custom categories</div><div>\u2713 Receipt photo storage</div><div>\u2713 Advanced analytics & reports</div><div>\u2713 Multiple wallets/accounts</div><div>\u2713 Priority support</div><div>\u2713 Ad-free forever</div></div><div style="font-size:28px;font-weight:700;color:#3E277A;margin-bottom:4px">\u20B999/year</div><div style="color:#999;font-size:12px;margin-bottom:20px">Less than \u20B98.5/month</div><button class="xbtn xbp" onclick="toast(\'Premium coming soon! Notified you\');document.getElementById(\'premModal\').remove()">Notify Me When Available</button><button class="onb-skip" onclick="document.getElementById(\'premModal\').remove()" style="margin-top:8px;width:100%">Maybe later</button></div></div>';
+  var html='<div class="bio-prompt" id="premModal" onclick="document.getElementById(\'premModal\').remove()"><div class="bio-card" onclick="event.stopPropagation()"><div class="bio-icon" style="background:linear-gradient(135deg,#FFD700,#FFA000);font-size:42px">\u{1F48E}</div><div style="font-size:22px;font-weight:700;color:#16A34A;margin-bottom:12px">Cashly Premium</div><div style="text-align:left;color:#666;font-size:14px;line-height:1.8;margin-bottom:20px"><div>\u2713 Unlimited custom categories</div><div>\u2713 Receipt photo storage</div><div>\u2713 Advanced analytics & reports</div><div>\u2713 Multiple wallets/accounts</div><div>\u2713 Priority support</div><div>\u2713 Ad-free forever</div></div><div style="font-size:28px;font-weight:700;color:#16A34A;margin-bottom:4px">\u20B999/year</div><div style="color:#999;font-size:12px;margin-bottom:20px">Less than \u20B98.5/month</div><button class="xbtn xbp" onclick="toast(\'Premium coming soon! Notified you\');document.getElementById(\'premModal\').remove()">Notify Me When Available</button><button class="onb-skip" onclick="document.getElementById(\'premModal\').remove()" style="margin-top:8px;width:100%">Maybe later</button></div></div>';
   var div=document.createElement("div");div.innerHTML=html;document.body.appendChild(div.firstChild);
 }
 
 // THEME
 function getTheme(){return localStorage.getItem("mf_theme")||"light"}
-function setTheme(t){localStorage.setItem("mf_theme",t);document.documentElement.setAttribute("data-theme",t);var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",t==="dark"?"#0f1117":"#3E277A")}
+function setTheme(t){localStorage.setItem("mf_theme",t);document.documentElement.setAttribute("data-theme",t);var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",t==="dark"?"#0f1117":"#16A34A")}
 function toggleTheme(){setTheme(getTheme()==="dark"?"light":"dark");rM();rH()}
 // Apply on load
 setTheme(getTheme());
@@ -189,7 +189,7 @@ function verifyPin(callback){showPinModal("verify",getPin(),callback)}
 function showPinModal(mode,expected,cb){
   var titles={set:"Create 4-digit PIN",confirm:"Confirm your PIN",verify:"Enter your PIN"};
   var entered="";
-  var html='<div class="bio-prompt" id="pinPrompt"><div class="bio-card"><div class="bio-icon">🔢</div><div style="font-weight:700;font-size:18px;color:#3E277A;margin-bottom:4px">'+titles[mode]+'</div><div style="color:#999;font-size:13px;margin-bottom:8px" id="pinMsg">Enter 4 digits</div><div class="pin-dots" id="pinDots"></div><div class="pin-pad">';
+  var html='<div class="bio-prompt" id="pinPrompt"><div class="bio-card"><div class="bio-icon">🔢</div><div style="font-weight:700;font-size:18px;color:#16A34A;margin-bottom:4px">'+titles[mode]+'</div><div style="color:#999;font-size:13px;margin-bottom:8px" id="pinMsg">Enter 4 digits</div><div class="pin-dots" id="pinDots"></div><div class="pin-pad">';
   for(var i=1;i<=9;i++)html+='<button class="pin-key" onclick="pinPress('+i+')">'+i+'</button>';
   html+='<button class="pin-key" onclick="closePinModal()" style="background:#FFEBEE;color:#E53935">✕</button>';
   html+='<button class="pin-key" onclick="pinPress(0)">0</button>';
@@ -207,7 +207,7 @@ function closePinModal(){var p=document.getElementById("pinPrompt");if(p)p.remov
 // ONBOARDING TOUR
 var onbStep=0;
 var onbSlides=[
-  {i:"💰",t:"Welcome to MoneyFlow!",d:"Track every rupee effortlessly. Add expenses and income with just a tap."},
+  {i:"💰",t:"Welcome to Cashly!",d:"Track every rupee effortlessly. Add expenses and income with just a tap."},
   {i:"📊",t:"Need / Want / Savings",d:"Every expense is auto-tagged so you understand where your money really goes."},
   {i:"🔐",t:"Your Data, Your Control",d:"Enable fingerprint login, backup to cloud, and export PDF statements anytime."}
 ];
@@ -224,9 +224,9 @@ function finishOnboarding(){localStorage.setItem("mf_onboarded","1");var ov=docu
 
 function shareApp(){
   var shareData={
-    title:"MoneyFlow - Track Every Rupee",
-    text:"Hey! Check out MoneyFlow - a free personal finance tracker. Auto-tracks expenses from bank SMS, supports Need/Want/Savings categories, and works completely offline. By VKS Tech.",
-    url:"https://moneyflow.vkstech.com"
+    title:"Cashly - Track Every Rupee",
+    text:"Hey! Check out Cashly - a free personal finance tracker. Auto-tracks expenses from bank SMS, supports Need/Want/Savings categories, and works completely offline. By VKS Tech.",
+    url:"https://cashly.vkstech.com"
   };
   if(navigator.share){
     navigator.share(shareData).then(function(){trackShare();toast("Thanks for sharing!")}).catch(function(e){if(e.name!=="AbortError")toast("Share failed")});
@@ -294,7 +294,7 @@ function setupBiometric(){
   navigator.credentials.create({
     publicKey:{
       challenge:challenge,
-      rp:{name:"MoneyFlow",id:window.location.hostname},
+      rp:{name:"Cashly",id:window.location.hostname},
       user:{id:userId,name:ad.phone,displayName:ad.name||"User"},
       pubKeyCredParams:[{alg:-7,type:"public-key"},{alg:-257,type:"public-key"}],
       authenticatorSelection:{authenticatorAttachment:"platform",userVerification:"required"},
@@ -401,7 +401,7 @@ function showConfirm(title,msg,onYes,yesLabel,danger){
   var no=document.createElement("button");no.textContent="Cancel";
   no.style.cssText="flex:1;padding:12px;border:1.5px solid #E0E0E0;background:#fff;color:#666;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer";
   var yes=document.createElement("button");yes.textContent=yesLabel||"Confirm";
-  yes.style.cssText="flex:1;padding:12px;border:none;background:"+(danger===false?"linear-gradient(135deg,#3E277A,#6A4BBC)":"linear-gradient(135deg,#E53935,#C62828)")+";color:#fff;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer";
+  yes.style.cssText="flex:1;padding:12px;border:none;background:"+(danger===false?"linear-gradient(135deg,#16A34A,#16A34A)":"linear-gradient(135deg,#E53935,#C62828)")+";color:#fff;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer";
   no.onclick=function(){document.body.removeChild(wrap)};
   yes.onclick=function(){document.body.removeChild(wrap);if(onYes)onYes()};
   row.appendChild(no);row.appendChild(yes);card.appendChild(row);wrap.appendChild(card);

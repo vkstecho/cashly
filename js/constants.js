@@ -1,4 +1,4 @@
-/* MoneyFlow – constants.js */
+/* Cashly – constants.js */
 var BASE_CATS=[
 {id:"food",l:"Food & Drinks",i:"🍔",c:"#FF6B6B",t:"e",g:"need"},
 {id:"groceries",l:"Groceries",i:"🛒",c:"#4CAF50",t:"e",g:"need"},
@@ -16,7 +16,7 @@ var BASE_CATS=[
 {id:"other",l:"Other",i:"📦",c:"#78909C",t:"e",g:"want"},
 {id:"investment",l:"Investment",i:"📈",c:"#558B2F",t:"e",g:"savings"},
 {id:"salary",l:"Salary",i:"💰",c:"#2E7D32",t:"i",g:"income"},
-{id:"family",l:"From Friends & Family",i:"👥",c:"#6A4BBC",t:"i",g:"income"}
+{id:"family",l:"From Friends & Family",i:"👥",c:"#16A34A",t:"i",g:"income"}
 ];
 var CATS=BASE_CATS.concat((function(){try{return JSON.parse(localStorage.getItem("mf_custom_cats")||"[]")}catch(e){return[]}})());
 var AXIO_MAP={
