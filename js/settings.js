@@ -23,11 +23,21 @@ function rStM(){
   h+='<div class="section-divider" id="accSection">Accounts & Sources</div>';
   ensureAccounts();
   getAccounts().forEach(function(a){
-    h+='<div class="set-card" style="padding:12px 14px"><div class="set-icon" style="background:'+a.color+'18;width:36px;height:36px;font-size:16px">'+a.icon+'</div><div class="set-text"><div class="set-title" style="font-size:13px">'+esc(a.name)+'</div><div class="set-sub">'+a.type+' · '+fF(a.balance||0)+'</div></div><button class="eb" style="padding:4px 10px;font-size:11px" onclick="editAccount(\''+a.id+'\')">Edit</button><button class="dl" onclick="deleteAccount(\''+a.id+'\')" style="margin-left:4px">\u00D7</button></div>';
+    h+='<div class="set-card" style="padding:12px 14px;gap:12px">'+bankLogoHtml(a.name,36)+'<div class="set-text"><div class="set-title" style="font-size:13px">'+esc(a.name)+'</div><div class="set-sub">'+a.type+' · '+fF(a.balance||0)+'</div></div><button class="eb" style="padding:4px 10px;font-size:11px" onclick="editAccount(\''+a.id+'\')">Edit</button><button class="dl" onclick="deleteAccount(\''+a.id+'\')" style="margin-left:4px">\u00D7</button></div>';
   });
   h+='<div class="set-card" onclick="addAccount()"><div class="set-icon" style="background:#E8F5E9">\u2795</div><div class="set-text"><div class="set-title">Add Account</div><div class="set-sub">Cash, Bank, Card, Wallet...</div></div><div class="set-arrow">\u203A</div></div>';
   
-  // Biometric section
+  
+  // Expense tracking (Axio-style)
+  h+='<div class="section-divider">Expense tracking</div>';
+  h+='<div class="set-card" onclick="cM();sV(\'preferences\')"><div class="set-icon" style="background:#E0F2FE">⚙️</div><div class="set-text"><div class="set-title">Preferences</div><div class="set-sub">Theme, security, categories</div></div><div class="set-arrow">›</div></div>';
+  h+='<div class="set-card" onclick="cM();sV(\'weekly\')"><div class="set-icon" style="background:#DBEAFE">📊</div><div class="set-text"><div class="set-title">Weekly summary</div><div class="set-sub">Day-by-day spend chart</div></div><div class="set-arrow">›</div></div>';
+  h+='<div class="set-card" onclick="openSMSImport()"><div class="set-icon" style="background:#FEF3C7">💬</div><div class="set-text"><div class="set-title">Import from SMS</div><div class="set-sub">Paste bank/UPI SMS to auto-add spends</div></div><div class="set-arrow">›</div></div>';
+  h+='<div class="set-card" onclick="cM();oM(\'pdfrange\')"><div class="set-icon" style="background:#DCFCE7">📄</div><div class="set-text"><div class="set-title">Export statement</div><div class="set-sub">Download PDF report</div></div><div class="set-arrow">›</div></div>';
+  h+='<div class="set-card" onclick="cM();sV(\'splits\')"><div class="set-icon" style="background:#FCE7F3">👥</div><div class="set-text"><div class="set-title">Splits & Tags</div><div class="set-sub">Split bills with friends</div></div><div class="set-arrow">›</div></div>';
+  h+='<div class="set-card" onclick="cM();sV(\'recurring\')"><div class="set-icon" style="background:#FEF3C7">🔄</div><div class="set-text"><div class="set-title">Bills & Dues</div><div class="set-sub">Recurring payments</div></div><div class="set-arrow">›</div></div>';
+
+// Biometric section
   if(bioSupp){
     h+='<div class="section-divider">Security</div>';
     if(bioOn){

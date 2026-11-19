@@ -23,14 +23,89 @@ function rL(){
   }else if(lSt==="otp"){
     var mk=lPh.slice(0,2)+"******"+lPh.slice(8);
     c.innerHTML='<div style="font-size:17px;font-weight:700;margin-bottom:4px">Verify OTP</div><div style="text-align:center;font-size:14px;color:#888;margin-bottom:4px">Sent to <strong>+91 '+mk+'</strong></div><div style="color:#16A34A;font-size:13px;cursor:pointer;text-align:center;font-weight:600;margin-bottom:12px" onclick="lSt=\'phone\';cRes=null;rL()">Change number</div><div class="xow" id="OW"></div><div id="OTT" class="xotm"></div><div id="OE" class="xerr" style="display:none"></div><button class="xbtn xbp" id="VB" onclick="vOTP()">Verify & Continue</button>';
-    var ow=$("OW");for(var i=1;i<=6;i++){var b=document.createElement("input");b.className="xob";b.id="O"+i;b.maxLength=1;b.inputMode="numeric";b.setAttribute("data-idx",i);ow.appendChild(b)}
-    ow.addEventListener("input",function(e){var el=e.target;if(!el.classList.contains("xob"))return;el.value=el.value.replace(/[^0-9]/g,"");var idx=parseInt(el.getAttribute("data-idx"));if(el.value&&idx<6){var nx=$("O"+(idx+1));if(nx)nx.focus()}if(idx===6&&el.value)vOTP()});
-    ow.addEventListener("keydown",function(e){var el=e.target;if(!el.classList.contains("xob"))return;if(e.key==="Backspace"&&!el.value){var idx=parseInt(el.getAttribute("data-idx"));if(idx>1){var pv=$("O"+(idx-1));if(pv){pv.focus();pv.value=""}}}});
-    setTimeout(function(){var o=$("O1");if(o)o.focus()},100);sTm();
+    var ow=$("OW");
+    for(var i=1;i<=6;i++){
+      var b=document.createElement("input");
+      b.className="xob";
+      b.id="O"+i;
+      b.maxLength=1;
+      b.inputMode="numeric";
+      b.setAttribute("data-idx",i);
+      b.setAttribute("autocomplete", i===1 ? "one-time-code" : "off");
+      b.setAttribute("autocorrect","off");
+      b.setAttribute("autocapitalize","off");
+      b.setAttribute("spellcheck","false");
+      ow.appendChild(b);
+    }
+    // Handle single digit typing + auto advance
+    ow.addEventListener("input",function(e){
+      var el=e.target;
+      if(!el.classList.contains("xob"))return;
+      var val=el.value.replace(/[^0-9]/g,"");
+      // If user pastes or browser autofills full code into one box
+      if(val.length>1){
+        fillOtpBoxes(val);
+        return;
+      }
+      el.value=val;
+      var idx=parseInt(el.getAttribute("data-idx"));
+      if(el.value&&idx<6){var nx=$("O"+(idx+1));if(nx)nx.focus()}
+      if(idx===6&&el.value)vOTP();
+    });
+    // Better paste support (full 6-digit code)
+    ow.addEventListener("paste",function(e){
+      e.preventDefault();
+      var text=(e.clipboardData||window.clipboardData).getData("text")||"";
+      var digits=text.replace(/[^0-9]/g,"").slice(0,6);
+      if(digits)fillOtpBoxes(digits);
+    });
+    ow.addEventListener("keydown",function(e){
+      var el=e.target;
+      if(!el.classList.contains("xob"))return;
+      if(e.key==="Backspace"&&!el.value){
+        var idx=parseInt(el.getAttribute("data-idx"));
+        if(idx>1){var pv=$("O"+(idx-1));if(pv){pv.focus();pv.value=""}}
+      }
+    });
+    setTimeout(function(){var o=$("O1");if(o)o.focus()},80);
+    sTm();
+    // Try WebOTP API for automatic SMS read (Chrome/Android)
+    tryWebOTP();
   }else if(lSt==="returning"){
     c.innerHTML='<div style="text-align:center;padding:20px 0"><div style="font-size:18px;font-weight:700;color:#16A34A">Welcome back, '+esc(ad.name)+'!</div><div style="color:#888;font-size:13px;margin-top:4px">+91 '+ad.phone+'</div></div><button class="xbtn xbp" onclick="lSt=\'phone\';lPh=ad.phone;rL()">Login with OTP</button><button class="xbtn xbo" onclick="lSt=\'phone\';lPh=\'\';ad=null;localStorage.removeItem(AK);rL()">Use Different Number</button>';
   }
 }
+
+function fillOtpBoxes(code){
+  var digits=(code||"").replace(/[^0-9]/g,"").slice(0,6);
+  for(var i=0;i<6;i++){
+    var box=$("O"+(i+1));
+    if(box)box.value=digits[i]||"";
+  }
+  if(digits.length===6){
+    setTimeout(function(){vOTP()},120);
+  }else if(digits.length>0){
+    var next=$("O"+(digits.length+1));
+    if(next)next.focus();
+  }
+}
+function tryWebOTP(){
+  if(!("OTPCredential" in window) || !navigator.credentials || !navigator.credentials.get)return;
+  var ac=new AbortController();
+  // Abort after 60s or when user navigates away
+  setTimeout(function(){try{ac.abort()}catch(e){}},55000);
+  navigator.credentials.get({
+    otp:{transport:["sms"]},
+    signal:ac.signal
+  }).then(function(cred){
+    if(cred && cred.code){
+      fillOtpBoxes(cred.code);
+    }
+  }).catch(function(err){
+    // Silently ignore - user can still type manually
+  });
+}
+
 function sOTP(){if(sending||!fbOk)return;var pi=$("PI");if(!pi)return;lPh=pi.value.trim();if(lPh.length!==10){shE("LE","Enter valid 10-digit number");return}sending=true;var btn=$("SB");btn.disabled=true;btn.innerHTML='<span class="xspn"></span> Sending...';hiE("LE");mkRc();auth.signInWithPhoneNumber("+91"+lPh,rcv).then(function(r){cRes=r;sending=false;lSt="otp";rL()}).catch(function(e){sending=false;btn.disabled=false;btn.innerHTML="Get OTP →";var m=e.code==="auth/too-many-requests"?"Too many attempts.":e.code==="auth/invalid-phone-number"?"Invalid number.":"Failed: "+(e.message||"");shE("LE",m);rcv=null;$("rcc").innerHTML="";mkRc()})}
 function vOTP(){if(verifying||!cRes)return;var code="";for(var i=1;i<=6;i++){var b=$("O"+i);code+=b?b.value:""}if(code.length<6){shE("OE","Enter complete 6-digit OTP");return}verifying=true;var btn=$("VB");btn.disabled=true;btn.innerHTML='<span class="xspn"></span> Verifying...';hiE("OE");cRes.confirm(code).then(function(){verifying=false;clearInterval(oInt);svA(lPh,ad&&ad.name?ad.name:"");goApp()}).catch(function(e){verifying=false;btn.disabled=false;btn.innerHTML="Verify & Continue";shE("OE",e.code==="auth/code-expired"?"OTP expired.":"Invalid OTP.");for(var i=1;i<=6;i++){var b=$("O"+i);if(b){b.value="";b.classList.add("err");setTimeout(function(b){b.classList.remove("err")},400,b)}}$("O1").focus()})}
 function sTm(){oTm=60;clearInterval(oInt);uTm();oInt=setInterval(function(){oTm--;uTm();if(oTm<=0)clearInterval(oInt)},1000)}
