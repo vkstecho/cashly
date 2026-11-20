@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cashly Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+<div class="container">
+  <div class="admin-wrap">
+    <div id="loginView">
+      <h1>Cashly Admin</h1>
+      <p>OTP login for blog management. Only the registered admin number can sign in.</p>
+      <div id="stepPhone">
+        <div class="field">
+          <label>Admin mobile</label>
+          <input type="tel" id="adminPhone" value="+918929397949" readonly>
+        </div>
+        <div id="recaptcha"></div>
+        <button class="btn btn-primary" style="width:100%" id="btnSend" onclick="sendOtp()">Send OTP</button>
+      </div>
+      <div id="stepOtp" style="display:none">
+        <div class="field">
+          <label>Enter OTP</label>
+          <div class="otp-row">
+            <input type="text" id="otpCode" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="6-digit OTP">
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="verifyOtp()">Verify & Login</button>
+        <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="resetLogin()">Change</button>
+      </div>
+      <div class="msg" id="loginMsg"></div>
+    </div>
+
+    <div id="adminView" class="admin-panel">
+      <h1>Blog admin</h1>
+      <p>Logged in. Manage <code>blog/manifest.json</code> entries below. To publish a full post, add a numbered folder under <code>blog/</code> (e.g. <code>002-my-slug</code>) with <code>index.html</code>, then register it here.</p>
+      <div class="admin-actions">
+        <button class="btn btn-primary" onclick="showAdd()">+ Add post entry</button>
+        <button class="btn btn-ghost" onclick="loadPosts()">Refresh</button>
+        <button class="btn btn-ghost" onclick="logout()">Logout</button>
+      </div>
+
+      <div id="addForm" style="display:none;margin:12px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:#0A0F1A">
+        <div class="field"><label>Number (id)</label><input id="fId" placeholder="002"></div>
+        <div class="field"><label>Slug</label><input id="fSlug" placeholder="salary-day-routine"></div>
+        <div class="field"><label>Folder name</label><input id="fFolder" placeholder="002-salary-day-routine"></div>
+        <div class="field"><label>Title</label><input id="fTitle" placeholder="Post title"></div>
+        <div class="field"><label>Excerpt</label><textarea id="fExcerpt" rows="2"></textarea></div>
+        <div class="field"><label>Date (YYYY-MM-DD)</label><input id="fDate" placeholder="2026-11-19"></div>
+        <div class="field"><label>Tags (comma)</label><input id="fTags" placeholder="budget, salary"></div>
+        <div class="field"><label>Cover image URL (optional)</label><input id="fCover" placeholder="https://..."></div>
+        <button class="btn btn-primary" onclick="savePost()">Save to local manifest draft</button>
+        <p style="color:var(--muted);font-size:.8rem;margin-top:10px">
+          This saves a <strong>downloadable</strong> updated <code>manifest.json</code> (static hosting cannot write files). Replace <code>blog/manifest.json</code> in your repo with the downloaded file, commit, and deploy.
+        </p>
+      </div>
+
+      <div class="list" id="postList"></div>
+      <div class="msg" id="adminMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Only this number is accepted for admin OTP */
+const ADMIN_E164 = '+918929397949';
+const ADMIN_LOCAL = '8929397949';
+
+firebase.initializeApp({
+  apiKey: "AIzaSyAEi0a3PE3gzBRjZPyJfN9G-cAI37oN-ZY",
+  authDomain: "moneyflow-vkstech.firebaseapp.com",
+  projectId: "moneyflow-vkstech",
+  storageBucket: "moneyflow-vkstech.firebasestorage.app",
+  messagingSenderId: "653705018914",
+  appId: "1:653705018914:web:f9fb9a383eaac2e12d7d20"
+});
+const auth = firebase.auth();
+let confirmation = null;
+let recaptchaVerifier = null;
+let manifestPosts = [];
+
+function msg(id, text, ok) {
+  const el = document.getElementById(id);
+  el.textContent = text || '';
+  el.className = 'msg ' + (ok ? 'ok' : (text ? 'err' : ''));
+}
+
+function ensureRecaptcha() {
+  if (recaptchaVerifier) return recaptchaVerifier;
+  recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha', { size: 'invisible' });
+  return recaptchaVerifier;
+}
+
+async function sendOtp() {
+  msg('loginMsg', '');
+  const btn = document.getElementById('btnSend');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const appVerifier = ensureRecaptcha();
+    confirmation = await auth.signInWithPhoneNumber(ADMIN_E164, appVerifier);
+    document.getElementById('stepPhone').style.display = 'none';
+    document.getElementById('stepOtp').style.display = 'block';
+    msg('loginMsg', 'OTP sent to ' + ADMIN_E164, true);
+  } catch (e) {
+    console.error(e);
+    msg('loginMsg', e.message || 'Failed to send OTP');
+    try { if (recaptchaVerifier) { recaptchaVerifier.clear(); recaptchaVerifier = null; } } catch (_) {}
+  }
+  btn.disabled = false; btn.textContent = 'Send OTP';
+}
+
+async function verifyOtp() {
+  const code = (document.getElementById('otpCode').value || '').replace(/\D/g, '');
+  if (code.length !== 6) { msg('loginMsg', 'Enter 6-digit OTP'); return; }
+  if (!confirmation) { msg('loginMsg', 'Request OTP again'); return; }
+  try {
+    const cred = await confirmation.confirm(code);
+    const phone = (cred.user && cred.user.phoneNumber) || '';
+    if (phone !== ADMIN_E164 && !phone.endsWith(ADMIN_LOCAL)) {
+      await auth.signOut();
+      msg('loginMsg', 'This number is not authorised for admin.');
+      return;
+    }
+    showAdmin();
+  } catch (e) {
+    msg('loginMsg', e.message || 'Invalid OTP');
+  }
+}
+
+function resetLogin() {
+  confirmation = null;
+  document.getElementById('stepPhone').style.display = 'block';
+  document.getElementById('stepOtp').style.display = 'none';
+  msg('loginMsg', '');
+}
+
+function showAdmin() {
+  document.getElementById('loginView').style.display = 'none';
+  document.getElementById('adminView').classList.add('on');
+  loadPosts();
+}
+
+function logout() {
+  auth.signOut();
+  document.getElementById('loginView').style.display = 'block';
+  document.getElementById('adminView').classList.remove('on');
+  resetLogin();
+}
+
+auth.onAuthStateChanged(function (user) {
+  if (user && user.phoneNumber && (user.phoneNumber === ADMIN_E164 || user.phoneNumber.endsWith(ADMIN_LOCAL))) {
+    showAdmin();
+  }
+});
+
+async function loadPosts() {
+  const box = document.getElementById('postList');
+  box.innerHTML = '<div class="empty">Loading…</div>';
+  try {
+    const r = await fetch('blog/manifest.json', { cache: 'no-store' });
+    const data = await r.json();
+    manifestPosts = data.posts || [];
+    if (!manifestPosts.length) {
+      box.innerHTML = '<div class="empty">No posts in manifest yet.</div>';
+      return;
+    }
+    manifestPosts.sort(function (a, b) {
+      return (parseInt(b.id, 10) || 0) - (parseInt(a.id, 10) || 0);
+    });
+    box.innerHTML = manifestPosts.map(function (p) {
+      return '<div class="list-item"><div><strong>' + (p.id || '') + '</strong> — ' +
+        (p.title || p.slug) + '<div style="color:var(--muted);font-size:.8rem">' +
+        (p.folder || '') + ' · ' + (p.published === false ? 'draft' : 'published') +
+        '</div></div></div>';
+    }).join('');
+  } catch (e) {
+    box.innerHTML = '<div class="empty">Could not load manifest.</div>';
+  }
+}
+
+function showAdd() {
+  document.getElementById('addForm').style.display = 'block';
+}
+
+function savePost() {
+  const id = document.getElementById('fId').value.trim();
+  const slug = document.getElementById('fSlug').value.trim();
+  const folder = document.getElementById('fFolder').value.trim() || (id + '-' + slug);
+  const title = document.getElementById('fTitle').value.trim();
+  if (!id || !slug || !title) { msg('adminMsg', 'Id, slug and title required'); return; }
+  const entry = {
+    id: id,
+    slug: slug,
+    folder: folder,
+    title: title,
+    excerpt: document.getElementById('fExcerpt').value.trim(),
+    date: document.getElementById('fDate').value.trim() || new Date().toISOString().slice(0, 10),
+    tags: document.getElementById('fTags').value.split(',').map(function (t) { return t.trim(); }).filter(Boolean),
+    cover: document.getElementById('fCover').value.trim(),
+    published: true
+  };
+  // Replace same id if exists
+  manifestPosts = manifestPosts.filter(function (p) { return String(p.id) !== String(id); });
+  manifestPosts.push(entry);
+  manifestPosts.sort(function (a, b) {
+    return (parseInt(a.id, 10) || 0) - (parseInt(b.id, 10) || 0);
+  });
+  const blob = new Blob([JSON.stringify({ posts: manifestPosts }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'manifest.json';
+  a.click();
+  msg('adminMsg', 'Downloaded updated manifest.json — commit it to blog/manifest.json in the repo.', true);
+  loadPosts();
+}
+</script>
+</body>
+</html>

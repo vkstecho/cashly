@@ -1,0 +1,4 @@
+<!-- Add inside <manifest> of android/app/src/main/AndroidManifest.xml -->
+<uses-permission android:name="android.permission.READ_SMS" />
+<uses-permission android:name="android.permission.RECEIVE_SMS" />
+<!-- RECEIVE_SMS optional – only if you later add a broadcast receiver for live SMS -->

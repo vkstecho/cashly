@@ -1,0 +1,15 @@
+{
+  "posts": [
+    {
+      "id": "001",
+      "slug": "welcome-to-cashly",
+      "folder": "001-welcome-to-cashly",
+      "title": "Welcome to Cashly — Track every rupee with clarity",
+      "excerpt": "Why we built Cashly, how it helps with UPI, budgets and weekly money reviews in India.",
+      "date": "2026-11-18",
+      "tags": ["cashly", "budget", "india"],
+      "cover": "",
+      "published": true
+    }
+  ]
+}

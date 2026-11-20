@@ -2,55 +2,166 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cashly by VKS Tech</title>
-<meta name="theme-color" content="#16A34A">
-<meta name="description" content="Personal finance tracker – expenses, budgets, SMS import, statements & tax tools.">
-<link rel="icon" type="image/png" href="assets/icon-192.png">
-<link rel="apple-touch-icon" href="assets/icon-192.png">
-<link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cashly — Track every rupee with clarity</title>
+<meta name="description" content="Cashly by VKS Tech — simple money tracking for India. Budgets, UPI insights, weekly reviews. App, blogs and YouTube in one place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<link rel="icon" href="app/assets/icon-192.png">
 </head>
 <body>
-<div id="LS" class="login-screen">
-  <div class="xlb xlb1"></div>
-  <div class="xlb xlb2"></div>
-  <div class="xll"><img src="assets/logo.jpeg" alt="Cashly by VKS Tech"></div>
-  <div class="xlt">Cashly</div>
-  <div class="xls">by VKS Tech</div>
-  <div class="xlc" id="LC"></div>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">C</span> Cashly</a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="blog.html">Blog</a>
+      <a href="videos.html">Videos</a>
+      <a href="https://www.youtube.com/@cashlybyVks" target="_blank" rel="noopener">YouTube</a>
+      <a class="btn btn-primary" href="app/">Open App</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">Cashly by VKS Tech</div>
+      <h1>Your money, <span>clear</span> at a glance</h1>
+      <p class="hero-lead">
+        Track spends, set a budget, and know what’s safe to spend today — built for UPI, cards and real Indian money habits. Read the blogs, watch the videos, then open the app.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="app/">Open Cashly App</a>
+        <a class="btn btn-ghost" href="videos.html">Watch on YouTube</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><strong>Budget ring</strong><span>See month progress instantly</span></div>
+        <div class="stat"><strong>SMS import</strong><span>Paste bank SMS or use Android</span></div>
+        <div class="stat"><strong>Weekly review</strong><span>Calm summary every week</span></div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="phone-frame">
+        <div class="phone-top"><span>Cashly</span><span>Preview</span></div>
+        <div class="ring-wrap">
+          <div class="ring">
+            <div class="ring-inner">
+              <small>Spent</small>
+              <b>₹12,480</b>
+              <small>62% of budget</small>
+            </div>
+          </div>
+        </div>
+        <div class="mini-row">
+          <div class="mini"><small>Budget</small><b>₹20,000</b></div>
+          <div class="mini"><small>Safe / day</small><b>₹430</b></div>
+          <div class="mini"><small>This week</small><b>₹3.2k</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <div class="section-head">
+      <h2>Built for everyday money decisions</h2>
+      <p>Not another complicated finance dashboard — just the clarity you need after salary, EMIs and weekend spends.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">◎</div>
+        <h3>Spend ring & safe-to-spend</h3>
+        <p>Know how much of the month’s budget is used and what’s left per day — before you swipe.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">≡</div>
+        <h3>Categories & merchants</h3>
+        <p>See where money actually went — food, fuel, transfers — without opening five bank apps.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📅</div>
+        <h3>Weekly summary</h3>
+        <p>A simple week view so Sunday reviews take minutes, not an hour of guilt scrolling.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💬</div>
+        <h3>SMS-friendly import</h3>
+        <p>Paste bank or UPI SMS on the web; native Android read is ready via the Capacitor scaffold.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏦</div>
+        <h3>Accounts that look familiar</h3>
+        <p>Banks and wallets with clear marks — HDFC, SBI, GPay, PhonePe and more.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h3>Your data, your device</h3>
+        <p>Offline-first PWA with cloud sync when you sign in. Privacy policy is one tap away.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head" style="display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap">
+      <div>
+        <h2>From the blog</h2>
+        <p>Practical money notes for India — no jargon walls.</p>
+      </div>
+      <a class="btn btn-ghost" href="blog.html">All posts</a>
+    </div>
+    <div class="media-grid" id="homeBlogs"></div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head" style="display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap">
+      <div>
+        <h2>Latest on YouTube</h2>
+        <p>Auto-updated from <a href="https://www.youtube.com/@cashlybyVks" target="_blank" rel="noopener" style="color:var(--green)">@cashlybyVks</a></p>
+      </div>
+      <a class="btn btn-ghost" href="videos.html">All videos</a>
+    </div>
+    <div class="media-grid" id="homeVideos"></div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="cta-band">
+    <h2>Ready to see your month clearly?</h2>
+    <p>Open the app in the browser — install to home screen when it feels right.</p>
+    <a class="btn btn-primary" href="app/">Launch Cashly</a>
+  </div>
 </div>
 
-<div class="app hidden" id="AS">
-  <div class="hdr" id="AH"></div>
-  <div class="cnt" id="CT"></div>
-  <div class="nav" id="NV"></div>
-  <button class="fab" onclick="oM('add')" aria-label="Add transaction">+</button>
-</div>
+<footer>
+  <div class="container footer-grid">
+    <div>
+      <strong style="color:var(--text)">Cashly</strong> by VKS Tech<br>
+      <span style="font-size:.85rem">Money clarity for everyday India</span>
+    </div>
+    <div class="footer-links">
+      <a href="blog.html">Blog</a>
+      <a href="videos.html">Videos</a>
+      <a href="app/">App</a>
+      <a href="app/privacy.html">Privacy</a>
+      <a href="app/terms.html">Terms</a>
+      <a href="https://www.youtube.com/@cashlybyVks" target="_blank" rel="noopener">YouTube</a>
+    </div>
+  </div>
+</footer>
 
-<div class="ov hidden" id="OV" onclick="cM()">
-  <div class="mdl" id="ML" onclick="event.stopPropagation()"></div>
-</div>
-<div class="tst hidden" id="TT"></div>
-<div id="rcc"></div>
-
-<script src="js/config.js"></script>
-<script src="js/constants.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/data.js"></script>
-<script src="js/ui-core.js"></script>
-<script src="js/ui-itr.js"></script>
-<script src="js/export.js"></script>
-<script src="js/settings.js"></script>
-<script src="js/init.js"></script>
+<script src="js/blog.js"></script>
+<script src="js/youtube.js"></script>
+<script>
+  CashlyBlog.renderInto(document.getElementById('homeBlogs'), 3);
+  CashlyYT.renderInto(document.getElementById('homeVideos'), 3);
+</script>
 </body>
 </html>

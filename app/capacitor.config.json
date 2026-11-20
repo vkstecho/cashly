@@ -1,0 +1,17 @@
+{
+  "appId": "com.vkstech.cashly",
+  "appName": "Cashly",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#F5F7FA"
+  }
+}

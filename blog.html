@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog — Cashly</title>
+<meta name="description" content="Cashly blog — practical money, budget and banking notes for India.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">C</span> Cashly</a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html" class="active">Blog</a>
+      <a href="videos.html">Videos</a>
+      <a class="btn btn-primary" href="app/">Open App</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Blog</h1>
+    <p>Numbered posts under <code>blog/</code> load automatically from the manifest — newest first.</p>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="container">
+    <div class="media-grid" id="blogList"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-grid">
+    <div>© Cashly by VKS Tech</div>
+    <div class="footer-links">
+      <a href="videos.html">Videos</a>
+      <a href="app/">App</a>
+      <a href="https://www.youtube.com/@cashlybyVks" target="_blank" rel="noopener">YouTube</a>
+    </div>
+  </div>
+</footer>
+<script src="js/blog.js"></script>
+<script>CashlyBlog.renderInto(document.getElementById('blogList'));</script>
+</body>
+</html>

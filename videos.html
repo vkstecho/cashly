@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Videos — Cashly</title>
+<meta name="description" content="Latest Cashly YouTube videos — money, UPI, banking in simple Hindi.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">C</span> Cashly</a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <a href="videos.html" class="active">Videos</a>
+      <a class="btn btn-primary" href="app/">Open App</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Videos</h1>
+    <p>Pulled automatically from <a href="https://www.youtube.com/@cashlybyVks" target="_blank" rel="noopener" style="color:var(--green)">@cashlybyVks</a> — no manual embed list needed.</p>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="container">
+    <div class="media-grid" id="videoList"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-grid">
+    <div>© Cashly by VKS Tech</div>
+    <div class="footer-links">
+      <a href="blog.html">Blog</a>
+      <a href="app/">App</a>
+      <a href="https://www.youtube.com/@cashlybyVks" target="_blank" rel="noopener">YouTube</a>
+    </div>
+  </div>
+</footer>
+<script src="js/youtube.js"></script>
+<script>CashlyYT.renderInto(document.getElementById('videoList'), 24);</script>
+</body>
+</html>
