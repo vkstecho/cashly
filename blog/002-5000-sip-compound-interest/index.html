@@ -1,53 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>₹5,000 हर महीने → ₹3 करोड़ | 10 साल की देरी = लगभग ₹2 करोड़ का नुकसान | Cashly</title>
-<meta name="description" content="Compound interest कैसे ₹5,000 महीना SIP को करोड़ों में बदल सकता है, और 10 साल बाद शुरू करने पर आप कितना छोड़ सकते हैं। Rule of 72, आसान उदाहरण, और clear numbers.">
+<title>₹5,000/month → ₹3 Crore | Cost of 10-year delay | Cashly</title>
+<meta name="description" content="How compound interest can turn a ₹5,000 monthly SIP into crores, Rule of 72, and why starting 10 years late can cost ~₹2 crore.">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../css/site.css">
 <style>
   .post{max-width:720px;margin:0 auto;padding:28px 0 64px}
-  .post h1{font-size:clamp(1.5rem,3.2vw,2.1rem);letter-spacing:-.02em;margin:10px 0 14px;line-height:1.2}
-  .post .meta{color:var(--muted);font-size:.9rem;margin-bottom:20px}
+  .post h1{font-size:clamp(1.45rem,3.2vw,2.05rem);letter-spacing:-.02em;margin:10px 0 14px;line-height:1.25}
+  .post .meta{color:var(--muted);font-size:.9rem;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
   .post p{margin-bottom:14px;color:#334155;font-size:1.05rem}
-  .post h2{font-size:1.22rem;margin:30px 0 12px;color:var(--text)}
-  .post h3{font-size:1.05rem;margin:20px 0 8px;color:var(--text)}
+  .post h2{font-size:1.2rem;margin:28px 0 12px;color:var(--text)}
   .post ul,.post ol{margin:0 0 16px 1.25em;color:#334155}
   .post li{margin-bottom:8px}
+  .lang-toggle{
+    display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;
+    background:#fff;margin-left:auto;
+  }
+  .lang-toggle button{
+    border:none;background:transparent;padding:6px 14px;font:inherit;font-weight:700;font-size:.8rem;
+    color:var(--muted);cursor:pointer;
+  }
+  .lang-toggle button.on{background:var(--green);color:#fff}
   .cover{
     border-radius:16px;overflow:hidden;border:1px solid var(--line);
     margin-bottom:22px;background:#F1F5F9;aspect-ratio:16/9;
     display:grid;place-items:center;color:var(--muted);font-size:.9rem;text-align:center;padding:16px;
   }
-  .cover img{width:100%;height:100%;object-fit:cover}
   .video-wrap{position:relative;padding-bottom:56.25%;height:0;border-radius:16px;overflow:hidden;margin:22px 0;border:1px solid var(--line);box-shadow:var(--shadow)}
   .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-  .callout{
-    background:var(--green-wash);border:1px solid #99F6E4;border-radius:14px;
-    padding:16px 18px;margin:18px 0;color:#134E4A;
-  }
+  .callout{background:var(--green-wash);border:1px solid #99F6E4;border-radius:14px;padding:16px 18px;margin:18px 0;color:#134E4A}
   .callout strong{color:var(--green-dark)}
-  .warn{
-    background:#FFF7ED;border:1px solid #FED7AA;border-radius:14px;
-    padding:16px 18px;margin:18px 0;color:#9A3412;
-  }
+  .warn{background:#FFF7ED;border:1px solid #FED7AA;border-radius:14px;padding:16px 18px;margin:18px 0;color:#9A3412}
   .num-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
   @media(max-width:560px){.num-grid{grid-template-columns:1fr}}
-  .num-card{
-    background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;
-  }
+  .num-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
   .num-card small{display:block;color:var(--muted);font-size:.78rem;font-weight:600;margin-bottom:4px}
   .num-card b{font-size:1.2rem;color:var(--text)}
   .num-card span{display:block;font-size:.82rem;color:var(--muted);margin-top:4px}
   .infographic-slot{
-    border:2px dashed #99F6E4;border-radius:14px;padding:20px;margin:18px 0;
+    border:2px dashed #99F6E4;border-radius:14px;padding:18px;margin:18px 0;
     background:#F0FDFA;text-align:center;color:#0F766E;font-size:.88rem;
   }
-  .infographic-slot strong{display:block;margin-bottom:6px;font-size:.95rem}
   .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
   .disclaimer{margin-top:28px;font-size:.85rem;color:var(--muted)}
+  [data-lang]{display:none}
+  html[data-ui-lang="hi"] [data-lang="hi"],
+  html[data-ui-lang="en"] [data-lang="en"]{display:block}
+  html[data-ui-lang="hi"] li[data-lang="hi"],
+  html[data-ui-lang="en"] li[data-lang="en"],
+  html[data-ui-lang="hi"] span[data-lang="hi"],
+  html[data-ui-lang="en"] span[data-lang="en"],
+  html[data-ui-lang="hi"] strong[data-lang="hi"],
+  html[data-ui-lang="en"] strong[data-lang="en"]{display:inline}
+  html[data-ui-lang="hi"] h1[data-lang="hi"],
+  html[data-ui-lang="en"] h1[data-lang="en"],
+  html[data-ui-lang="hi"] h2[data-lang="hi"],
+  html[data-ui-lang="en"] h2[data-lang="en"]{display:block}
 </style>
 </head>
 <body>
@@ -66,112 +77,155 @@
 
 <main class="container post">
   <p class="eyebrow">Compounding · SIP · India</p>
-  <h1>₹5,000 हर महीने लगाओ — सालों बाद वो ₹3 करोड़ भी बन सकता है। 10 साल टालो, तो लगभग ₹2 करोड़ छूट सकते हैं।</h1>
-  <p class="meta">20 Nov 2026 · Reading time ~5 min</p>
 
-  <!-- COVER: replace src after you generate image -->
-  <div class="cover" id="coverSlot">
-    <div>
-      <strong>Cover image slot</strong><br>
-      Generate with Prompt #1 below → save as <code>cover.jpg</code> in this folder → set &lt;img src="cover.jpg"&gt;
+  <h1 data-lang="hi">₹5,000 हर महीने → ₹3 करोड़। 10 साल टालो, तो लगभग ₹2 करोड़ छूट सकते हैं।</h1>
+  <h1 data-lang="en">₹5,000 a month → ₹3 crore. Wait 10 years, and you may leave ~₹2 crore on the table.</h1>
+
+  <div class="meta">
+    <span>20 Nov 2026 · ~5 min</span>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" id="btnHi" class="on" onclick="setLang('hi')">हिंदी</button>
+      <button type="button" id="btnEn" onclick="setLang('en')">English</button>
     </div>
   </div>
 
-  <p>बहुत लोग “compound interest” शब्द सुन चुके हैं। कम लोग ये महसूस करते हैं कि <strong>हर महीने एक छोटी सी रकम</strong> — जैसे ₹5,000 — लंबे समय तक अगर अनुशासन से लगती रहे, तो नतीजा सीधी लाइन में नहीं, बल्कि मुड़ती हुई curve पर बढ़ता है।</p>
+  <div class="cover" id="coverSlot">
+    <div>
+      <strong>Cover image</strong><br>
+      Add <code>cover.jpg</code> in this folder (see IMAGE_PROMPTS.md)
+    </div>
+  </div>
 
-  <p>नीचे वही बात सरल numbers में है: कैसे समय आपके पैसे का दोस्त बनता है, और कैसे <strong>शुरुआत टालना</strong> सिर्फ “थोड़े साल कम” नहीं, बल्कि अक्सर <strong>बड़ा नतीजा छोड़ देना</strong> होता है।</p>
+  <p data-lang="hi">बहुत लोग “compound interest” शब्द सुन चुके हैं। कम लोग ये महसूस करते हैं कि <strong>हर महीने एक छोटी सी रकम</strong> — जैसे ₹5,000 — लंबे समय तक अनुशासन से लगती रहे, तो नतीजा सीधी लाइन में नहीं, बल्कि मुड़ती हुई curve पर बढ़ता है।</p>
+  <p data-lang="en">Most people have heard “compound interest”. Fewer feel what a <strong>small monthly amount</strong> — like ₹5,000 — can do when invested with discipline for decades: growth is not a straight line; the curve bends upward.</p>
 
-  <h2>Compound interest असल में क्या करता है?</h2>
-  <p>Simple interest सिर्फ मूलधन पर ब्याज देती है। Compound interest में <strong>ब्याज पर भी ब्याज</strong> लगता है — यानी आपकी कमाई खुद कमाना शुरू कर देती है।</p>
-  <p>शुरुआती सालों में curve धीमी लगती है। बीच के सालों में रफ्तार दिखती है। आखिरी सालों में वही SIP अक्सर सबसे तेज़ नतीजा देती है — क्योंकि base पहले ही बड़ा हो चुका होता है।</p>
+  <p data-lang="hi">नीचे वही बात सरल numbers में है: कैसे समय आपके पैसे का दोस्त बनता है, और कैसे <strong>शुरुआत टालना</strong> सिर्फ “थोड़े साल कम” नहीं, बल्कि अक्सर <strong>बड़ा नतीजा छोड़ देना</strong> होता है।</p>
+  <p data-lang="en">Below is the same idea in plain numbers: how time becomes your money’s friend, and why <strong>delaying the start</strong> is not just “a few years less” — it often means <strong>leaving a much bigger outcome behind</strong>.</p>
+
+  <h2 data-lang="hi">Compound interest असल में क्या करता है?</h2>
+  <h2 data-lang="en">What compound interest actually does</h2>
+
+  <p data-lang="hi">Simple interest सिर्फ मूलधन पर ब्याज देती है। Compound interest में <strong>ब्याज पर भी ब्याज</strong> लगता है — यानी आपकी कमाई खुद कमाना शुरू कर देती है।</p>
+  <p data-lang="en">Simple interest pays only on the principal. Compound interest pays <strong>interest on interest</strong> — your earnings start earning too.</p>
+
+  <p data-lang="hi">शुरुआती सालों में curve धीमी लगती है। बीच के सालों में रफ्तार दिखती है। आखिरी सालों में वही SIP अक्सर सबसे तेज़ नतीजा देती है — क्योंकि base पहले ही बड़ा हो चुका होता है।</p>
+  <p data-lang="en">Early years feel slow. Middle years show pace. Later years often deliver the fastest gains — because the base is already large.</p>
 
   <div class="infographic-slot">
-    <strong>Infographic #2 — “Simple vs Compound”</strong>
-    Side-by-side: left “Simple interest = flat line”, right “Compound = upward curve”. Use Prompt #2.
+    <strong>Infographic — Simple vs Compound</strong><br>
+    Add <code>info-simple-vs-compound.jpg</code> (IMAGE_PROMPTS.md #2)
   </div>
 
-  <h2>Rule of 72 — डबल होने का त्वरित हिसाब</h2>
-  <p>रिटर्न दर से पैसा लगभग कब <strong>दोगुना</strong> होगा, उसका आसान नियम:</p>
+  <h2 data-lang="hi">Rule of 72 — डबल होने का त्वरित हिसाब</h2>
+  <h2 data-lang="en">Rule of 72 — a quick doubling shortcut</h2>
+
+  <p data-lang="hi">रिटर्न दर से पैसा लगभग कब <strong>दोगुना</strong> होगा:</p>
+  <p data-lang="en">Roughly when money <strong>doubles</strong> at a given return:</p>
+
   <div class="callout">
-    <strong>Rule of 72:</strong> 72 ÷ सालाना रिटर्न% ≈ जितने साल में पैसा roughly double<br>
-    उदाहरण: 12% पर → 72 ÷ 12 = <strong>लगभग 6 साल</strong> में डबल (अनुमान, गारंटी नहीं)।
+    <strong>Rule of 72:</strong>
+    <span data-lang="hi"> 72 ÷ सालाना रिटर्न% ≈ जितने साल में पैसा roughly double। उदाहरण: 12% → 72 ÷ 12 = <strong>लगभग 6 साल</strong> (अनुमान, गारंटी नहीं)।</span>
+    <span data-lang="en"> 72 ÷ annual return% ≈ years to roughly double. Example: 12% → 72 ÷ 12 = <strong>~6 years</strong> (estimate, not a guarantee).</span>
   </div>
-  <p>यही वजह है कि लंबे horizon पर छोटी मासिक रकम भी बड़ा corpus बना सकती है — हर “double” के बाद अगला कदम पहले से ऊँचे base पर होता है।</p>
 
-  <h2>₹5,000 महीना — समय के साथ क्या हो सकता है?</h2>
-  <p>मान लीजिए आप हर महीने ₹5,000 लगाते हैं, और लंबे समय का औसत रिटर्न roughly <strong>12% सालाना</strong> मानें (ये शिक्षा के लिए उदाहरण है — असली रिटर्न ऊपर-नीचे होंगे, गारंटी नहीं)।</p>
+  <p data-lang="hi">यही वजह है कि लंबे horizon पर छोटी मासिक रकम भी बड़ा corpus बना सकती है।</p>
+  <p data-lang="en">That is why a small monthly SIP can still build a large corpus over a long horizon.</p>
+
+  <h2 data-lang="hi">₹5,000 महीना — समय के साथ क्या हो सकता है?</h2>
+  <h2 data-lang="en">₹5,000 a month — what time can do</h2>
+
+  <p data-lang="hi">मान लीजिए हर महीने ₹5,000, और लंबे समय का औसत रिटर्न roughly <strong>12% सालाना</strong> (शिक्षा के लिए उदाहरण — गारंटी नहीं):</p>
+  <p data-lang="en">Assume ₹5,000 every month and a long-run average return of about <strong>12% a year</strong> (educational example only — not guaranteed):</p>
 
   <div class="num-grid">
     <div class="num-card">
-      <small>10 साल</small>
-      <b>~ ₹11–12 लाख</b>
-      <span>लगभग ₹6 लाख आपने डाले</span>
+      <small data-lang="hi">10 साल</small><small data-lang="en">10 years</small>
+      <b>~ ₹11–12 Lakh</b>
+      <span data-lang="hi">लगभग ₹6 लाख आपने डाले</span>
+      <span data-lang="en">You put in ~₹6 lakh</span>
     </div>
     <div class="num-card">
-      <small>20 साल</small>
-      <b>~ ₹50 लाख</b>
-      <span>लगभग ₹12 लाख डाले</span>
+      <small data-lang="hi">20 साल</small><small data-lang="en">20 years</small>
+      <b>~ ₹50 Lakh</b>
+      <span data-lang="hi">लगभग ₹12 लाख डाले</span>
+      <span data-lang="en">You put in ~₹12 lakh</span>
     </div>
     <div class="num-card">
-      <small>25 साल</small>
-      <b>~ ₹95 लाख के पास</b>
-      <span>curve तेज़ होने लगती है</span>
+      <small data-lang="hi">25 साल</small><small data-lang="en">25 years</small>
+      <b>~ ₹95 Lakh</b>
+      <span data-lang="hi">curve तेज़ होने लगती है</span>
+      <span data-lang="en">Curve starts steepening</span>
     </div>
     <div class="num-card">
-      <small>~35 साल</small>
-      <b>~ ₹3+ करोड़</b>
-      <span>यहीं “छोटी SIP → बड़ा लक्ष्य” दिखता है</span>
+      <small>~35 <span data-lang="hi">साल</span><span data-lang="en">years</span></small>
+      <b>~ ₹3+ Crore</b>
+      <span data-lang="hi">छोटी SIP → बड़ा लक्ष्य</span>
+      <span data-lang="en">Small SIP → large goal</span>
     </div>
   </div>
-
-  <p>देखिए पैटर्न: आपके जमा किए पैसे लगभग सीधी रफ्तार से बढ़ते हैं, लेकिन <strong>कुल मूल्य</strong> बाद के वर्षों में कहीं तेज़ बढ़ता है। यही compounding का जादू है — और यही देरी को महंगा बनाता है।</p>
 
   <div class="infographic-slot">
-    <strong>Infographic #3 — “₹5,000 SIP timeline”</strong>
-    Horizontal timeline: 10y → 20y → 35y with corpus bubbles (~12L, ~50L, ~3Cr). Prompt #3.
+    <strong>Infographic — SIP timeline</strong><br>
+    Add <code>info-sip-timeline.jpg</code> (IMAGE_PROMPTS.md #3)
   </div>
 
-  <h2>10 साल बाद शुरू करना = अक्सर बड़ा नुकसान</h2>
-  <p>दो लोग, एक जैसी मासिक रकम:</p>
+  <h2 data-lang="hi">10 साल बाद शुरू करना = अक्सर बड़ा नुकसान</h2>
+  <h2 data-lang="en">Starting 10 years later often costs a lot</h2>
+
+  <p data-lang="hi">दो लोग, एक जैसी मासिक रकम:</p>
+  <p data-lang="en">Two people, same monthly amount:</p>
   <ul>
-    <li><strong>व्यक्ति A</strong> — जल्दी शुरू करता है, अनुशासन से लगाता रहता है।</li>
-    <li><strong>व्यक्ति B</strong> — “बाद में शुरू करूँगा” कहकर <strong>10 साल टालता</strong> है, फिर वही ₹5,000 लगाना शुरू करता है।</li>
+    <li data-lang="hi"><strong>व्यक्ति A</strong> — जल्दी शुरू करता है, अनुशासन से लगाता रहता है।</li>
+    <li data-lang="en"><strong>Person A</strong> starts early and stays consistent.</li>
+    <li data-lang="hi"><strong>व्यक्ति B</strong> — 10 साल टालता है, फिर वही ₹5,000 शुरू करता है।</li>
+    <li data-lang="en"><strong>Person B</strong> waits 10 years, then starts the same ₹5,000.</li>
   </ul>
-  <p>B ने सिर्फ “10 साल कम invest” नहीं किया। उसने वो साल खोए जब पैसा शांत बैठकर खुद को बड़ा कर सकता था। कई उदाहरणों में इस तरह की देरी का अंतर <strong>करीब ₹2 करोड़</strong> जितना outcome छोड़ सकता है — वही कहानी इस विषय की वीडियो में numbers के साथ रखी गई है।</p>
+
+  <p data-lang="hi">B ने सिर्फ “10 साल कम invest” नहीं किया — उसने वो साल खोए जब पैसा शांत बैठकर बढ़ सकता था। कई उदाहरणों में अंतर <strong>करीब ₹2 करोड़</strong> जितना outcome छोड़ सकता है।</p>
+  <p data-lang="en">B did not only “invest 10 years less” — they lost the years when money could grow quietly. In many illustrations the outcome gap is around <strong>₹2 crore</strong>.</p>
 
   <div class="warn">
-    <strong>सच ये है:</strong> बाद में “ज़्यादा राशि” लगाकर भी समय का पूरा हिसाब अक्सर नहीं भरता। जल्दी शुरू की छोटी SIP, देर से शुरू की बड़ी SIP को कई बार पीछे छोड़ देती है।
+    <strong data-lang="hi">सच ये है:</strong>
+    <strong data-lang="en">The hard truth:</strong>
+    <span data-lang="hi"> बाद में ज़्यादा राशि लगाकर भी समय का पूरा हिसाब अक्सर नहीं भरता।</span>
+    <span data-lang="en"> A larger SIP later often still does not fully catch up for lost time.</span>
   </div>
 
   <div class="infographic-slot">
-    <strong>Infographic #4 — “Early bird vs Late starter”</strong>
-    Two characters / bars: Early starter taller corpus vs Late starter; label “~₹2 Cr gap”. Prompt #4. Face = attached man if you want yourself as the early starter.
+    <strong>Infographic — Early vs late</strong><br>
+    Add <code>info-early-vs-late.jpg</code> (IMAGE_PROMPTS.md #4)
   </div>
 
-  <h2>आज से क्या करें (सरल)</h2>
+  <h2 data-lang="hi">आज से क्या करें</h2>
+  <h2 data-lang="en">What to do from today</h2>
   <ol>
-    <li><strong>रकम तय करो जो टूटने न पाए</strong> — ₹2,000 भी चले, लेकिन हर महीने।</li>
-    <li><strong>सैलरी के तुरंत बाद SIP date</strong> — “बचेगा तब लगाऊँगा” अक्सर बचा ही नहीं पाता।</li>
-    <li><strong>खर्च का हिसाब रखो</strong> — ताकि SIP कटने से पहले ही महीना बिखर न जाए। (Cashly app इसी के लिए है।)</li>
-    <li><strong>अपने नंबर खुद चलाओ</strong> — अनुमान पर नहीं, calculator पर।</li>
+    <li data-lang="hi"><strong>रकम तय करो जो टूटे नहीं</strong> — ₹2,000 भी चले, हर महीने।</li>
+    <li data-lang="en"><strong>Pick an amount you can sustain</strong> — even ₹2,000 monthly counts.</li>
+    <li data-lang="hi"><strong>सैलरी के तुरंत बाद SIP date।</strong></li>
+    <li data-lang="en"><strong>Set the SIP date right after salary credit.</strong></li>
+    <li data-lang="hi"><strong>खर्च का हिसाब रखो</strong> — Cashly app इसी के लिए है।</li>
+    <li data-lang="en"><strong>Track spending</strong> so the SIP is not skipped — that is what Cashly is for.</li>
+    <li data-lang="hi"><strong>अपने नंबर calculator पर चलाओ।</strong></li>
+    <li data-lang="en"><strong>Run your own numbers</strong> on the calculators.</li>
   </ol>
 
   <div class="cta-row">
-    <a class="btn btn-primary" href="../../calculators.html#sip">SIP calculator खोलो</a>
+    <a class="btn btn-primary" href="../../calculators.html#sip">SIP calculator</a>
     <a class="btn btn-ghost" href="../../calculators.html#retirement">Retirement corpus</a>
     <a class="btn btn-ghost" href="../../app/">Cashly App</a>
   </div>
 
-  <h2>वीडियो में पूरी कहानी</h2>
-  <p>Numbers, उदाहरण और पूरी flow एक जगह:</p>
+  <h2 data-lang="hi">पूरी कहानी वीडियो में</h2>
+  <h2 data-lang="en">Full story on video</h2>
   <div class="video-wrap">
-    <iframe src="https://www.youtube.com/embed/q1EDzCJW1tg" title="₹5,000 महीने से ₹3 करोड़ | Compound Interest" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+    <iframe src="https://www.youtube.com/embed/q1EDzCJW1tg" title="Compound interest SIP" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
   </div>
   <p style="font-size:.88rem;color:var(--muted)">
     <a href="https://youtu.be/q1EDzCJW1tg" target="_blank" rel="noopener" style="color:var(--green-dark);font-weight:600">youtu.be/q1EDzCJW1tg</a>
   </p>
 
-  <p class="disclaimer">ये लेख शिक्षा के लिए है। 12% या कोई भी रिटर्न गारंटी नहीं है। Mutual fund / equity में नुकसान भी हो सकता है। व्यक्तिगत सलाह के लिए registered adviser से बात करें।</p>
+  <p class="disclaimer" data-lang="hi">शिक्षा के लिए। रिटर्न गारंटी नहीं। व्यक्तिगत सलाह के लिए registered adviser से बात करें।</p>
+  <p class="disclaimer" data-lang="en">For education only. Returns are not guaranteed. Speak to a registered adviser for personal advice.</p>
 </main>
 
 <footer>
@@ -185,5 +239,18 @@
     </div>
   </div>
 </footer>
+<script>
+function setLang(lang){
+  document.documentElement.setAttribute('data-ui-lang', lang);
+  document.getElementById('btnHi').classList.toggle('on', lang==='hi');
+  document.getElementById('btnEn').classList.toggle('on', lang==='en');
+  try{ localStorage.setItem('cashly_blog_lang', lang); }catch(e){}
+}
+(function(){
+  var lang = 'hi';
+  try{ lang = localStorage.getItem('cashly_blog_lang') || 'hi'; }catch(e){}
+  setLang(lang === 'en' ? 'en' : 'hi');
+})();
+</script>
 </body>
 </html>
