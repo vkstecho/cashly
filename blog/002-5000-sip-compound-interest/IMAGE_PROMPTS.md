@@ -1,5 +1,8 @@
 # Image prompts for this blog post
 
+**Image format used everywhere in this post: JPEG (`.jpg`) — not PNG.**
+
+
 Generate in any AI image tool (Grok Imagine, Midjourney, Ideogram, etc.).
 **Every image:** Cashly logo top corner (green C + “Cashly”).
 **Where face needed:** attach your photo and write “face of the attached man”.

@@ -1,18 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welcome to Cashly — Track every rupee with clarity</title>
-<meta name="description" content="Why we built Cashly for India — UPI, budgets, weekly reviews.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>Welcome to Cashly — हर रुपये का साफ़ हिसाब | Cashly</title>
+<meta name="description" content="Cashly क्या है, spend ring और safe-to-spend कैसे काम करते हैं, और India में रोज के पैसे (UPI, salary, EMI) का हिसाब सरल कैसे रखें।">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../css/site.css">
+<style>
+  .post{max-width:720px;margin:0 auto;padding:28px 0 64px}
+  .post h1{font-size:clamp(1.45rem,3.2vw,2.05rem);letter-spacing:-.02em;margin:10px 0 14px;line-height:1.25}
+  .post .meta{color:var(--muted);font-size:.9rem;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .post p{margin-bottom:14px;color:#334155;font-size:1.05rem}
+  .post h2{font-size:1.2rem;margin:28px 0 12px;color:var(--text)}
+  .post ul{margin:0 0 16px 1.25em;color:#334155}
+  .post li{margin-bottom:8px}
+  .lang-toggle{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:#fff;margin-left:auto}
+  .lang-toggle button{border:none;background:transparent;padding:6px 14px;font:inherit;font-weight:700;font-size:.8rem;color:var(--muted);cursor:pointer}
+  .lang-toggle button.on{background:var(--green);color:#fff}
+  .cover{border-radius:16px;overflow:hidden;border:1px solid var(--line);margin-bottom:22px;background:#F1F5F9;aspect-ratio:16/9;display:grid;place-items:center;color:var(--muted);font-size:.9rem;text-align:center;padding:16px}
+  .callout{background:var(--green-wash);border:1px solid #99F6E4;border-radius:14px;padding:16px 18px;margin:18px 0;color:#134E4A}
+  .infographic-slot{border:2px dashed #99F6E4;border-radius:14px;padding:18px;margin:18px 0;background:#F0FDFA;text-align:center;color:#0F766E;font-size:.88rem}
+  .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  [data-lang]{display:none}
+  html[data-ui-lang="hi"] [data-lang="hi"],
+  html[data-ui-lang="en"] [data-lang="en"]{display:block}
+  html[data-ui-lang="hi"] li[data-lang="hi"],
+  html[data-ui-lang="en"] li[data-lang="en"],
+  html[data-ui-lang="hi"] span[data-lang="hi"],
+  html[data-ui-lang="en"] span[data-lang="en"]{display:list-item}
+  html[data-ui-lang="hi"] span[data-lang="hi"],
+  html[data-ui-lang="en"] span[data-lang="en"]{display:inline}
+  html[data-ui-lang="hi"] h1[data-lang="hi"], html[data-ui-lang="en"] h1[data-lang="en"],
+  html[data-ui-lang="hi"] h2[data-lang="hi"], html[data-ui-lang="en"] h2[data-lang="en"]{display:block}
+</style>
 </head>
 <body>
 <header class="nav">
   <div class="container nav-inner">
-    <a class="brand" href="../../index.html"><span class="brand-mark">C</span> Cashly</a>
+    <a class="brand" href="../../index.html"><span class="brand-mark"><img src="../../assets/cashly-icon.png" alt="Cashly" width="38" height="38"></span> Cashly</a>
     <nav class="nav-links">
       <a href="../../index.html">Home</a>
       <a href="../../blog.html" class="active">Blog</a>
@@ -23,24 +49,69 @@
   </div>
 </header>
 
-<main class="container" style="padding:40px 0 64px;max-width:720px">
-  <p class="eyebrow">Blog · 18 Nov 2026</p>
-  <h1 style="font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-.02em;margin-bottom:16px">Welcome to Cashly — Track every rupee with clarity</h1>
-  <p style="color:var(--muted);margin-bottom:28px">Money in India moves fast — salary, UPI, cards, EMIs. Cashly helps you see it clearly without spreadsheet pain.</p>
+<main class="container post">
+  <p class="eyebrow">Cashly · Clarity</p>
+  <h1 data-lang="hi">हर रुपये का साफ़ हिसाब — Cashly क्यों और कैसे</h1>
+  <h1 data-lang="en">Track every rupee with clarity — why Cashly exists</h1>
 
-  <article style="color:#334155;font-size:1.05rem">
-    <p style="margin-bottom:16px">Cashly is built for one job: help you understand where your money goes, and what is still safe to spend this month.</p>
-    <p style="margin-bottom:16px">On the home screen you get a spend ring, budget context, and a simple “safe to spend per day” number. History, categories and merchants help you review without noise.</p>
-    <h2 style="margin:28px 0 12px;font-size:1.25rem">What you can do today</h2>
-    <ul style="margin:0 0 16px 1.2em;color:var(--muted)">
-      <li>Log expenses in seconds</li>
-      <li>Import bank/UPI SMS (paste on web; native on Android app)</li>
-      <li>Set a monthly budget and watch the ring</li>
-      <li>Open Weekly summary for a calm review</li>
-    </ul>
-    <p style="margin-bottom:16px">This blog will share practical money systems for India — salary day routines, credit card hygiene, and simple frameworks that actually stick.</p>
-    <p><a class="btn btn-primary" href="../../app/">Open Cashly App</a></p>
-  </article>
+  <div class="meta">
+    <span>18 Nov 2026 · ~4 min</span>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" id="btnHi" class="on" onclick="setLang('hi')">हिंदी</button>
+      <button type="button" id="btnEn" onclick="setLang('en')">English</button>
+    </div>
+  </div>
+
+  <div class="cover">
+    <div><strong>Cover image</strong><br>Add <code>cover.jpg</code> (see IMAGE_PROMPTS.md) — JPEG</div>
+  </div>
+
+  <p data-lang="hi">भारत में पैसा तेज़ चलता है — सैलरी, UPI, कार्ड, EMI, नकद। महीने के अंत में अक्सर सिर्फ ये लगता है: “गया कहाँ?” Cashly उसी सवाल का जवाब सरल रखना चाहता है।</p>
+  <p data-lang="en">Money in India moves fast — salary, UPI, cards, EMIs, cash. By month-end the usual feeling is: “Where did it go?” Cashly is built to answer that without spreadsheet pain.</p>
+
+  <h2 data-lang="hi">एक काम, साफ़ नज़र</h2>
+  <h2 data-lang="en">One job, a clear view</h2>
+  <p data-lang="hi">Cashly का मकसद जटिल finance dashboard बनना नहीं है। मकसद है: <strong>इस महीने कितना खर्च हो चुका</strong>, <strong>बजट का कितना बचा</strong>, और <strong>आज सुरक्षित कितना खर्च कर सकते हो</strong> — एक नज़र में।</p>
+  <p data-lang="en">Cashly is not trying to be a complex finance dashboard. It is built so you can see <strong>how much you have spent</strong>, <strong>how much budget is left</strong>, and <strong>what is safe to spend today</strong> — at a glance.</p>
+
+  <div class="infographic-slot">
+    <strong>Infographic — Spend ring</strong><br>
+    Add <code>info-spend-ring.jpg</code> (JPEG) — IMAGE_PROMPTS.md
+  </div>
+
+  <h2 data-lang="hi">Home पर क्या मिलता है</h2>
+  <h2 data-lang="en">What you get on Home</h2>
+  <ul>
+    <li data-lang="hi"><strong>Spend ring</strong> — बजट का कितना हिस्सा लग चुका।</li>
+    <li data-lang="en"><strong>Spend ring</strong> — how much of the month’s budget is used.</li>
+    <li data-lang="hi"><strong>Safe to spend / day</strong> — बचे दिनों के हिसाब से आराम की रकम।</li>
+    <li data-lang="en"><strong>Safe to spend / day</strong> — a calm daily number from what is left.</li>
+    <li data-lang="hi"><strong>Categories & merchants</strong> — पैसे कहाँ गए, बिना पाँच bank apps खोले।</li>
+    <li data-lang="en"><strong>Categories & merchants</strong> — where money went, without five bank apps.</li>
+    <li data-lang="hi"><strong>Weekly summary</strong> — हफ्ते का शांत review।</li>
+    <li data-lang="en"><strong>Weekly summary</strong> — a calm week review.</li>
+  </ul>
+
+  <div class="callout">
+    <span data-lang="hi"><strong>SMS import:</strong> Web पर bank/UPI SMS paste कर सकते हो; Android पर native read का scaffold भी app में है।</span>
+    <span data-lang="en"><strong>SMS import:</strong> Paste bank/UPI SMS on web; the app also has a native Android read scaffold.</span>
+  </div>
+
+  <div class="infographic-slot">
+    <strong>Infographic — India’s money path</strong><br>
+    Add <code>info-money-flow-india.jpg</code> (JPEG)
+  </div>
+
+  <h2 data-lang="hi">ये blog आगे क्या लाएगा</h2>
+  <h2 data-lang="en">What this blog will cover next</h2>
+  <p data-lang="hi">सैलरी-डे routine, compounding और SIP की सच्चाई, credit card hygiene, और ऐसे frameworks जो भारत के रोज के पैसे पर लागू हों — सरल भाषा में।</p>
+  <p data-lang="en">Salary-day routines, the real story of compounding and SIPs, credit-card hygiene, and frameworks that fit everyday Indian money — in plain language.</p>
+
+  <div class="cta-row">
+    <a class="btn btn-primary" href="../../app/">Open Cashly App</a>
+    <a class="btn btn-ghost" href="../002-5000-sip-compound-interest/">Next: ₹5,000 SIP story</a>
+    <a class="btn btn-ghost" href="../../calculators.html">Calculators</a>
+  </div>
 </main>
 
 <footer>
@@ -48,11 +119,24 @@
     <div>© Cashly by VKS Tech</div>
     <div class="footer-links">
       <a href="../../blog.html">Blog</a>
+      <a href="../../calculators.html">Calculators</a>
       <a href="../../videos.html">Videos</a>
       <a href="https://www.youtube.com/@cashlybyVks" target="_blank" rel="noopener">YouTube</a>
-      <a href="../../app/privacy.html">Privacy</a>
     </div>
   </div>
 </footer>
+<script>
+function setLang(lang){
+  document.documentElement.setAttribute('data-ui-lang', lang);
+  document.getElementById('btnHi').classList.toggle('on', lang==='hi');
+  document.getElementById('btnEn').classList.toggle('on', lang==='en');
+  try{ localStorage.setItem('cashly_blog_lang', lang); }catch(e){}
+}
+(function(){
+  var lang='hi';
+  try{ lang=localStorage.getItem('cashly_blog_lang')||'hi'; }catch(e){}
+  setLang(lang==='en'?'en':'hi');
+})();
+</script>
 </body>
 </html>
