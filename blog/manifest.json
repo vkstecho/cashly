@@ -1,6 +1,17 @@
 {
   "posts": [
     {
+      "id": "002",
+      "slug": "5000-sip-compound-interest",
+      "folder": "002-5000-sip-compound-interest",
+      "title": "₹5,000 हर महीने → ₹3 करोड़ | 10 साल की देरी का असल नुकसान",
+      "excerpt": "Compound interest, Rule of 72, ₹5,000 SIP के साल-दर-साल नंबर, और 10 साल टालने पर लगभग ₹2 करोड़ क्यों छूट सकते हैं।",
+      "date": "2026-11-20",
+      "tags": ["sip", "compounding", "rule-of-72"],
+      "cover": "https://i.ytimg.com/vi/q1EDzCJW1tg/hqdefault.jpg",
+      "published": true
+    },
+    {
       "id": "001",
       "slug": "welcome-to-cashly",
       "folder": "001-welcome-to-cashly",

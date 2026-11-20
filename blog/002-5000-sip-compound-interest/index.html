@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>₹5,000 हर महीने → ₹3 करोड़ | 10 साल की देरी = लगभग ₹2 करोड़ का नुकसान | Cashly</title>
+<meta name="description" content="Compound interest कैसे ₹5,000 महीना SIP को करोड़ों में बदल सकता है, और 10 साल बाद शुरू करने पर आप कितना छोड़ सकते हैं। Rule of 72, आसान उदाहरण, और clear numbers.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/site.css">
+<style>
+  .post{max-width:720px;margin:0 auto;padding:28px 0 64px}
+  .post h1{font-size:clamp(1.5rem,3.2vw,2.1rem);letter-spacing:-.02em;margin:10px 0 14px;line-height:1.2}
+  .post .meta{color:var(--muted);font-size:.9rem;margin-bottom:20px}
+  .post p{margin-bottom:14px;color:#334155;font-size:1.05rem}
+  .post h2{font-size:1.22rem;margin:30px 0 12px;color:var(--text)}
+  .post h3{font-size:1.05rem;margin:20px 0 8px;color:var(--text)}
+  .post ul,.post ol{margin:0 0 16px 1.25em;color:#334155}
+  .post li{margin-bottom:8px}
+  .cover{
+    border-radius:16px;overflow:hidden;border:1px solid var(--line);
+    margin-bottom:22px;background:#F1F5F9;aspect-ratio:16/9;
+    display:grid;place-items:center;color:var(--muted);font-size:.9rem;text-align:center;padding:16px;
+  }
+  .cover img{width:100%;height:100%;object-fit:cover}
+  .video-wrap{position:relative;padding-bottom:56.25%;height:0;border-radius:16px;overflow:hidden;margin:22px 0;border:1px solid var(--line);box-shadow:var(--shadow)}
+  .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .callout{
+    background:var(--green-wash);border:1px solid #99F6E4;border-radius:14px;
+    padding:16px 18px;margin:18px 0;color:#134E4A;
+  }
+  .callout strong{color:var(--green-dark)}
+  .warn{
+    background:#FFF7ED;border:1px solid #FED7AA;border-radius:14px;
+    padding:16px 18px;margin:18px 0;color:#9A3412;
+  }
+  .num-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+  @media(max-width:560px){.num-grid{grid-template-columns:1fr}}
+  .num-card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;
+  }
+  .num-card small{display:block;color:var(--muted);font-size:.78rem;font-weight:600;margin-bottom:4px}
+  .num-card b{font-size:1.2rem;color:var(--text)}
+  .num-card span{display:block;font-size:.82rem;color:var(--muted);margin-top:4px}
+  .infographic-slot{
+    border:2px dashed #99F6E4;border-radius:14px;padding:20px;margin:18px 0;
+    background:#F0FDFA;text-align:center;color:#0F766E;font-size:.88rem;
+  }
+  .infographic-slot strong{display:block;margin-bottom:6px;font-size:.95rem}
+  .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .disclaimer{margin-top:28px;font-size:.85rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../index.html"><span class="brand-mark">C</span> Cashly</a>
+    <nav class="nav-links">
+      <a href="../../index.html">Home</a>
+      <a href="../../blog.html" class="active">Blog</a>
+      <a href="../../calculators.html">Calculators</a>
+      <a href="../../videos.html">Videos</a>
+      <a class="btn btn-primary" href="../../app/">Open App</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container post">
+  <p class="eyebrow">Compounding · SIP · India</p>
+  <h1>₹5,000 हर महीने लगाओ — सालों बाद वो ₹3 करोड़ भी बन सकता है। 10 साल टालो, तो लगभग ₹2 करोड़ छूट सकते हैं।</h1>
+  <p class="meta">20 Nov 2026 · Reading time ~5 min</p>
+
+  <!-- COVER: replace src after you generate image -->
+  <div class="cover" id="coverSlot">
+    <div>
+      <strong>Cover image slot</strong><br>
+      Generate with Prompt #1 below → save as <code>cover.jpg</code> in this folder → set &lt;img src="cover.jpg"&gt;
+    </div>
+  </div>
+
+  <p>बहुत लोग “compound interest” शब्द सुन चुके हैं। कम लोग ये महसूस करते हैं कि <strong>हर महीने एक छोटी सी रकम</strong> — जैसे ₹5,000 — लंबे समय तक अगर अनुशासन से लगती रहे, तो नतीजा सीधी लाइन में नहीं, बल्कि मुड़ती हुई curve पर बढ़ता है।</p>
+
+  <p>नीचे वही बात सरल numbers में है: कैसे समय आपके पैसे का दोस्त बनता है, और कैसे <strong>शुरुआत टालना</strong> सिर्फ “थोड़े साल कम” नहीं, बल्कि अक्सर <strong>बड़ा नतीजा छोड़ देना</strong> होता है।</p>
+
+  <h2>Compound interest असल में क्या करता है?</h2>
+  <p>Simple interest सिर्फ मूलधन पर ब्याज देती है। Compound interest में <strong>ब्याज पर भी ब्याज</strong> लगता है — यानी आपकी कमाई खुद कमाना शुरू कर देती है।</p>
+  <p>शुरुआती सालों में curve धीमी लगती है। बीच के सालों में रफ्तार दिखती है। आखिरी सालों में वही SIP अक्सर सबसे तेज़ नतीजा देती है — क्योंकि base पहले ही बड़ा हो चुका होता है।</p>
+
+  <div class="infographic-slot">
+    <strong>Infographic #2 — “Simple vs Compound”</strong>
+    Side-by-side: left “Simple interest = flat line”, right “Compound = upward curve”. Use Prompt #2.
+  </div>
+
+  <h2>Rule of 72 — डबल होने का त्वरित हिसाब</h2>
+  <p>रिटर्न दर से पैसा लगभग कब <strong>दोगुना</strong> होगा, उसका आसान नियम:</p>
+  <div class="callout">
+    <strong>Rule of 72:</strong> 72 ÷ सालाना रिटर्न% ≈ जितने साल में पैसा roughly double<br>
+    उदाहरण: 12% पर → 72 ÷ 12 = <strong>लगभग 6 साल</strong> में डबल (अनुमान, गारंटी नहीं)।
+  </div>
+  <p>यही वजह है कि लंबे horizon पर छोटी मासिक रकम भी बड़ा corpus बना सकती है — हर “double” के बाद अगला कदम पहले से ऊँचे base पर होता है।</p>
+
+  <h2>₹5,000 महीना — समय के साथ क्या हो सकता है?</h2>
+  <p>मान लीजिए आप हर महीने ₹5,000 लगाते हैं, और लंबे समय का औसत रिटर्न roughly <strong>12% सालाना</strong> मानें (ये शिक्षा के लिए उदाहरण है — असली रिटर्न ऊपर-नीचे होंगे, गारंटी नहीं)।</p>
+
+  <div class="num-grid">
+    <div class="num-card">
+      <small>10 साल</small>
+      <b>~ ₹11–12 लाख</b>
+      <span>लगभग ₹6 लाख आपने डाले</span>
+    </div>
+    <div class="num-card">
+      <small>20 साल</small>
+      <b>~ ₹50 लाख</b>
+      <span>लगभग ₹12 लाख डाले</span>
+    </div>
+    <div class="num-card">
+      <small>25 साल</small>
+      <b>~ ₹95 लाख के पास</b>
+      <span>curve तेज़ होने लगती है</span>
+    </div>
+    <div class="num-card">
+      <small>~35 साल</small>
+      <b>~ ₹3+ करोड़</b>
+      <span>यहीं “छोटी SIP → बड़ा लक्ष्य” दिखता है</span>
+    </div>
+  </div>
+
+  <p>देखिए पैटर्न: आपके जमा किए पैसे लगभग सीधी रफ्तार से बढ़ते हैं, लेकिन <strong>कुल मूल्य</strong> बाद के वर्षों में कहीं तेज़ बढ़ता है। यही compounding का जादू है — और यही देरी को महंगा बनाता है।</p>
+
+  <div class="infographic-slot">
+    <strong>Infographic #3 — “₹5,000 SIP timeline”</strong>
+    Horizontal timeline: 10y → 20y → 35y with corpus bubbles (~12L, ~50L, ~3Cr). Prompt #3.
+  </div>
+
+  <h2>10 साल बाद शुरू करना = अक्सर बड़ा नुकसान</h2>
+  <p>दो लोग, एक जैसी मासिक रकम:</p>
+  <ul>
+    <li><strong>व्यक्ति A</strong> — जल्दी शुरू करता है, अनुशासन से लगाता रहता है।</li>
+    <li><strong>व्यक्ति B</strong> — “बाद में शुरू करूँगा” कहकर <strong>10 साल टालता</strong> है, फिर वही ₹5,000 लगाना शुरू करता है।</li>
+  </ul>
+  <p>B ने सिर्फ “10 साल कम invest” नहीं किया। उसने वो साल खोए जब पैसा शांत बैठकर खुद को बड़ा कर सकता था। कई उदाहरणों में इस तरह की देरी का अंतर <strong>करीब ₹2 करोड़</strong> जितना outcome छोड़ सकता है — वही कहानी इस विषय की वीडियो में numbers के साथ रखी गई है।</p>
+
+  <div class="warn">
+    <strong>सच ये है:</strong> बाद में “ज़्यादा राशि” लगाकर भी समय का पूरा हिसाब अक्सर नहीं भरता। जल्दी शुरू की छोटी SIP, देर से शुरू की बड़ी SIP को कई बार पीछे छोड़ देती है।
+  </div>
+
+  <div class="infographic-slot">
+    <strong>Infographic #4 — “Early bird vs Late starter”</strong>
+    Two characters / bars: Early starter taller corpus vs Late starter; label “~₹2 Cr gap”. Prompt #4. Face = attached man if you want yourself as the early starter.
+  </div>
+
+  <h2>आज से क्या करें (सरल)</h2>
+  <ol>
+    <li><strong>रकम तय करो जो टूटने न पाए</strong> — ₹2,000 भी चले, लेकिन हर महीने।</li>
+    <li><strong>सैलरी के तुरंत बाद SIP date</strong> — “बचेगा तब लगाऊँगा” अक्सर बचा ही नहीं पाता।</li>
+    <li><strong>खर्च का हिसाब रखो</strong> — ताकि SIP कटने से पहले ही महीना बिखर न जाए। (Cashly app इसी के लिए है।)</li>
+    <li><strong>अपने नंबर खुद चलाओ</strong> — अनुमान पर नहीं, calculator पर।</li>
+  </ol>
+
+  <div class="cta-row">
+    <a class="btn btn-primary" href="../../calculators.html#sip">SIP calculator खोलो</a>
+    <a class="btn btn-ghost" href="../../calculators.html#retirement">Retirement corpus</a>
+    <a class="btn btn-ghost" href="../../app/">Cashly App</a>
+  </div>
+
+  <h2>वीडियो में पूरी कहानी</h2>
+  <p>Numbers, उदाहरण और पूरी flow एक जगह:</p>
+  <div class="video-wrap">
+    <iframe src="https://www.youtube.com/embed/q1EDzCJW1tg" title="₹5,000 महीने से ₹3 करोड़ | Compound Interest" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+  </div>
+  <p style="font-size:.88rem;color:var(--muted)">
+    <a href="https://youtu.be/q1EDzCJW1tg" target="_blank" rel="noopener" style="color:var(--green-dark);font-weight:600">youtu.be/q1EDzCJW1tg</a>
+  </p>
+
+  <p class="disclaimer">ये लेख शिक्षा के लिए है। 12% या कोई भी रिटर्न गारंटी नहीं है। Mutual fund / equity में नुकसान भी हो सकता है। व्यक्तिगत सलाह के लिए registered adviser से बात करें।</p>
+</main>
+
+<footer>
+  <div class="container footer-grid">
+    <div>© Cashly by VKS Tech</div>
+    <div class="footer-links">
+      <a href="../../blog.html">Blog</a>
+      <a href="../../calculators.html">Calculators</a>
+      <a href="../../videos.html">Videos</a>
+      <a href="https://www.youtube.com/@cashlybyVks" target="_blank" rel="noopener">YouTube</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
