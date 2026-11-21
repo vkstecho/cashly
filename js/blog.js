@@ -31,7 +31,7 @@
   function cardHtml(p) {
     var href = 'blog/' + (p.folder || (p.id + '-' + p.slug)) + '/index.html';
     var cover = p.cover
-      ? '<img src="' + escapeHtml(p.cover) + '" alt="" loading="lazy">'
+      ? '<img src="' + escapeHtml(p.cover) + '" alt="' + escapeHtml(p.title) + '" loading="lazy" onerror="this.onerror=null;this.src=\'assets/cashly-icon.png\'">'
       : '<div style="width:100%;height:100%;display:grid;place-items:center;color:#64748B;font-size:2rem">📝</div>';
     return (
       '<a class="media-card" href="' + href + '">' +

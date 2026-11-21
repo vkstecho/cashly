@@ -90,7 +90,7 @@ function handleQuickAction(){
 
 // PWA: Service Worker + Install Prompt
 var deferredPrompt=null;
-if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").then(function(reg){console.log("SW registered")}).catch(function(e){console.warn("SW failed",e)})})}
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/app/sw.js", {scope:"/app/"}).then(function(reg){console.log("SW registered")}).catch(function(e){console.warn("SW failed",e)})})}
 window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredPrompt=e;showInstallBtn()});
 window.addEventListener("appinstalled",function(){deferredPrompt=null;hideInstallBtn();toast("App installed!")});
 function showInstallBtn(){var b=document.getElementById("installBtn");if(b){b.style.display="flex"}else{var btn=document.createElement("button");btn.id="installBtn";btn.innerHTML="\u{1F4F2} Install App";btn.onclick=installApp;btn.style.cssText="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border:none;padding:12px 24px;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(22,163,74,.4);z-index:999;display:flex;align-items:center;gap:8px;font-family:DM Sans,sans-serif";document.body.appendChild(btn)}}
