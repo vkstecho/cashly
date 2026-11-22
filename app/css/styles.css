@@ -468,3 +468,19 @@ input,select,button{font-family:'DM Sans',sans-serif}
 .acc-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
 .acc-strip::-webkit-scrollbar{display:none}
 .set-card{display:flex;align-items:center;gap:12px}
+
+/* Cashly V3: clean account and group detail navigation */
+.cashly-profile{display:flex;align-items:center;gap:16px;padding:20px 16px;background:var(--card,#fff);border-radius:18px;margin:12px 0 22px;border:1px solid #e9edef}
+.cashly-profile-avatar{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#dcfce7;color:#15803d;font-size:24px;font-weight:800;flex-shrink:0}
+.cashly-profile strong,.cashly-profile small{display:block}.cashly-profile small{font-size:12px;color:#64748b;margin-top:5px}
+.cashly-section{font-size:13px;color:#64748b;font-weight:700;margin:20px 5px 10px}
+.cashly-row{width:100%;display:flex;align-items:center;gap:12px;background:var(--card,#fff);border:1px solid #edf0f2;border-radius:14px;padding:14px;margin:8px 0;text-align:left;color:var(--text,#111827)}
+.cashly-link{cursor:pointer;font:inherit}.cashly-row-icon,.cashly-avatar{width:36px;height:36px;border-radius:11px;background:#e9f9f0;display:grid;place-items:center;flex-shrink:0;color:#15803d;font-weight:700}
+.cashly-row-main{flex:1;min-width:0}.cashly-row-main strong,.cashly-row-main small{display:block}.cashly-row-main strong{font-size:14px}.cashly-row-main small{font-size:12px;color:#64748b;margin-top:4px}
+.cashly-link>span:last-child{font-size:24px;color:#94a3b8}.cashly-summary{padding:22px 16px;text-align:center;background:var(--card,#fff);border:1px solid #e5ebe9;border-radius:18px;margin:12px 0}
+.cashly-caption{font-size:12px;color:#64748b}.cashly-large{font-size:30px;font-weight:800;margin:10px 0;color:var(--text,#111827)}
+.cashly-action{border:0;background:#dcfce7;color:#166534;padding:9px 12px;border-radius:10px;font-weight:700;cursor:pointer}
+.split-card{cursor:pointer}
+
+/* Cashly Learn — manifest-driven first tab */
+.learn-page{padding:16px 16px 100px;max-width:720px;margin:auto}.learn-head{padding:12px 0 20px}.learn-eyebrow{font-size:11px;letter-spacing:1.6px;font-weight:800;color:#087a59}.learn-head h1{font-size:26px;line-height:1.2;margin:9px 0}.learn-head p{color:#64748b;font-size:13px;line-height:1.5}.learn-search{display:flex;align-items:center;gap:8px;border:1px solid #dbe4e8;background:white;border-radius:14px;padding:10px 14px}.learn-search input{border:0;outline:0;background:transparent;min-width:0;width:100%;font:inherit}.learn-row{display:flex;align-items:center;justify-content:space-between;margin:20px 0 12px}.learn-row h2{font-size:17px;margin:0}.learn-row button,.learn-article-head button{border:0;background:transparent;color:#087a59;font-weight:700;cursor:pointer}.learn-card{display:flex;flex-direction:column;width:100%;text-align:left;border:1px solid #e3e9ef;background:#fff;border-radius:17px;overflow:hidden;margin:0 0 13px;padding:0;cursor:pointer;color:inherit}.learn-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#e9f6f1}.learn-card-content{display:flex;flex-direction:column;gap:7px;padding:14px}.learn-card-content strong{font-size:16px;line-height:1.4}.learn-card-content small{font-size:13px;color:#64748b;line-height:1.5}.learn-meta{font-size:11px;color:#087a59;font-weight:700}.learn-empty{padding:36px 18px;background:white;border-radius:16px;text-align:center;color:#64748b}.learn-note{font-size:11px;color:#64748b;text-align:center;margin:20px 0}.learn-article{display:flex;flex-direction:column;height:100%;min-height:0;background:white}.learn-article-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #e2e8f0}.learn-article-head a{font-size:12px;color:#087a59;text-decoration:none}.learn-article iframe{width:100%;flex:1;min-height:65vh;border:0;background:#fff}

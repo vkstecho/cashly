@@ -89,7 +89,7 @@ function cloudLoad(){
     }
   }).catch(function(e){console.warn("Load failed:",e.message)});
 }
-var cV="home",cF="all",sT="",dateFrom="",dateTo="",catFilter="all",groupFilter="all";
+var cV="learn",cF="all",sT="",dateFrom="",dateTo="",catFilter="all",groupFilter="all";
 function homeNav(kind){
   cV="transactions";sT="";catFilter="all";dateFrom="";dateTo="";
   if(kind==="income"){cF="income";groupFilter="all"}

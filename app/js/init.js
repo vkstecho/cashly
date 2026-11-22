@@ -70,7 +70,7 @@ function handleShareTarget(){
     rM();
     toast("\u{1F4F2} SMS detected! Review and save");
     // Clear URL params
-    window.history.replaceState({},document.title,"/");
+    window.history.replaceState({},document.title,window.location.pathname);
   },1000);
   return true;
 }
@@ -84,11 +84,21 @@ function handleQuickAction(){
     if(act==="expense"){oM("add");mS.type="expense";rM()}
     else if(act==="income"){oM("add");mS.type="income";rM()}
     else if(act==="reports"){sV("reports")}
-    window.history.replaceState({},document.title,"/");
+    window.history.replaceState({},document.title,window.location.pathname);
   },1000);
 }
 
 // PWA: Service Worker + Install Prompt
+// Keep app-internal navigation inside the installed app scope.
+if(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches){
+ document.addEventListener('click',function(event){
+  var a=event.target.closest&&event.target.closest('a[href]');if(!a)return;
+  var u=new URL(a.href,location.href);
+  if(u.origin===location.origin && u.pathname==='/' && a.dataset.external!=='true'){
+   event.preventDefault();location.assign('/app/');
+  }
+ });
+}
 var deferredPrompt=null;
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/app/sw.js", {scope:"/app/"}).then(function(reg){console.log("SW registered")}).catch(function(e){console.warn("SW failed",e)})})}
 window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredPrompt=e;showInstallBtn()});

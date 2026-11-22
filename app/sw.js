@@ -1,6 +1,6 @@
 /* Cashly app-only offline shell. Never cache user data, auth or API responses. */
-const CACHE = 'cashly-app-v3';
-const SHELL = ['index.html','css/styles.css','js/config.js','js/constants.js','js/auth.js','js/data.js','js/ui-core.js','js/ui-itr.js','js/export.js','js/settings.js','js/init.js','js/sms-bridge.js','manifest.json','assets/icon-192.png','assets/icon-512.png','assets/logo.jpeg'];
+const CACHE = 'cashly-app-v5-learn';
+const SHELL = ['index.html','css/styles.css','js/config.js','js/constants.js','js/auth.js','js/data.js','js/ui-core.js','js/learn.js','js/ui-itr.js','js/export.js','js/settings.js','js/init.js','js/sms-bridge.js','manifest.json','assets/icon-192.png','assets/icon-512.png','assets/logo.jpeg'];
 const SCOPE = new URL('./',self.location.href);
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(async cache=>{await Promise.all(SHELL.map(async path=>{try{await cache.add(new URL(path,SCOPE).href)}catch(e){console.warn('Cashly offline asset unavailable:',path)}}));await self.skipWaiting()})));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('cashly-app-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

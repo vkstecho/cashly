@@ -1,16 +1,17 @@
 /* Cashly – ui-core.js */
 function rH(){
   var nm=ad?ad.name:"User",ini=nm.charAt(0).toUpperCase();
-  $("AH").innerHTML='<div class="hl"><div class="hav">'+ini+'</div><div class="hn">Hi '+esc(nm)+'</div></div><div class="ha"><button class="hb" onclick="sV(\'transactions\')" aria-label="Search">🔍</button></div>';
+  $("AH").innerHTML='<div class="hl"><button class="hav" onclick="sV(&quot;account&quot;)" aria-label="Open account profile" style="border:0;cursor:pointer">'+ini+'</button><div class="hn">Hi '+esc(nm)+'</div></div><div class="ha"><button class="hb" onclick="sV(\'transactions\')" aria-label="Search">🔍</button></div>';
 }
 
 
-var TABS=[["home","🏠","Home"],["reports","📊","Trends"],["splits","👥","Splits"],["itr","•••","More"]];
+var TABS=[["learn","📚","Learn"],["spends","📊","Spends"],["splits","👥","Splits"],["itr","•••","More"]];
 var txnTab="txns"; // txns | cats | merch
 function rN(){
   var icons = {
+    learn: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 7v14M3 18V4a1 1 0 011-1h5a3 3 0 013 3 3 3 0 013-3h5a1 1 0 011 1v14h-6a3 3 0 00-3 3 3 3 0 00-3-3H3z"/></svg>',
     home: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V9.5z"/></svg>',
-    reports: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>',
+    spends: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>',
     splits: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
     itr: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>',
     transactions: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>',
@@ -24,13 +25,17 @@ function rN(){
   }
   $("NV").innerHTML=h;
 }
-function sV(v){cV=v;sT="";cF="all";catFilter="all";groupFilter="all";dateFrom="";dateTo="";if(v==="transactions")txnTab="txns";rN();rC()}
+function sV(v){if(v==="spends")txnTab="txns";if(v!=="splitdetail")activeSplitId=null;cV=v;sT="";cF="all";catFilter="all";groupFilter="all";dateFrom="";dateTo="";if(v==="transactions")txnTab="txns";rN();rC()}
 function rC(){
   var e=$("CT");e.scrollTop=0;
-  var hideNav = (cV==="weekly"||cV==="preferences"||cV==="recurring"||cV==="transactions"||cV==="budgets");
+  var hideNav = (cV==="article"||cV==="weekly"||cV==="preferences"||cV==="recurring"||cV==="transactions"||cV==="budgets"||cV==="account"||cV==="splitdetail");
   var nv=$("NV"); if(nv) nv.style.display = hideNav ? "none" : "";
-  if(cV==="home")e.innerHTML=rHome();
-  else if(cV==="transactions")e.innerHTML=rTxns();
+  if(cV==="learn") {e.innerHTML=rLearn();loadCashlyBlogs();}
+  else if(cV==="article")e.innerHTML=rLearnArticle();
+  else if(cV==="home")e.innerHTML=rHome();
+  else if(cV==="transactions"||cV==="spends")e.innerHTML=rTxns();
+  else if(cV==="account")e.innerHTML=rAccount();
+  else if(cV==="splitdetail")e.innerHTML=rSplitDetail();
   else if(cV==="reports")e.innerHTML=rReports();
   else if(cV==="budgets")e.innerHTML=rBdg();
   else if(cV==="itr")e.innerHTML=rITR();
@@ -188,7 +193,7 @@ function rHome(){
 
 function rTxns(){
   // Axio-style top tabs: Transactions | Categories | Merchants
-  var h = '<div class="wk-header" style="margin-bottom:4px"><button class="wk-back" onclick="sV(\'home\')">\u2190</button><div class="wk-title">All spends</div><div style="width:36px"></div></div>';
+  var h = '<div class="wk-header" style="margin-bottom:4px"><button class="wk-back" onclick="sV(\'home\')">\u2190</button><div class="wk-title">All spends</div><button class="wk-back" aria-label="Account" onclick="sV(\'account\')">⚙</button></div>';
   h += '<div class="axio-tabs">';
   h += '<button class="axio-tab'+(txnTab==="txns"?" a":"")+'" onclick="txnTab=\'txns\';rC()">Transactions</button>';
   h += '<button class="axio-tab'+(txnTab==="cats"?" a":"")+'" onclick="txnTab=\'cats\';rC()">Categories</button>';
@@ -349,9 +354,9 @@ function rSpl(){
       var per = s.people && s.people.length ? s.total/s.people.length : s.total;
       var avatars = (s.people||[]).slice(0,4).map(function(p){return '<div class="split-av">'+(p.name[0]||"?").toUpperCase()+'</div>'}).join("");
       if((s.people||[]).length>4) avatars += '<div class="split-av">+'+(s.people.length-4)+'</div>';
-      h+='<div class="split-card">';
+      h+='<div class="split-card" role="button" tabindex="0" onclick="openSplit(\''+s.id+'\')">';
       h+='<div class="split-card-top"><div class="split-card-title">'+esc(s.title)+'</div>';
-      h+='<button class="dl" onclick="dS(\''+s.id+'\')" style="color:#fff;opacity:.8">×</button></div>';
+      h+='<button class="dl" onclick="event.stopPropagation();dS(\''+s.id+'\')" style="color:#fff;opacity:.8">×</button></div>';
       h+='<div class="split-card-sub">Split with</div>';
       h+='<div class="split-avatars">'+avatars+'</div>';
       h+='<div class="split-card-bottom"><span>You get</span><span class="split-youget">'+fF(per)+' <span style="font-size:12px">↗</span></span></div>';
@@ -895,3 +900,39 @@ function calcHRA(basic,hraReceived,rentPaid,isMetro){
 }
 
 // ===== ITR RENDER =====
+
+/* Cashly navigation and split detail — V3 */
+var activeSplitId=null;
+function openSplit(id){activeSplitId=id;cV="splitdetail";rN();rC()}
+function rSplitDetail(){
+ var s=D.splits.find(function(x){return x.id===activeSplitId});
+ if(!s)return '<div class="wk-header"><button class="wk-back" onclick="sV(\'splits\')">←</button>Split not found</div>';
+ var n=(s.people||[]).length||1, share=Number(s.total||0)/n, settled=0;
+ var h='<div class="wk-header"><button class="wk-back" onclick="sV(\'splits\')">←</button><div class="wk-title">'+esc(s.title)+'</div></div>';
+ h+='<div class="cashly-summary"><div class="cashly-caption">Total group expense</div><div class="cashly-large">'+fF(s.total)+'</div><div class="cashly-caption">Equal share · '+n+' people · '+fF(share)+' each</div></div>';
+ h+='<div class="cashly-section">Members and settlements</div>';
+ (s.people||[]).forEach(function(person,i){if(person.settled)settled++;h+='<div class="cashly-row"><div class="cashly-avatar">'+esc((person.name||'?').charAt(0).toUpperCase())+'</div><div class="cashly-row-main"><strong>'+esc(person.name)+'</strong><small>'+(person.settled?'Settled':'Share due: '+fF(share))+'</small></div><button class="cashly-action" onclick="toggleSplitSettled('+i+')">'+(person.settled?'Undo':'Mark paid')+'</button></div>'});
+ h+='<div class="cashly-summary" style="margin-top:16px"><div class="cashly-caption">Settlement progress</div><div class="cashly-large">'+settled+' / '+n+'</div><div class="cashly-caption">Mark paid only after confirming payment outside Cashly. No money is transferred here.</div></div>';
+ return h;
+}
+function toggleSplitSettled(i){var s=D.splits.find(function(x){return x.id===activeSplitId});if(!s||!s.people||!s.people[i])return;s.people[i].settled=!s.people[i].settled;sv();rC()}
+function rAccount(){
+ var name=ad&&ad.name||'Cashly user',ini=name.charAt(0).toUpperCase(),phone=ad&&ad.phone?'+91 '+ad.phone:'No mobile number linked';
+ var h='<div class="wk-header"><button class="wk-back" onclick="sV(\'home\')">←</button><div class="wk-title">Account</div></div>';
+ h+='<div class="cashly-profile"><div class="cashly-profile-avatar">'+esc(ini)+'</div><div><strong>'+esc(name)+'</strong><small>'+esc(phone)+'</small><small>'+(ad&&ad.email?esc(ad.email):'Cashly by VKS Tech')+'</small></div></div>';
+ function link(icon,title,sub,action){return '<button class="cashly-row cashly-link" onclick="'+action+'"><div class="cashly-row-icon">'+icon+'</div><div class="cashly-row-main"><strong>'+title+'</strong><small>'+sub+'</small></div><span>›</span></button>'}
+ h+='<div class="cashly-section">My account</div>';
+ h+=link('✎','Edit profile','Name, phone and profile photo','editProfile()');
+ h+=link('🏦','Accounts & sources','Bank, cash, wallet and credit cards','oM(\'settings\')');
+ h+='<div class="cashly-section">Expense tracking</div>';
+ h+=link('⚙','Preferences','Spending categories, security and notifications','sV(\'preferences\')');
+ h+=link('📊','Weekly summary','Review spending by day','sV(\'weekly\')');
+ h+=link('📄','Export statement','Create a PDF statement','oM(\'pdfrange\')');
+ h+=link('💬','Import bank SMS','Add expenses from messages','openSMSImport()');
+ h+=link('👥','Splits','Group expenses and settlements','sV(\'splits\')');
+ h+='<div class="cashly-section">General</div>';
+ h+=link('🔒','Privacy and settings','PIN, backup, theme and data controls','oM(\'settings\')');
+ h+=link('✉','Contact Cashly','Cashly@vkstech.com',"window.location.href='mailto:Cashly@vkstech.com'");
+ h+=link('ⓘ','About Cashly','Made with care by VKS Tech','window.location.href=\'support.html\'');
+ return h;
+}
