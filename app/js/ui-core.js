@@ -33,7 +33,7 @@ function rC(){
   if(cV==="learn") {e.innerHTML=rLearn();loadCashlyBlogs();}
   else if(cV==="article")e.innerHTML=rLearnArticle();
   else if(cV==="home")e.innerHTML=rHome();
-  else if(cV==="transactions"||cV==="spends")e.innerHTML=rTxns();
+  else if(cV==="transactions"||cV==="spends")e.innerHTML=(cV==="spends"?cashlyMonthlyTrends():"")+rTxns();
   else if(cV==="account")e.innerHTML=rAccount();
   else if(cV==="splitdetail")e.innerHTML=rSplitDetail();
   else if(cV==="reports")e.innerHTML=rReports();
@@ -576,6 +576,30 @@ function rPreferences(){
 }
 
 
+function cashlyMonthlyTrends(){
+  var today=new Date(),rows=[],max=1,totalExpense=0,totalIncome=0;
+  for(var i=5;i>=0;i--){
+    var d=new Date(today.getFullYear(),today.getMonth()-i,1);
+    var month=getMonthData(d.getFullYear(),d.getMonth());
+    var expense=Math.max(0,Number(month.exp)||0),income=Math.max(0,Number(month.inc)||0);
+    max=Math.max(max,expense,income);totalExpense+=expense;totalIncome+=income;
+    rows.push({label:MO[d.getMonth()],exp:expense,inc:income});
+  }
+  var h='<section class="cashly-trends" aria-label="Six month spending and income trends">';
+  h+='<div class="cashly-trends-head"><div><div class="cashly-trends-title">📈 Monthly trends</div><div class="cashly-trends-sub">Last 6 months · Income vs spending</div></div><span style="font-size:11px;color:var(--text-muted)">₹ INR</span></div>';
+  h+='<div class="cashly-trends-bars">';
+  rows.forEach(function(r){
+    var eh=Math.round(r.exp/max*104),ih=Math.round(r.inc/max*104);
+    h+='<div class="cashly-trends-month" title="'+r.label+': spent '+fF(r.exp)+', earned '+fF(r.inc)+'">';
+    h+='<div class="cashly-trends-pair"><span class="cashly-trends-bar" style="height:'+eh+'px;background:#16A34A"></span><span class="cashly-trends-bar" style="height:'+ih+'px;background:#6366F1"></span></div>';
+    h+='<span class="cashly-trends-label">'+r.label+'</span></div>';
+  });
+  h+='</div><div class="cashly-trends-legend"><span><i class="cashly-trends-dot" style="background:#16A34A"></i>Spent</span><span><i class="cashly-trends-dot" style="background:#6366F1"></i>Earned</span></div>';
+  var insight=totalExpense===0&&totalIncome===0?'Add transactions to see your real monthly spending trends.':totalIncome>=totalExpense?'😊 Your recorded income covers spending across these six months.':'📌 Spending exceeds recorded income across these six months. Review your categories.';
+  h+='<div class="cashly-trends-insight">'+insight+'</div></section>';
+  return h;
+}
+
 function rReports(){
   var now=new Date();
   var thisMonth=getMonthData(now.getFullYear(),now.getMonth());
@@ -590,6 +614,8 @@ function rReports(){
   
   var h='<div style="animation:fadeUp .4s ease"><div class="st">Reports - '+MO[now.getMonth()]+' '+now.getFullYear()+'</div>';
   
+  h+=cashlyMonthlyTrends();
+
   // Stats grid
   h+='<div class="stat-grid">';
   h+='<div class="stat-card"><div class="stat-label">Spent</div><div class="stat-value" style="color:#E53935">'+fF(thisMonth.exp)+'</div><div class="stat-change '+(changeExp>0?"stat-up":"stat-down")+'">'+(changeExp>0?"\u2191":"\u2193")+' '+Math.abs(changeExp).toFixed(0)+'% vs last month</div></div>';

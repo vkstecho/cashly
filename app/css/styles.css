@@ -484,3 +484,29 @@ input,select,button{font-family:'DM Sans',sans-serif}
 
 /* Cashly Learn — manifest-driven first tab */
 .learn-page{padding:16px 16px 100px;max-width:720px;margin:auto}.learn-head{padding:12px 0 20px}.learn-eyebrow{font-size:11px;letter-spacing:1.6px;font-weight:800;color:#087a59}.learn-head h1{font-size:26px;line-height:1.2;margin:9px 0}.learn-head p{color:#64748b;font-size:13px;line-height:1.5}.learn-search{display:flex;align-items:center;gap:8px;border:1px solid #dbe4e8;background:white;border-radius:14px;padding:10px 14px}.learn-search input{border:0;outline:0;background:transparent;min-width:0;width:100%;font:inherit}.learn-row{display:flex;align-items:center;justify-content:space-between;margin:20px 0 12px}.learn-row h2{font-size:17px;margin:0}.learn-row button,.learn-article-head button{border:0;background:transparent;color:#087a59;font-weight:700;cursor:pointer}.learn-card{display:flex;flex-direction:column;width:100%;text-align:left;border:1px solid #e3e9ef;background:#fff;border-radius:17px;overflow:hidden;margin:0 0 13px;padding:0;cursor:pointer;color:inherit}.learn-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#e9f6f1}.learn-card-content{display:flex;flex-direction:column;gap:7px;padding:14px}.learn-card-content strong{font-size:16px;line-height:1.4}.learn-card-content small{font-size:13px;color:#64748b;line-height:1.5}.learn-meta{font-size:11px;color:#087a59;font-weight:700}.learn-empty{padding:36px 18px;background:white;border-radius:16px;text-align:center;color:#64748b}.learn-note{font-size:11px;color:#64748b;text-align:center;margin:20px 0}.learn-article{display:flex;flex-direction:column;height:100%;min-height:0;background:white}.learn-article-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #e2e8f0}.learn-article-head a{font-size:12px;color:#087a59;text-decoration:none}.learn-article iframe{width:100%;flex:1;min-height:65vh;border:0;background:#fff}
+
+/* V5: compact, overflow-safe OTP and refined mobile UI */
+.login-screen{min-height:100dvh;height:100dvh;padding:clamp(12px,4vw,24px);overflow-y:auto;justify-content:safe center;background:linear-gradient(160deg,#f1faf5,#f7f9ff 60%,#fff)}
+.xll{width:74px;height:74px;flex-shrink:0;margin-bottom:8px;animation:none}
+.xlt{font-size:27px}.xls{margin-bottom:18px}
+.xlc{width:min(100%,390px);min-width:0;max-width:100%;padding:clamp(16px,5vw,24px);border-radius:24px;overflow:hidden}
+.xow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(4px,1.6vw,9px);width:100%;max-width:100%;margin:18px 0 20px;min-width:0}
+.xob{box-sizing:border-box;width:100%;min-width:0;max-width:100%;height:clamp(42px,12vw,54px);padding:0;border-radius:11px;font-size:clamp(17px,5vw,23px);background:#f7fbf8}
+.xpw,.xpi{min-width:0}
+.hdr{padding:12px 15px 8px}.hn{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.xnb{min-width:0}.xni{opacity:.68}.xnl{font-size:11px}.xnb.a .xni{opacity:1}
+.tr,.report-card,.axio-home,.xrc{overflow:hidden}.tn,.td,.report-bar-name{overflow-wrap:anywhere}
+.tr .tf{min-width:0;flex:1}.tr .tn{font-size:13px;line-height:1.35}
+.tr .xta{font-size:13px}.ti{flex-shrink:0}
+.cashly-trends{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 10px var(--shadow)}
+.cashly-trends-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+.cashly-trends-title{font-size:15px;font-weight:750}.cashly-trends-sub{font-size:11px;color:var(--text-muted);margin-top:3px}
+.cashly-trends-bars{display:flex;align-items:end;justify-content:space-between;gap:8px;height:148px;border-bottom:1px solid var(--border);padding:0 3px 4px}
+.cashly-trends-month{flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-end;flex-direction:column;gap:5px;height:100%}
+.cashly-trends-pair{display:flex;align-items:end;justify-content:center;gap:3px;height:108px;width:100%}
+.cashly-trends-bar{width:min(18px,40%);min-height:2px;border-radius:5px 5px 1px 1px}
+.cashly-trends-label{font-size:10px;color:var(--text-muted);white-space:nowrap}
+.cashly-trends-legend{display:flex;gap:15px;font-size:11px;color:var(--text-muted);margin-top:12px}
+.cashly-trends-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.cashly-trends-insight{margin-top:12px;background:var(--bg);padding:11px;border-radius:12px;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+@media(max-height:670px){.login-screen{justify-content:flex-start}.xll{width:54px;height:54px}.xls{margin-bottom:10px}.xlc{padding:15px}.xbtn{padding:12px}}

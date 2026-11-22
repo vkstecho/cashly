@@ -1,12 +1,21 @@
 /* Cashly – init.js */
 // INIT
-if(fbOk){auth.onAuthStateChanged(function(user){if(user&&ad&&ad["in"])goApp();else if(!user&&!(ad&&ad["in"]))safeRL()})}
+if(fbOk){auth.onAuthStateChanged(function(user){
+  if(user){
+    if(!ad||!ad["in"]){var phone=(user.phoneNumber||"").replace(/^\+91/,"");svA(phone,(user.displayName||ad&&ad.name||"User"))}
+    if(!(isPinSet&&isPinSet()))goApp();
+  }else{
+    // Never use a stale localStorage flag as proof of authentication.
+    if(ad&&ad["in"]){ad["in"]=false;localStorage.setItem(AK,JSON.stringify(ad))}
+    safeRL();
+  }
+})}
 function safeRL(){try{rL()}catch(e){console.error("rL error:",e);var c=document.getElementById("LC");if(c)c.innerHTML='<div style="font-size:17px;font-weight:700;margin-bottom:4px">Welcome!</div><div style="font-size:13px;color:#999;margin-bottom:20px">Enter your phone number to get started</div><div class="xpw"><span class="xpp">+91</span><input class="xpi" id="PI" type="tel" maxlength="10" placeholder="Phone number" inputmode="numeric"></div><div id="LE" class="xerr" style="display:none"></div><button class="xbtn xbp" id="SB" onclick="sOTP()">Get OTP</button><div style="display:flex;align-items:center;gap:10px;margin:18px 0 8px"><div style="flex:1;height:1px;background:#eee"></div><span style="color:#999;font-size:11px;font-weight:600">OR</span><div style="flex:1;height:1px;background:#eee"></div></div><button class="xbtn xbo" onclick="signInGoogle()" style="display:flex;align-items:center;justify-content:center;gap:10px">Sign in with Google</button>'}}
 if(ad&&ad["in"]&&isPinSet()){
   // Show PIN screen instead of app
   setTimeout(function(){verifyPin(function(){goApp();handleShareTarget();handleQuickAction()})},100);
   $("LS").classList.add("hidden");$("AS").classList.add("hidden");
-}else if(!(ad&&ad["in"])){safeRL()}else{setTimeout(function(){handleShareTarget();handleQuickAction()},500)}
+}else if(!fbOk){safeRL()}else{setTimeout(function(){handleShareTarget();handleQuickAction()},500)}
 
 // WEB SHARE TARGET + SMS Parser
 function parseBankSMSText(text){

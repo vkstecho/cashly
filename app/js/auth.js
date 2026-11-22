@@ -15,7 +15,7 @@ function rL(){
     return;
   }
 
-  if(ad&&ad.phone&&ad["in"]&&lSt==="phone"){goApp();return}
+  if(ad&&ad.phone&&ad["in"]&&lSt==="phone"&&fbOk&&auth.currentUser){goApp();return}
   if(ad&&ad.phone&&lSt==="phone")lSt="returning";
   if(lSt==="phone"){
     c.innerHTML='<div style="font-size:17px;font-weight:700;margin-bottom:4px">Welcome!</div><div style="font-size:13px;color:#999;margin-bottom:20px">Enter your phone number to get started</div><div class="xpw"><span class="xpp">🇮🇳 +91</span><input class="xpi" id="PI" type="tel" maxlength="10" placeholder="Phone number" inputmode="numeric"></div><div id="LE" class="xerr" style="display:none"></div><button class="xbtn xbp" id="SB" onclick="sOTP()">Get OTP →</button><div style=\"display:flex;align-items:center;gap:10px;margin:18px 0 8px\"><div style=\"flex:1;height:1px;background:#eee\"></div><span style=\"color:#999;font-size:11px;font-weight:600\">OR</span><div style=\"flex:1;height:1px;background:#eee\"></div></div><button class=\"xbtn xbo\" id=\"GB\" onclick=\"signInGoogle()\" style=\"display:flex;align-items:center;justify-content:center;gap:10px;border:2px solid #DCFCE7;background:#fff;color:#16A34A\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 48 48\"><path fill=\"#EA4335\" d=\"M24 9.5c3.5 0 6.7 1.2 9.2 3.6l6.8-6.8C35.9 2.4 30.5 0 24 0 14.6 0 6.5 5.4 2.6 13.2l8 6.2C12.4 13.7 17.7 9.5 24 9.5z\"/><path fill=\"#4285F4\" d=\"M47 24.5c0-1.6-.2-3.1-.4-4.5H24v9h12.9c-.6 3-2.3 5.5-4.8 7.2l7.7 6c4.5-4.2 7.1-10.4 7.1-17.7z\"/><path fill=\"#FBBC05\" d=\"M10.5 28.6c-.5-1.5-.8-3-.8-4.6s.3-3.1.8-4.6l-8-6.2C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.8l7.9-6.2z\"/><path fill=\"#34A853\" d=\"M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.7-6c-2.2 1.5-4.9 2.3-8.2 2.3-6.3 0-11.6-4.2-13.5-9.9l-8 6.2C6.5 42.6 14.6 48 24 48z\"/></svg>Sign in with Google</button>';
@@ -28,8 +28,10 @@ function rL(){
       var b=document.createElement("input");
       b.className="xob";
       b.id="O"+i;
-      b.maxLength=1;
+      b.maxLength=6;
       b.inputMode="numeric";
+      b.type="text";
+      b.setAttribute("pattern","[0-9]*");
       b.setAttribute("data-idx",i);
       b.setAttribute("autocomplete", i===1 ? "one-time-code" : "off");
       b.setAttribute("autocorrect","off");
@@ -90,10 +92,12 @@ function fillOtpBoxes(code){
   }
 }
 function tryWebOTP(){
-  if(!("OTPCredential" in window) || !navigator.credentials || !navigator.credentials.get)return;
+  if(!window.isSecureContext || !("OTPCredential" in window) || !navigator.credentials || !navigator.credentials.get)return;
   var ac=new AbortController();
   // Abort after 60s or when user navigates away
   setTimeout(function(){try{ac.abort()}catch(e){}},55000);
+  if(window.cashlyOtpAbort){try{window.cashlyOtpAbort.abort()}catch(e){}}
+  window.cashlyOtpAbort=ac;
   navigator.credentials.get({
     otp:{transport:["sms"]},
     signal:ac.signal
@@ -107,7 +111,7 @@ function tryWebOTP(){
 }
 
 function sOTP(){if(sending||!fbOk)return;var pi=$("PI");if(!pi)return;lPh=pi.value.trim();if(lPh.length!==10){shE("LE","Enter valid 10-digit number");return}sending=true;var btn=$("SB");btn.disabled=true;btn.innerHTML='<span class="xspn"></span> Sending...';hiE("LE");mkRc();auth.signInWithPhoneNumber("+91"+lPh,rcv).then(function(r){cRes=r;sending=false;lSt="otp";rL()}).catch(function(e){sending=false;btn.disabled=false;btn.innerHTML="Get OTP →";var m=e.code==="auth/too-many-requests"?"Too many attempts.":e.code==="auth/invalid-phone-number"?"Invalid number.":"Failed: "+(e.message||"");shE("LE",m);rcv=null;$("rcc").innerHTML="";mkRc()})}
-function vOTP(){if(verifying||!cRes)return;var code="";for(var i=1;i<=6;i++){var b=$("O"+i);code+=b?b.value:""}if(code.length<6){shE("OE","Enter complete 6-digit OTP");return}verifying=true;var btn=$("VB");btn.disabled=true;btn.innerHTML='<span class="xspn"></span> Verifying...';hiE("OE");cRes.confirm(code).then(function(){verifying=false;clearInterval(oInt);svA(lPh,ad&&ad.name?ad.name:"");goApp()}).catch(function(e){verifying=false;btn.disabled=false;btn.innerHTML="Verify & Continue";shE("OE",e.code==="auth/code-expired"?"OTP expired.":"Invalid OTP.");for(var i=1;i<=6;i++){var b=$("O"+i);if(b){b.value="";b.classList.add("err");setTimeout(function(b){b.classList.remove("err")},400,b)}}$("O1").focus()})}
+function vOTP(){if(verifying||!cRes)return;var code="";for(var i=1;i<=6;i++){var b=$("O"+i);code+=b?b.value:""}if(code.length<6){shE("OE","Enter complete 6-digit OTP");return}verifying=true;var btn=$("VB");btn.disabled=true;btn.innerHTML='<span class="xspn"></span> Verifying...';hiE("OE");cRes.confirm(code).then(function(){if(window.cashlyOtpAbort)window.cashlyOtpAbort.abort();verifying=false;clearInterval(oInt);svA(lPh,ad&&ad.name?ad.name:"");goApp()}).catch(function(e){verifying=false;btn.disabled=false;btn.innerHTML="Verify & Continue";shE("OE",e.code==="auth/code-expired"?"OTP expired.":"Invalid OTP.");for(var i=1;i<=6;i++){var b=$("O"+i);if(b){b.value="";b.classList.add("err");setTimeout(function(b){b.classList.remove("err")},400,b)}}$("O1").focus()})}
 function sTm(){oTm=60;clearInterval(oInt);uTm();oInt=setInterval(function(){oTm--;uTm();if(oTm<=0)clearInterval(oInt)},1000)}
 function uTm(){var e=$("OTT");if(!e)return;e.innerHTML=oTm>0?"Resend in <b>"+oTm+"s</b>":"<b onclick='rsO()'>Resend OTP</b>"}
 function rsO(){lSt="phone";rL();setTimeout(function(){var p=$("PI");if(p)p.value=lPh;sOTP()},300)}
@@ -387,6 +391,8 @@ function loginBiometric(){
   if(!isBiometricSupported()||!isBiometricEnabled()){toast("Biometric not available");return}
   var idArr=JSON.parse(localStorage.getItem("mf_bio_id"));
   var challenge=new Uint8Array(32);crypto.getRandomValues(challenge);
+  if(window.cashlyOtpAbort){try{window.cashlyOtpAbort.abort()}catch(e){}}
+  window.cashlyOtpAbort=ac;
   navigator.credentials.get({
     publicKey:{
       challenge:challenge,

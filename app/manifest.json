@@ -2,7 +2,7 @@
   "name": "Cashly by VKS Tech",
   "short_name": "Cashly",
   "description": "Personal finance tracker with budgets, SMS import, statements and tax tools",
-  "start_url": "/app/",
+  "start_url": "/app/index.html",
   "display": "standalone",
   "background_color": "#F4F6F9",
   "theme_color": "#16A34A",

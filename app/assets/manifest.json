@@ -3,7 +3,7 @@
   "name": "Cashly by VKS Tech",
   "short_name": "Cashly",
   "description": "Personal finance tracker with smart categorization. Track every rupee effortlessly.",
-  "start_url": "/app/",
+  "start_url": "/app/index.html",
   "scope": "/app/",
   "display": "standalone",
   "orientation": "portrait",
