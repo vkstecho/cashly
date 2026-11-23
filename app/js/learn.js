@@ -37,6 +37,7 @@ function cashlyBlogCards(){
 }
 function rLearn(){
  var h='<section class="learn-page"><div class="learn-head"><span class="learn-eyebrow">CASHLY · LEARN</span><h1>Learn with Cashly</h1><p>Smart money decisions start with simple explanations.</p></div>';
+ h+='<button type="button" class="cashly-calc-cta" onclick="sV(\'calculators\')">🧮 <strong>Money Calculators</strong><span>Retirement · SIP · EMI · Inflation →</span></button>';
  h+='<label class="learn-search"><span>⌕</span><input type="search" placeholder="Search articles, SIP, EMI…" aria-label="Search articles" value="'+esc(cashlyBlogQuery)+'" oninput="cashlySearchBlogs(this.value)"></label>';
  h+='<div class="learn-row"><h2>Latest articles</h2><button type="button" onclick="cashlyRetryBlogs()" aria-label="Refresh articles">↻ Refresh</button></div>';
  if(cashlyBlogState==='ready')h+='<div id="cashly-learn-list">'+cashlyBlogCards()+'</div>';
@@ -52,3 +53,5 @@ function rLearnArticle(){
  if(!cashlyArticle)return '<button onclick="sV(\'learn\')">← Back to Learn</button>';
  return '<div class="learn-article"><div class="learn-article-head"><button type="button" onclick="sV(\'learn\')">← Learn</button><a href="'+esc(cashlyArticle.url)+'" target="_blank" rel="noopener">Open in browser ↗</a></div><iframe title="'+esc(cashlyArticle.title)+'" src="'+esc(cashlyArticle.url)+'" loading="eager"></iframe></div>';
 }
+
+function rCashlyCalculators(){return '<section class="cashly-calcs-inapp"><div class="learn-article-head"><button type="button" onclick="sV(\'learn\')">← Learn</button><a href="/calculators.html" target="_blank" rel="noopener">Open in browser ↗</a></div><iframe title="Cashly money calculators" src="/calculators.html" loading="eager"></iframe></section>';}

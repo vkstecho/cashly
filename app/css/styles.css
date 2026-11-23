@@ -510,3 +510,5 @@ input,select,button{font-family:'DM Sans',sans-serif}
 .cashly-trends-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
 .cashly-trends-insight{margin-top:12px;background:var(--bg);padding:11px;border-radius:12px;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
 @media(max-height:670px){.login-screen{justify-content:flex-start}.xll{width:54px;height:54px}.xls{margin-bottom:10px}.xlc{padding:15px}.xbtn{padding:12px}}
+
+.cashly-calc-cta{width:100%;border:1px solid #99e6d0;background:linear-gradient(115deg,#edfff6,#f6fffd);color:#075e50;border-radius:16px;display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:16px;margin:0 0 16px;cursor:pointer;text-align:left;font-size:16px}.cashly-calc-cta span{font-size:12px;color:#54756e}.cashly-calcs-inapp{height:100%;display:flex;flex-direction:column;min-height:0;background:#fff}.cashly-calcs-inapp iframe{flex:1;width:100%;height:calc(100dvh - 155px);min-height:65vh;border:0;background:#fff}

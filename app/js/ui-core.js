@@ -28,10 +28,11 @@ function rN(){
 function sV(v){if(v==="spends")txnTab="txns";if(v!=="splitdetail")activeSplitId=null;cV=v;sT="";cF="all";catFilter="all";groupFilter="all";dateFrom="";dateTo="";if(v==="transactions")txnTab="txns";rN();rC()}
 function rC(){
   var e=$("CT");e.scrollTop=0;
-  var hideNav = (cV==="article"||cV==="weekly"||cV==="preferences"||cV==="recurring"||cV==="transactions"||cV==="budgets"||cV==="account"||cV==="splitdetail");
+  var hideNav = (cV==="article"||cV==="calculators"||cV==="weekly"||cV==="preferences"||cV==="recurring"||cV==="transactions"||cV==="budgets"||cV==="account"||cV==="splitdetail");
   var nv=$("NV"); if(nv) nv.style.display = hideNav ? "none" : "";
   if(cV==="learn") {e.innerHTML=rLearn();loadCashlyBlogs();}
   else if(cV==="article")e.innerHTML=rLearnArticle();
+  else if(cV==="calculators")e.innerHTML=rCashlyCalculators();
   else if(cV==="home")e.innerHTML=rHome();
   else if(cV==="transactions"||cV==="spends")e.innerHTML=(cV==="spends"?cashlyMonthlyTrends():"")+rTxns();
   else if(cV==="account")e.innerHTML=rAccount();

@@ -67,6 +67,11 @@
   .result .value{font-size:1.45rem;font-weight:800;color:var(--text);margin-top:2px}
   .result .hint{font-size:.8rem;color:var(--muted);margin-top:6px}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Cashly V6 grouped retirement experience */
+.cashly-lang-switch{display:flex;gap:8px;margin:14px 0 8px}.cashly-lang-switch button{border:1px solid #cbd5e1;border-radius:999px;padding:9px 18px;background:white;color:#0f172a;font-weight:700;cursor:pointer}.cashly-lang-switch button[aria-pressed="true"]{background:#0f766e;color:#fff;border-color:#0f766e}
+.wizard-field.cashly-fields,.cashly-fields{max-width:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.cashly-group-field{min-width:0}.cashly-group-field label{display:block;font-size:.84rem;font-weight:650;margin-bottom:6px;color:#334155}.cashly-group-field input,.cashly-group-field select{width:100%;min-width:0;max-width:100%;box-sizing:border-box;padding:12px;border:1px solid #cbd5e1;border-radius:12px;font-size:16px;background:#fff}.cashly-group-field small{display:block;font-size:.75rem;line-height:1.5;color:#64748b;margin-top:5px}.cashly-review-line{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:12px;border:1px solid #e2e8f0;border-radius:12px;gap:10px}.cashly-review-line button{background:none;border:0;color:#0f766e;font-weight:700;cursor:pointer}.cashly-inline-edit{border:1px solid #99f6e4;background:#f0fdfa;border-radius:14px;padding:14px;margin-bottom:20px}.cashly-inline-edit>summary{cursor:pointer;font-weight:800;color:#0f766e}.cashly-inline-edit>.cashly-fields{display:block}.cashly-edit-section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin:12px 0;padding:12px}.cashly-edit-section>summary{font-weight:700;cursor:pointer}.cashly-edit-section .cashly-fields{padding:8px 0}.cashly-inline-edit>.btn{margin-top:12px}.calc-disclosure{border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin:18px 0}.calc-disclosure>summary{font-weight:700;cursor:pointer}.wizard-result table{table-layout:fixed;width:100%}.wizard-result td{overflow-wrap:anywhere;word-break:normal}.wizard-result td:last-child{width:34%;font-size:.88rem}.retire-mood{position:sticky;bottom:12px;z-index:3;box-shadow:0 4px 14px #0f172a15;font-size:.88rem;line-height:1.5}.wizard-question{font-size:1.18rem}.wizard-help{line-height:1.5}
+@media(max-width:640px){.wizard-field.cashly-fields,.cashly-fields{grid-template-columns:1fr}.wizard-result td:last-child{width:38%}.calc-body{padding-left:14px!important;padding-right:14px!important}.wizard-actions button{min-width:0;flex:1}}
 </style>
 <link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -96,9 +101,9 @@
 
     <!-- Guided retirement-readiness calculator -->
     <details class="calc-card featured" id="retire-today">
-      <summary><span><div class="featured-label">New · Guided assessment</div><h2>Can I retire today? · क्या मैं आज रिटायर हो सकता हूँ?</h2><p class="sub">Salary → expenses → insurance → assets → debts → retirement readiness. One question at a time.</p></span></summary>
+      <summary><span><div class="featured-label">New · Guided assessment</div><h2>Can I retire today? · क्या मैं आज रिटायर हो सकता हूँ?</h2><p class="sub">Income → expenses → insurance → assets → retirement report. Grouped, easy steps.</p></span></summary>
       <div class="calc-body">
-        <p class="wizard-help">An India-focused estimate, not a guarantee. Your answers stay in this browser page and are not submitted to Cashly. The calculator considers inflation, direct shares, mutual funds, accessible investments, gold, rent income, and liabilities. The suggested lifespan is a conservative planning horizon, not a medical prediction. Property you live in is not treated as spendable cash.</p>
+        <p class="wizard-help">Your financial snapshot in simple steps. Estimates only; not a guarantee. No answers are sent to Cashly.</p><div class="cashly-lang-switch" role="group" aria-label="Calculator language"><button type="button" data-cashly-lang="en" aria-pressed="true">English</button><button type="button" data-cashly-lang="hi" aria-pressed="false">हिंदी</button></div>
         <div id="wizardForm">
           <div class="wizard-progress" aria-label="Question progress"><span id="wizardBar" style="width:0%"></span></div>
           <div class="wizard-status" id="wizardStep"></div>

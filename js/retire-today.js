@@ -1,8 +1,8 @@
-/* Cashly retirement-readiness wizard. No personal inputs are transmitted or stored. */
+/* Cashly V6 bilingual grouped retirement planner. Data stays in page memory; no personal answers are sent to Cashly. */
 (() => {
-  'use strict';
-  const $ = id => document.getElementById(id);
-  const INR = n => Number.isFinite(n) ? '₹' + Math.round(n).toLocaleString('en-IN') : '—';
+ 'use strict';
+ const $ = id => document.getElementById(id);
+ const INR = n => Number.isFinite(n) ? '₹' + Math.round(n).toLocaleString('en-IN') : '—';
   const questions = [
     {id:'salary',title:'What is your monthly take-home salary?',help:'Start with net monthly salary after income tax and deductions. Enter 0 if you are not earning.',unit:'₹ / month',def:50000},
     {id:'otherIncome',title:'Other regular monthly income?',help:'Freelancing, pension or dependable income other than rent. Do not include investment returns already counted in assets.',unit:'₹ / month',def:0},
@@ -47,64 +47,59 @@
     {id:'returnRate',title:'Expected after-tax annual investment return?',help:'A cautious assumption for your diversified portfolio, after tax and fees. Not guaranteed. 7% is illustrative.',unit:'% per year',def:7,min:0,max:25,step:'0.1'},
     {id:'buffer',title:'How many months of expenses as emergency cash?',help:'Reserve 6–12 months for emergencies before evaluating spendable investments.',unit:'months',def:12,min:0,max:60}
   ];
-  const answers = Object.fromEntries(questions.map(q => [q.id, q.def]));
-  let step = 0, liveGold = null, lifeEdited = false;
-  const suggestedAge = () => answers.sex==='male'?90:92;
-  const number = key => Number(answers[key]) || 0;
-  function show() {
-    const q = questions[step];
-    $('wizardStep').textContent = `Question ${step + 1} of ${questions.length} · ${Math.round((step / questions.length) * 100)}% complete`;
-    $('wizardBar').style.width = `${100 * step / questions.length}%`;
-    $('wizardQuestion').textContent = q.title;
-    $('wizardHelp').textContent = q.help;
-    $('goldStatus').textContent = q.id === 'goldManual' ? (liveGold ? `Indicative live spot conversion: ${INR(liveGold.price)}/g (24K), checked ${liveGold.time}. Not an Indian retail quote; verify manually.` : 'Checking indicative gold price… If unavailable, enter a verified local 24K price manually.') : '';
-    const host = $('wizardField'); host.replaceChildren();
-    const label = document.createElement('label'); label.htmlFor = 'wizardInput'; label.textContent = q.unit || 'Select an option'; host.append(label);
-    let el;
-    if(q.type === 'select') {
-      el = document.createElement('select');
-      for(const [value,text] of q.options){ const opt=document.createElement('option'); opt.value=value; opt.textContent=text; el.append(opt); }
-      el.value = answers[q.id];
-    } else {
-      el=document.createElement('input');el.type='number';el.inputMode='decimal';el.min=q.min ?? 0;el.max=q.max ?? 1e15;el.step=q.step ?? 'any';el.value=answers[q.id];el.required=true;
-    }
-    el.id='wizardInput'; el.setAttribute('aria-label',q.title); host.append(el);
-    $('wizardBack').disabled = step===0;
-    updateMood();
-    $('wizardNext').textContent = step===questions.length-1 ? 'See my result →' : 'Next →';
-    if(q.id==='goldManual' && !liveGold) fetchGold();
-  }
-  function save(){
-    const q=questions[step], el=$('wizardInput');
-    if(q.type==='select'){answers[q.id]=el.value;return true;}
-    if(el.value.trim()==='' || !el.checkValidity() || !Number.isFinite(Number(el.value))){el.reportValidity();return false;}
-    answers[q.id]=Number(el.value);if(q.id==='life')lifeEdited=true;return true;
-  }
-  function goNext(){if(!save())return;if(questions[step].id==='sex' && !lifeEdited)answers.life=suggestedAge();if(step<questions.length-1){step++;show();}else results();}
-  function goBack(){if(step>0){save();step--;show();}}
-  $('wizardNext').addEventListener('click',goNext);
-  $('wizardBack').addEventListener('click',goBack);
-  $('wizardField').addEventListener('input',()=>{const q=questions[step],el=$('wizardInput');if(q.type==='select')answers[q.id]=el.value;else if(el.value!=='' && el.checkValidity())answers[q.id]=Number(el.value);if(q.id==='sex'&&!lifeEdited)answers.life=suggestedAge();updateMood();});
-  $('wizardField').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();goNext();}});
-  // External price requests transmit no user financial data. Both endpoints must support CORS.
-  async function fetchGold(){
-    try {
-      const abort = new AbortController(); const timer=setTimeout(()=>abort.abort(),6500);
-      let gold,fx;
-      try {
-        [gold,fx]=await Promise.all([
-          fetch('https://api.gold-api.com/price/XAU',{signal:abort.signal,cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Gold unavailable');return r.json();}),
-          fetch('https://open.er-api.com/v6/latest/USD',{signal:abort.signal,cache:'no-store'}).then(r=>{if(!r.ok)throw Error('FX unavailable');return r.json();})
-        ]);
-      } finally {clearTimeout(timer);}
-      const usdOz=Number(gold.price),inr=Number(fx.rates?.INR);
-      if(!Number.isFinite(usdOz)||!Number.isFinite(inr)||usdOz<500||inr<20)throw Error('Invalid feed');
-      const price=usdOz*inr/31.1034768;
-      liveGold={price:Math.round(price),time:new Date().toLocaleString('en-IN')};
-      if(number('goldManual')===0){answers.goldManual=liveGold.price;if(questions[step].id==='goldManual')$('wizardInput').value=liveGold.price;}
-      if(questions[step].id==='goldManual')$('goldStatus').textContent=`Indicative international 24K spot conversion: ${INR(price)}/g, checked ${liveGold.time}. Not Indian retail or buyback rate; verify manually.`;
-    } catch(e){if(questions[step].id==='goldManual')$('goldStatus').textContent='Live rate unavailable. Please enter a current verified local 24K gold rate per gram. Gold will be excluded if the rate stays at 0.';}
-  }
+
+ const answers=Object.fromEntries(questions.map(q=>[q.id,q.def]));
+ const byId=Object.fromEntries(questions.map(q=>[q.id,q]));
+ const groups=[
+  {en:'About you & income',hi:'आपकी उम्र और कमाई',enHelp:'How long should your money last, and what comes in each month?',hiHelp:'आपकी उम्र और महीने की कमाई से शुरुआत करें।',ids:['age','sex','life','dependents','salary','otherIncome']},
+  {en:'Monthly household expenses',hi:'हर महीने का खर्च',enHelp:'Add the real cost of running your home. Use monthly averages.',hiHelp:'किराया, राशन, बिजली—सभी का मासिक औसत जोड़ें।',ids:['rent','food','clothes','water','electric','internet','phoneUpgrade','transport','medical','education','misc']},
+  {en:'Insurance & protection',hi:'बीमा और सुरक्षा',enHelp:'Enter each premium and choose monthly or yearly on this same page.',hiHelp:'हेल्थ और टर्म बीमा का प्रीमियम और अवधि यहीं भरें।',ids:['healthPremium','healthFrequency','termPremium','termFrequency']},
+  {en:'Savings & investments',hi:'बचत और निवेश',enHelp:'Use today’s value, not what you originally invested.',hiHelp:'बैंक, FD, शेयर और म्यूचुअल फंड की आज की कीमत भरें।',ids:['bank','fd','stocks','mutualFunds','investments','locked']},
+  {en:'Gold & property',hi:'सोना और प्रॉपर्टी',enHelp:'Gold weight, unit, purity and price are all together. Your home is not ready cash.',hiHelp:'सोने का वजन, तोला/ग्राम, शुद्धता और भाव एक साथ भरें।',ids:['goldQty','goldUnit','goldPurity','goldManual','land','home','rentalProperty','rentalIncome','otherAssets']},
+  {en:'Debts & future goals',hi:'कर्ज और भविष्य के खर्च',enHelp:'Loans and major planned expenses reduce your available savings.',hiHelp:'लोन और आने वाले बड़े खर्च आपकी बचत को प्रभावित करते हैं।',ids:['loanEmi','debt','goals']},
+  {en:'Inflation & safety',hi:'महँगाई और सुरक्षा',enHelp:'Choose cautious assumptions; no return is guaranteed.',hiHelp:'महँगाई और रिटर्न का समझदारी से अनुमान चुनें।',ids:['inflation','returnRate','buffer']},
+  {en:'Review your details',hi:'जानकारी जाँचें',enHelp:'Review everything before generating your retirement estimate.',hiHelp:'रिपोर्ट बनाने से पहले अपनी जानकारी जाँच लें।',ids:[]}
+ ];
+ const hiLabels={salary:'मासिक इन-हैंड सैलरी',otherIncome:'दूसरी मासिक कमाई',age:'आपकी उम्र',sex:'लिंग (वैकल्पिक)',life:'किस उम्र तक पैसों की योजना?',dependents:'परिवार में निर्भर लोग',rent:'मासिक किराया',food:'राशन और खाना',clothes:'कपड़े और जूते',water:'पानी का बिल',electric:'बिजली और गैस',internet:'मोबाइल और इंटरनेट',phoneUpgrade:'3 साल में फोन/डिवाइस पर खर्च',transport:'आना-जाना और वाहन',medical:'दवा और डॉक्टर',education:'पढ़ाई और परिवार',misc:'अन्य मासिक खर्च',healthPremium:'हेल्थ इंश्योरेंस प्रीमियम',healthFrequency:'हेल्थ प्रीमियम कितनी बार?',termPremium:'टर्म इंश्योरेंस प्रीमियम',termFrequency:'टर्म प्रीमियम कितनी बार?',bank:'बैंक बैलेंस',fd:'FD और RD',stocks:'शेयर मार्केट',mutualFunds:'म्यूचुअल फंड',investments:'अन्य निवेश',locked:'EPF / PPF / NPS',goldQty:'सोने का वजन',goldUnit:'वजन की इकाई',goldPurity:'सोने की शुद्धता',goldManual:'24K सोने का भाव (₹/ग्राम)',land:'जमीन की कीमत',home:'अपने घर की कीमत',rentalProperty:'किराये वाली प्रॉपर्टी की कीमत',rentalIncome:'मासिक किराया आय',otherAssets:'अन्य संपत्ति',loanEmi:'मासिक EMI',debt:'बकाया कर्ज',goals:'आने वाले बड़े खर्च',inflation:'अनुमानित महँगाई (%)',returnRate:'अनुमानित टैक्स-बाद रिटर्न (%)',buffer:'इमरजेंसी फंड (महीने)'};
+ let step=0,lang='en',liveGold=null,lifeEdited=false, reportShown=false;
+ const number=k=>Number(answers[k])||0;
+ const suggestedAge=()=>answers.sex==='male'?90:92;
+ const t=(en,hi)=>lang==='hi'?hi:en;
+ const label=q=>lang==='hi'?(hiLabels[q.id]||q.title):q.title.replace(/\?$/,'');
+ const fieldIds=()=>groups[step].ids;
+ function renderField(id){
+  const q=byId[id], wrap=document.createElement('div');wrap.className='cashly-group-field';
+  const lab=document.createElement('label');lab.htmlFor='field-'+id;lab.textContent=label(q);wrap.append(lab);
+  let el;
+  if(q.type==='select'){
+   el=document.createElement('select');for(const [v,text] of q.options){const opt=document.createElement('option');opt.value=v;opt.textContent=lang==='hi'?({Yearly:'सालाना',Monthly:'मासिक',Grams:'ग्राम',Tola:'तोला',Female:'महिला',Male:'पुरुष','Other / prefer not to say':'बताना नहीं चाहते','22 karat':'22 कैरेट','24 karat':'24 कैरेट','18 karat':'18 कैरेट'}[text]||text):text;el.append(opt);}el.value=String(answers[id]);
+  } else {el=document.createElement('input');el.type='number';el.inputMode='decimal';el.min=q.min??0;el.max=q.max??'';el.step=q.step||'any';el.value=String(answers[id]);}
+  el.id='field-'+id;el.dataset.field=id;el.addEventListener('input',()=>{if(el.type==='number'){if(el.value!==''&&el.checkValidity())answers[id]=Number(el.value);}else answers[id]=el.value;if(id==='sex'&&!lifeEdited){answers.life=suggestedAge();const life=$('field-life');if(life)life.value=answers.life;}if(id==='life')lifeEdited=true;updateMood();});
+  wrap.append(el);
+  if(id==='phoneUpgrade'){const note=document.createElement('small');note.textContent=t('Example: ₹36,000 every 3 years = ₹1,000/month.','उदाहरण: 3 साल में ₹36,000 = ₹1,000 प्रति माह।');wrap.append(note);}
+  if(id==='goldManual'){const note=document.createElement('small');note.id='goldStatus';note.textContent=t('Enter a verified local 24K rate, or wait for indicative live rate.','24K का स्थानीय भाव भरें, या अनुमानित लाइव रेट देखें।');wrap.append(note);}
+  return wrap;
+ }
+ function show(){
+  reportShown=false;$('wizardForm').hidden=false;$('wizardResults').hidden=true;
+  const g=groups[step];$('wizardStep').textContent=t('Step '+(step+1)+' of '+groups.length,'चरण '+(step+1)+' / '+groups.length);
+  $('wizardBar').style.width=(100*(step+1)/groups.length)+'%';$('wizardQuestion').textContent=lang==='hi'?g.hi:g.en;$('wizardHelp').textContent=lang==='hi'?g.hiHelp:g.enHelp;
+  const host=$('wizardField');host.replaceChildren();host.className='wizard-field cashly-fields';
+  if(g.ids.length){for(const id of g.ids)host.append(renderField(id));}
+  else {for(const group of groups.slice(0,-1)){const line=document.createElement('div');line.className='cashly-review-line';line.textContent=(lang==='hi'?group.hi:group.en)+' · '+group.ids.length+' '+t('details','जानकारियाँ');const btn=document.createElement('button');btn.type='button';btn.textContent=t('Edit','बदलें');btn.addEventListener('click',()=>{step=groups.indexOf(group);show()});line.append(btn);host.append(line);}}
+  $('wizardBack').disabled=step===0;$('wizardBack').textContent=t('← Back','← पीछे');$('wizardNext').textContent=step===groups.length-1?t('See my report →','मेरी रिपोर्ट देखें →'):t('Continue →','आगे बढ़ें →');
+  document.querySelectorAll('[data-cashly-lang]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.cashlyLang===lang));});
+  updateMood();if(g.ids.includes('goldManual')&&!liveGold)fetchGold();
+ }
+ function validate(){for(const id of fieldIds()){const el=$('field-'+id);if(el&&el.type==='number'&&(el.value===''||!el.checkValidity()||!Number.isFinite(Number(el.value)))){el.reportValidity();el.focus();return false;}}if(number('life')<=number('age')&&step===0){alert(t('Planning age must exceed current age.','योजना की उम्र वर्तमान उम्र से अधिक रखें।'));$('field-life').focus();return false;}return true;}
+ function next(){if(!validate())return;if(step<groups.length-1){step++;show();}else results();}
+ $('wizardNext').addEventListener('click',next);$('wizardBack').addEventListener('click',()=>{if(step>0){step--;show();}});
+ document.querySelectorAll('[data-cashly-lang]').forEach(b=>b.addEventListener('click',()=>{lang=b.dataset.cashlyLang;if(reportShown)results();else show();}));
+ async function fetchGold(){
+  try{const abort=new AbortController(),timer=setTimeout(()=>abort.abort(),6500);let gold,fx;try{[gold,fx]=await Promise.all([fetch('https://api.gold-api.com/price/XAU',{signal:abort.signal,cache:'no-store'}).then(r=>r.json()),fetch('https://open.er-api.com/v6/latest/USD',{signal:abort.signal,cache:'no-store'}).then(r=>r.json())]);}finally{clearTimeout(timer)}
+   const usd=Number(gold.price),inr=Number(fx.rates?.INR);if(!(usd>500&&inr>20))throw Error('Invalid rate');liveGold={price:Math.round(usd*inr/31.1034768),time:new Date().toLocaleString('en-IN')};if(!number('goldManual')){answers.goldManual=liveGold.price;const el=$('field-goldManual');if(el)el.value=liveGold.price;}const note=$('goldStatus');if(note)note.textContent=t('Indicative international spot conversion: '+INR(liveGold.price)+'/g at '+liveGold.time+'. Verify Indian resale price.','अनुमानित अंतरराष्ट्रीय भाव '+INR(liveGold.price)+'/ग्राम ('+liveGold.time+')। स्थानीय भाव जाँचें।');
+  }catch(e){const note=$('goldStatus');if(note)note.textContent=t('Live rate unavailable. Enter a local verified 24K rate.','लाइव रेट नहीं मिला। स्थानीय 24K का भाव भरें।');}
+ }
   function annualPV(monthly,years,nominal,inflation){
     // Monthly expense is annualised; annual withdrawals start after first year, escalating with inflation.
     if(years<=0 || monthly<=0)return 0;
@@ -114,7 +109,7 @@
   }
   function results(){
     const age=number('age'),horizon=number('life')-age;
-    if(horizon<=0){alert('Planning age must be greater than current age. Please correct the ages.');step=questions.findIndex(q=>q.id==='life');show();return;}
+    if(horizon<=0){alert('Planning age must be greater than current age. Please correct the ages.');step=0;show();return;}
     const insurance=number('healthPremium')/(answers.healthFrequency==='annual'?12:1)+number('termPremium')/(answers.termFrequency==='annual'?12:1);
     const essential=['rent','food','clothes','water','electric','internet','transport','medical','education','misc'];
     const living=essential.reduce((sum,key)=>sum+number(key),0)+number('phoneUpgrade')/36+insurance;
@@ -161,38 +156,39 @@
       <tr><td>Stress-test target (return −2%, inflation +1%)</td><td>${INR(stressTarget)}</td></tr></table>
       <div class="${stressReady?'good':'warn'}"><strong>Stress test: ${stressReady?'Passes':'Does not pass'}</strong><p class="note">Uses a less favorable return and inflation scenario; still excludes major unforeseen shocks.</p></div>
       <p class="note">${surplus<0?'Your present income does not cover your expenses.':'Your present income exceeds expenses by '+INR(surplus)+' per month, before any unlisted costs.'} ${Number.isFinite(months)?'Liquid assets cover roughly '+months.toFixed(1)+' months of current expenses before other reserves.':''}</p>
-      <p class="note"><strong>Model assumptions:</strong> after-tax return ${number('returnRate')}% yearly; expense inflation ${number('inflation')}% yearly; net rent = 75% of gross (25% vacancy/maintenance/tax allowance); gold valued at 90% of purity-adjusted reference rate; debts, emergency reserve and one-time goals deducted from liquid assets. Salary stops at retirement. Loan EMI is excluded from long-term living costs after outstanding debt is deducted; this assumes debts can be settled from the deducted funds. Self-occupied homes, land, rental-property sale value, and restricted savings are excluded from retirement liquidity. Annual withdrawal timing is approximated.</p>
-      <p class="note"><strong>Important limitations:</strong> No certainty about lifelong solvency, actual future gold prices, investment sequence risk, changing taxes, medical inflation, pension eligibility, asset saleability, rental vacancies, or future loan schedules. An apparent YES is not a recommendation to quit work. Gold pricing uses a reference spot conversion and may not match Indian retail or resale rates. Review with a qualified financial planner before major decisions.</p>
-      <div class="wizard-actions"><button type="button" class="btn" id="wizardEdit">← Edit answers</button><button type="button" class="btn btn-primary" id="wizardRestart">Start again</button></div>`;
+      <details class="calc-disclosure"><summary>How we calculated · गणना कैसे हुई</summary><p class="note"><strong>Model assumptions:</strong> after-tax return ${number('returnRate')}% yearly; expense inflation ${number('inflation')}% yearly; net rent = 75% of gross (25% vacancy/maintenance/tax allowance); gold valued at 90% of purity-adjusted reference rate; debts, emergency reserve and one-time goals deducted from liquid assets. Salary stops at retirement. Loan EMI is excluded from long-term living costs after outstanding debt is deducted; this assumes debts can be settled from the deducted funds. Self-occupied homes, land, rental-property sale value, and restricted savings are excluded from retirement liquidity. Annual withdrawal timing is approximated.</p>
+      <p class="note"><strong>Important limitations:</strong> No certainty about lifelong solvency, actual future gold prices, investment sequence risk, changing taxes, medical inflation, pension eligibility, asset saleability, rental vacancies, or future loan schedules. An apparent YES is not a recommendation to quit work. Gold pricing uses a reference spot conversion and may not match Indian retail or resale rates. Review with a qualified financial planner before major decisions.</p></details>
+      <div class="wizard-actions"><button type="button" class="btn" id="wizardEdit">← Edit answers</button><button type="button" class="btn btn-primary" id="wizardRestart">Reset answers</button></div>`;
     $('wizardForm').hidden=true;
-    $('wizardResults').hidden=false;
-    $('wizardResults').innerHTML=html;updateMood(true,ready,coverage);
-    $('wizardEdit').addEventListener('click',()=>{step=0;$('wizardResults').hidden=true;$('wizardForm').hidden=false;show();});
-    $('wizardRestart').addEventListener('click',()=>{for(const q of questions)answers[q.id]=q.def;lifeEdited=false;step=0;$('wizardResults').hidden=true;$('wizardForm').hidden=false;show();});
+    $('wizardResults').hidden=false;reportShown=true;
+    $('wizardResults').innerHTML=html;updateMood(true,ready,coverage);addInlineEditor();localizeReport();
+    $('wizardEdit').addEventListener('click',()=>{step=0;show();});
+    $('wizardRestart').addEventListener('click',()=>{if(!confirm(t('Clear all answers and start again?','सभी उत्तर मिटाकर दोबारा शुरू करें?')))return;for(const q of questions)answers[q.id]=q.def;lifeEdited=false;step=0;show();});
   }
 
-  function updateMood(final=false, ready=false, coverage=0){
-    const node=$('retireMood');if(!node)return;
-    const completed=step+1, total=questions.length;
-    if(final){
-      const state=ready?'😊':coverage>=0.5?'😟':'😢';
-      node.textContent=state+' '+(ready?'Potentially funded through your planning age — review the stress test.':coverage>=0.5?'Not enough to retire today; a funding gap remains.':'Large retirement funding gap — keep building your safety net.');
-      node.dataset.state=ready?'good':'bad';return;
-    }
-    // Never show a reassuring smile based on incomplete financial information.
-    const entered=questions.slice(0,step).length;
-    const expenseIndex=questions.findIndex(q=>q.id==='misc');
-    const assetIndex=questions.findIndex(q=>q.id==='mutualFunds');
-    if(entered<=expenseIndex){node.textContent='🧮 Enter income and expenses to begin your assessment ('+completed+'/'+total+').';}
-    else if(entered<=assetIndex){node.textContent='😐 Current budget entered. Add all assets and debts before assessing retirement.';}
-    else{node.textContent='🤔 Nearly there. Remaining debts, goals and assumptions can change the answer. No verdict yet.';}
-    node.dataset.state='pending';
+
+ function addInlineEditor(){
+  const root=$('wizardResults');const panel=document.createElement('details');panel.className='cashly-inline-edit';panel.open=false;
+  const summary=document.createElement('summary');summary.textContent=t('✎ Edit any amount & recalculate here','✎ यहीं रकम बदलें और रिपोर्ट अपडेट करें');panel.append(summary);
+  const grid=document.createElement('div');grid.className='cashly-fields';
+  for(const g of groups.slice(0,-1)){
+   const section=document.createElement('details');section.className='cashly-edit-section';const heading=document.createElement('summary');heading.textContent=lang==='hi'?g.hi:g.en;section.append(heading);
+   const inner=document.createElement('div');inner.className='cashly-fields';for(const id of g.ids)inner.append(renderField(id));section.append(inner);grid.append(section);
   }
-  // Only one calculator open at once, including keyboard and browser-native details interaction.
-  document.querySelectorAll('.calc-grid > details').forEach(detail => detail.addEventListener('toggle',()=>{
-    if(detail.open)document.querySelectorAll('.calc-grid > details').forEach(other=>{if(other!==detail)other.open=false;});
-  }));
-  show();
-  // Deep link #retire-today opens its section; others remain collapsed by default.
-  const hash=location.hash.slice(1);if(hash && $(hash)?.matches('details.calc-card'))$(hash).open=true;
+  panel.append(grid);const save=document.createElement('button');save.className='btn btn-primary';save.type='button';save.textContent=t('Save & recalculate','सेव करें और फिर गणना करें');save.addEventListener('click',()=>{const invalid=[...panel.querySelectorAll('input')].find(e=>!e.checkValidity()||e.value==='');if(invalid){invalid.focus();invalid.reportValidity();return;}if(number('life')<=number('age')){alert(t('Planning age must exceed current age.','योजना की उम्र वर्तमान उम्र से अधिक रखें।'));return;}results();});panel.append(save);
+  root.prepend(panel);
+ }
+ function localizeReport(){
+  const root=$('wizardResults');if(lang!=='hi')return;
+  const replacements={'Monthly cash flow today':'आज का मासिक हिसाब','Assets and retirement estimate':'संपत्ति और रिटायरमेंट अनुमान','Take-home salary':'मासिक सैलरी','Other income + estimated net rent':'अन्य आय और शुद्ध किराया','Living expenses (incl. premiums and device upgrades)':'मासिक खर्च (बीमा सहित)','Loan EMIs':'लोन EMI','Outstanding debt':'बकाया कर्ज','Estimated total net worth':'कुल अनुमानित नेट वर्थ','Major goal reserve':'भविष्य के बड़े खर्च','Conservatively available retirement corpus':'रिटायरमेंट के लिए उपलब्ध रकम','Stress-test target (return −2%, inflation +1%)':'मुश्किल स्थिति में जरूरी रकम','YES — potentially':'हाँ — अनुमान के अनुसार','NO — not yet':'अभी नहीं'};
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=walker.nextNode()){let v=n.nodeValue;for(const [a,b] of Object.entries(replacements))v=v.replaceAll(a,b);n.nodeValue=v;}
+ }
+ function updateMood(final=false,ready=false,coverage=0){
+  const node=$('retireMood');if(!node)return;
+  if(final){node.textContent=ready?t('😊 Potentially funded — check the stress test.','😊 अनुमान के अनुसार पर्याप्त — मुश्किल स्थिति भी देखें।'):coverage>=.5?t('😟 Funding gap remains.','😟 अभी कुछ रकम कम है।'):t('😢 Significant funding gap.','😢 रिटायरमेंट के लिए बड़ी कमी है।');node.dataset.state=ready?'good':'bad';return;}
+  const status=step<2?t('🧐 Gathering your financial picture.','🧐 आपकी आर्थिक जानकारी जुटा रहे हैं।'):step<5?t('🤔 Assessment in progress — assets and debts may change the result.','🤔 अनुमान जारी है — संपत्ति और कर्ज से नतीजा बदल सकता है।'):t('🔎 Almost ready — finish the details for a reliable estimate.','🔎 लगभग तैयार — सही अनुमान के लिए बाकी जानकारी भरें।');
+  node.textContent=status;node.dataset.state='pending';
+ }
+ document.querySelectorAll('.calc-grid > details').forEach(detail=>detail.addEventListener('toggle',()=>{if(detail.open)document.querySelectorAll('.calc-grid > details').forEach(other=>{if(other!==detail)other.open=false;});}));
+ show();const hash=location.hash.slice(1);if(hash&&$(hash)?.matches('details.calc-card'))$(hash).open=true;
 })();
