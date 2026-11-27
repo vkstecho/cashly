@@ -143,15 +143,18 @@ function backupJSON(){
   toast("Backup downloaded!");
 }
 function restoreJSON(){
+  var owner=uid;
   var inp=document.createElement("input");inp.type="file";inp.accept=".json";
   inp.onchange=function(e){
     var f=e.target.files[0];if(!f)return;
     var r=new FileReader();
     r.onload=function(ev){
       try{
+        if(!syncOwner(owner))return;
         var imp=JSON.parse(ev.target.result);
-        if(!imp.data||!imp.data.transactions)return toast("Invalid backup file");
+        validateCashlyData(imp.data);
         if(!confirm("Replace all current data with backup? This cannot be undone."))return;
+        localStorage.setItem(DK+"_recovery_"+crypto.randomUUID(),JSON.stringify(D));
         D=imp.data;sv();toast("Restored "+D.transactions.length+" transactions!");cM();rC();
       }catch(err){toast("Error: "+err.message)}
     };
@@ -160,6 +163,7 @@ function restoreJSON(){
   inp.click();
 }
 function importPDF(){
+  var owner=uid;
   var inp=document.createElement("input");inp.type="file";inp.accept=".pdf";
   inp.onchange=function(e){
     var file=e.target.files[0];if(!file)return;
@@ -168,7 +172,7 @@ function importPDF(){
     reader.onload=function(ev){
       var data=new Uint8Array(ev.target.result);
       if(!window.pdfjsLib){toast("PDF.js not loaded");return}
-      pdfjsLib.getDocument({data:data}).promise.then(function(pdf){
+      pdfjsLib.getDocument({data:data,isEvalSupported:false}).promise.then(function(pdf){
         var allText="";var promises=[];
         for(var i=1;i<=pdf.numPages;i++){
           promises.push(pdf.getPage(i).then(function(page){
@@ -179,7 +183,7 @@ function importPDF(){
         }
         Promise.all(promises).then(function(pages){
           allText=pages.join("\n");
-          parseAxio(allText);
+          if(syncOwner(owner))parseAxio(allText);
         });
       }).catch(function(e){toast("Error reading PDF: "+e.message)});
     };

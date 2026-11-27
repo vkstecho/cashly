@@ -1,0 +1,22 @@
+rules_version = '2';
+// Isolated acceptance candidate. Reconcile legacy paths and other production permissions first.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /users/{userId}/itr/{fileName} {
+      function owner() {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      allow get, delete: if owner();
+      allow create: if owner()
+        && resource == null
+        && fileName.matches('(?i)^.+[.]xlsx?$')
+        && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType in [
+          'application/vnd.ms-excel',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/octet-stream'
+        ];
+    }
+  }
+}

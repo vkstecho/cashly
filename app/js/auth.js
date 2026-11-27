@@ -2,18 +2,66 @@
 // AUTH
 var AK="mf_auth",ad=null;try{var x=localStorage.getItem(AK);if(x)ad=JSON.parse(x)}catch(e){}
 var lPh="",oTm=0,oInt=null,lSt="phone",sending=false,verifying=false;
-function svA(p,n){ad={phone:p,name:n||"User","in":true};localStorage.setItem(AK,JSON.stringify(ad))}
-function logout(){if(fbOk)auth.signOut();uid=null;D=emptyD();DK="mf_v5";if(ad)ad["in"]=false;localStorage.setItem(AK,JSON.stringify(ad));$("AS").classList.add("hidden");$("LS").classList.remove("hidden");lSt="phone";cRes=null;rcv=null;$("rcc").innerHTML="";rL()}
+function profileKey(userId){return AK+"_"+userId}
+function persistCashlyProfile(){
+  var user=auth?.currentUser;
+  if(user&&ad?.uid===user.uid)localStorage.setItem(profileKey(user.uid),JSON.stringify(ad));
+}
+function loadCashlyProfile(user){
+  var previous=ad;
+  try{previous=previous||JSON.parse(localStorage.getItem(AK)||"null")}catch(error){}
+  var phone=(user.phoneNumber||"").replace(/^\+91/,""),email=user.email||"";
+  var stored;
+  try{stored=JSON.parse(localStorage.getItem(profileKey(user.uid))||"null")}catch(error){}
+  var ownsLegacy=previous&&((phone&&previous.phone===phone)||(email&&(previous.phone===email||previous.email===email)));
+  if(ownsLegacy)for(var pref of ["cashly_launch","cashly_hide_income"]){
+    var oldValue=localStorage.getItem(pref);
+    if(oldValue!==null&&localStorage.getItem(pref+"_"+user.uid)===null)localStorage.setItem(pref+"_"+user.uid,oldValue);
+  }
+  if(ownsLegacy&&!localStorage.getItem("mf_custom_cats_"+user.uid)){
+    var legacy=localStorage.getItem("mf_custom_cats");
+    if(legacy)localStorage.setItem("mf_custom_cats_"+user.uid,legacy);
+  }
+  ad={...(stored||(ownsLegacy?previous:{})),uid:user.uid,in:true};
+  ad.name=ad.name||user.displayName||"User";
+  ad.phone=phone||ad.phone||"";
+  ad.email=email;
+  persistCashlyProfile();
+}
+function svA(p,n){
+  var user=auth?.currentUser;
+  if(!user)return;
+  if(ad?.uid!==user.uid)loadCashlyProfile(user);
+  if(ad.name==="User"&&n)ad.name=n;
+  persistCashlyProfile();
+}
+function clearCashlySession(){
+  unlockedUid=null;itrUnlocked=false;uid=null;ad=null;D=emptyD();DK="mf_v5";
+  syncConflict=null;syncSeenToken=null;showSyncStatus("local");
+  closePinModal();
+  if(rcv){try{rcv.clear()}catch(error){}rcv=null;}
+  if($("rcc"))$("rcc").replaceChildren();
+  document.querySelectorAll("[data-cashly-owned-dialog],.receipt-modal").forEach(element=>element.remove());
+  document.querySelectorAll("dialog[open]").forEach(dialog=>dialog.close());
+  document.getElementById("onbOv")?.remove();
+  $("AS").classList.add("hidden");$("LS").classList.remove("hidden");$("OV").classList.add("hidden");
+  cleanLearnPlayer();
+  calculatorDrafts.clear();
+  $("CT").replaceChildren();$("AH").replaceChildren();$("ML").replaceChildren();
+  lSt="phone";cRes=null;lPh="";mS={};window._smsParsed=[];window.cashlyOtpAbort?.abort();
+  CATS=BASE_CATS.slice();
+  resetCashlyRoutes();
+}
+async function logout(){
+  if(!fbOk)return;
+  clearCashlySession();
+  try{await auth.signOut()}catch(error){toast("Unable to sign out. Please retry.");goApp();}
+}
 function toast(m){var t=$("TT");t.textContent=m;t.classList.remove("hidden");clearTimeout(t._t);t._t=setTimeout(function(){t.classList.add("hidden")},2200)}
 
 function rL(){
   var c=$("LC");if(!c)return;
-  if(isBiometricEnabled()&&isBiometricSupported()&&!(ad&&ad["in"])){
-    var bioUser=JSON.parse(localStorage.getItem("mf_bio_user")||"null");
-    var bnm=bioUser?bioUser.name:"User";
-    c.innerHTML='<div style="text-align:center;padding:10px 0 20px"><div style="font-size:60px;margin-bottom:8px">\u{1F510}</div><div style="font-size:18px;font-weight:700;color:#16A34A">Welcome back, '+esc(bnm)+'!</div><div style="color:#888;font-size:13px;margin-top:4px">Use fingerprint to unlock</div></div><button class="xbtn xbp" onclick="loginBiometric()">\u{1F510} Unlock with Fingerprint</button><button class="xbtn xbo" onclick="localStorage.removeItem(\'mf_bio_id\');localStorage.removeItem(\'mf_bio_user\');rL()">Use Password Instead</button>';
-    return;
-  }
+
 
   if(ad&&ad.phone&&ad["in"]&&lSt==="phone"&&fbOk&&auth.currentUser){goApp();return}
   if(ad&&ad.phone&&lSt==="phone")lSt="returning";
@@ -157,35 +205,38 @@ function deleteAccount(id){
 function getMonthData(year,month){
   var key=year+"-"+String(month+1).padStart(2,"0");
   var txns=D.transactions.filter(function(t){return t.date&&t.date.indexOf(key)===0});
-  var inc=0,exp=0,catBreak={};
+  var inc=0,exp=0,catBreak=Object.create(null);
   txns.forEach(function(t){
     if(t.excluded)return;
-    if(t.type==="income")inc+=t.amount;
-    else if(t.type==="expense"){exp+=t.amount;catBreak[t.category]=(catBreak[t.category]||0)+t.amount}
+    var value=financePaise(t.amount);
+    if(t.type==="income")inc+=value;
+    else if(t.type==="expense"){exp+=value;catBreak[t.category]=(catBreak[t.category]||0)+value}
   });
-  return{txns:txns,inc:inc,exp:exp,cat:catBreak,nws:getNWS(txns)};
+  Object.keys(catBreak).forEach(function(key){catBreak[key]/=100});
+  return{txns:txns,inc:inc/100,exp:exp/100,cat:catBreak,nws:getNWS(txns)};
 }
 function getDayAvg(txns){
   if(!txns.length)return 0;
-  var dates={};txns.forEach(function(t){if(t.type==="expense")dates[t.date]=(dates[t.date]||0)+t.amount});
+  var dates=Object.create(null);txns.forEach(function(t){if(t.type==="expense"&&!t.excluded)dates[t.date]=(dates[t.date]||0)+financePaise(t.amount)});
   var keys=Object.keys(dates);
   if(!keys.length)return 0;
   var total=0;keys.forEach(function(d){total+=dates[d]});
-  return total/keys.length;
+  return total/keys.length/100;
 }
 function getTopMerchants(txns,limit){
-  var m={};txns.forEach(function(t){if(t.type==="expense"&&t.note){var k=t.note.toLowerCase().slice(0,30);m[k]=(m[k]||0)+t.amount}});
-  return Object.keys(m).map(function(k){return{name:k,amt:m[k]}}).sort(function(a,b){return b.amt-a.amt}).slice(0,limit||5);
+  var m=Object.create(null);txns.forEach(function(t){if(t.type==="expense"&&!t.excluded&&t.note){var k=t.note.toLowerCase().slice(0,30);m[k]=(m[k]||0)+financePaise(t.amount)}});
+  return Object.keys(m).map(function(k){return{name:k,amt:m[k]/100}}).sort(function(a,b){return b.amt-a.amt}).slice(0,limit||5);
 }
 
 // PUSH NOTIFICATIONS
-function getNotifPerm(){return Notification.permission||"default"}
+function getNotifPerm(){return "Notification" in window ? Notification.permission : "unsupported"}
 function requestNotifPerm(){
   if(!("Notification" in window)){toast("Notifications not supported");return}
   Notification.requestPermission().then(function(p){
     if(p==="granted"){toast("Notifications enabled!");scheduleReminder()}
     else toast("Permission denied");
-    rM();
+    if(cV==="notificationPrefs")rC(true);
+    else rM();
   });
 }
 function scheduleReminder(){
@@ -225,14 +276,27 @@ function showPremiumModal(){
 
 // THEME
 function getTheme(){return localStorage.getItem("mf_theme")||"light"}
-function setTheme(t){localStorage.setItem("mf_theme",t);document.documentElement.setAttribute("data-theme",t);var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",t==="dark"?"#0f1117":"#16A34A")}
-function toggleTheme(){setTheme(getTheme()==="dark"?"light":"dark");rM();rH()}
+function applyNativeTheme(theme){
+  var bar=window.Capacitor?.Plugins?.StatusBar;
+  if(!bar)return;
+  bar.setStyle({style:theme==="dark"?"DARK":"LIGHT"}).catch(()=>{});
+  bar.setBackgroundColor({color:theme==="dark"?"#141d23":"#f3f6f4"}).catch(()=>{});
+}
+function setTheme(t){applyNativeTheme(t);localStorage.setItem("mf_theme",t);document.documentElement.setAttribute("data-theme",t);var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",t==="dark"?"#0f1117":"#F2F2F2")}
+function toggleTheme(){setTheme(getTheme()==="dark"?"light":"dark");if(mT)rM();rH();rC()}
 // Apply on load
 setTheme(getTheme());
 
 // CUSTOM CATEGORIES
-function getCustomCats(){try{return JSON.parse(localStorage.getItem("mf_custom_cats")||"[]")}catch(e){return[]}}
-function saveCustomCats(arr){localStorage.setItem("mf_custom_cats",JSON.stringify(arr));rebuildCats()}
+function customCatsKey(){return "mf_custom_cats"+(uid?"_"+uid:"")}
+function getCustomCats(){
+  try{
+    var entries=JSON.parse(localStorage.getItem(customCatsKey())||"[]");
+    return Array.isArray(entries)?entries.filter(c=>typeof c?.l==="string"&&/^cust_[a-zA-Z0-9_-]+$/.test(c.id)&&
+      ["e","i"].includes(c.t)).map(c=>({...c,c:/^#[a-f0-9]{6}$/i.test(c.c)?c.c:"#526b69"})):[];
+  }catch(error){return [];}
+}
+function saveCustomCats(arr){localStorage.setItem(customCatsKey(),JSON.stringify(arr));rebuildCats();}
 function rebuildCats(){
   // Reload CATS to include custom ones
   CATS=BASE_CATS.concat(getCustomCats());
@@ -259,29 +323,143 @@ function deleteCustomCategory(id){
   saveCustomCats(custom);toast("Deleted");rM();
 }
 
-// PIN LOCK
-function getPin(){return localStorage.getItem("mf_pin")}
-function isPinSet(){return getPin()!==null}
-function setupPin(){showPinModal("set",null,function(p1){showPinModal("confirm",p1,function(p2){if(p1===p2){localStorage.setItem("mf_pin",p1);toast("PIN set!");cM();rM();}else{toast("PINs don't match. Try again");}})})}
-function disablePin(){if(confirm("Remove PIN protection?")){localStorage.removeItem("mf_pin");toast("PIN removed");rM();}}
-function verifyPin(callback){showPinModal("verify",getPin(),callback)}
-function showPinModal(mode,expected,cb){
+// Device-local app lock. Account sign-in is handled by Firebase.
+var PIN_KEY="mf_pin", PIN_ROUNDS=210000, pinPromptState=null,pinFailures=0,pinRetryAfter=0;
+function isPinSet(){return localStorage.getItem(PIN_KEY)!==null}
+async function deriveDevicePin(pin,salt){
+  var key=await crypto.subtle.importKey("raw",new TextEncoder().encode(pin),{name:"PBKDF2"},false,["deriveBits"]);
+  var bits=await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",iterations:PIN_ROUNDS,salt:salt},key,256);
+  return btoa(String.fromCharCode(...new Uint8Array(bits)));
+}
+async function persistDevicePin(pin){
+  var salt=crypto.getRandomValues(new Uint8Array(16));
+  var hash=await deriveDevicePin(pin,salt);
+  localStorage.setItem(PIN_KEY,JSON.stringify({version:1,salt:btoa(String.fromCharCode(...salt)),hash:hash}));
+}
+async function checkDevicePin(pin){
+  var saved=localStorage.getItem(PIN_KEY);
+  if(!saved)return false;
+  if(/^\d{4}$/.test(saved)){
+    if(saved!==pin)return false;
+    if(crypto.subtle)await persistDevicePin(pin);
+    return true;
+  }
+  var record=JSON.parse(saved);
+  if(record?.version!==1||typeof record.hash!=="string"||typeof record.salt!=="string")return false;
+  var salt=Uint8Array.from(atob(record.salt),function(char){return char.charCodeAt(0)});
+  return await deriveDevicePin(pin,salt)===record.hash;
+}
+function refreshPinView(){
+  if(!$("OV").classList.contains("hidden"))rM();
+  else rC(true);
+}
+function setupPin(){
+  if(!crypto.subtle){toast("Open Cashly over HTTPS to set a device PIN");return}
+  showPinModal("set",function(first){
+    showPinModal("confirm",async function(second){
+      if(first!==second){toast("PINs did not match");return}
+      try{
+        await persistDevicePin(second);
+        if(auth?.currentUser)unlockedUid=auth.currentUser.uid;
+        refreshPinView();
+        toast("Device PIN set");
+      }catch(error){toast("Unable to save the device PIN")}
+    });
+  });
+}
+function disablePin(){
+  verifyPin(function(){
+    localStorage.removeItem(PIN_KEY);
+    refreshPinView();
+    toast("Device PIN removed");
+  });
+}
+function verifyPin(callback){showPinModal("verify",callback)}
+function showPinModal(mode,onSuccess){
+  closePinModal();
   var titles={set:"Create 4-digit PIN",confirm:"Confirm your PIN",verify:"Enter your PIN"};
-  var entered="";
-  var html='<div class="bio-prompt" id="pinPrompt"><div class="bio-card"><div class="bio-icon">🔢</div><div style="font-weight:700;font-size:18px;color:#16A34A;margin-bottom:4px">'+titles[mode]+'</div><div style="color:#999;font-size:13px;margin-bottom:8px" id="pinMsg">Enter 4 digits</div><div class="pin-dots" id="pinDots"></div><div class="pin-pad">';
+  var panel=document.createElement("div");
+  panel.id="pinPrompt";
+  panel.className="bio-prompt";
+  var html='<div class="bio-card" role="dialog" aria-modal="true" aria-labelledby="pinTitle"><span class="pin-symbol">'+v7Icon("lock")+
+    '</span><h2 id="pinTitle">'+titles[mode]+'</h2><p id="pinMsg" role="status">Enter 4 digits</p><div class="pin-dots" id="pinDots"></div><div class="pin-pad">';
   for(var i=1;i<=9;i++)html+='<button class="pin-key" onclick="pinPress('+i+')">'+i+'</button>';
-  html+='<button class="pin-key" onclick="closePinModal()" style="background:#FFEBEE;color:#E53935">✕</button>';
+  html+=mode==="verify"&&$("AS").classList.contains("hidden")?'<span></span>':
+    '<button class="pin-key" aria-label="Cancel PIN entry" onclick="closePinModal()">×</button>';
   html+='<button class="pin-key" onclick="pinPress(0)">0</button>';
-  html+='<button class="pin-key" onclick="pinBack()" style="background:#FFF3E0;color:#FF9800">⌫</button>';
-  html+='</div></div></div>';
-  var div=document.createElement("div");div.innerHTML=html;document.body.appendChild(div.firstChild);
-  window._pinExpected=expected;window._pinMode=mode;window._pinCb=cb;window._pinEntered="";
+  html+='<button class="pin-key" aria-label="Erase digit" onclick="pinBack()">⌫</button></div></div>';
+  panel.innerHTML=html;
+  document.body.appendChild(panel);
+  pinPromptState={mode:mode,onSuccess:onSuccess,value:"",busy:false,panel:panel};
+  var app=$("AS");
+  app.inert=true;
+  updatePinDots();
+  panel.querySelector("button").focus();
+}
+async function pinPress(digit){
+  var state=pinPromptState;
+  if(!state||state.busy||state.value.length>=4)return;
+  if(state.mode==="verify"&&Date.now()<pinRetryAfter){$("pinMsg").textContent="Wait before trying again.";return;}
+  state.value+=digit;
+  updatePinDots();
+  if(state.value.length!==4)return;
+  $("pinMsg").textContent="Enter 4 digits";
+  state.busy=true;
+  var accepted=false;
+  try{
+    accepted=state.mode!=="verify"||await checkDevicePin(state.value);
+  }catch(error){
+    if(state===pinPromptState)$("pinMsg").textContent="Unable to verify this device PIN";
+  }
+  if(state!==pinPromptState)return;
+  if(accepted){
+    pinFailures=0;pinRetryAfter=0;
+    closePinModal();
+    state.onSuccess(state.value);
+  }else{
+    if(++pinFailures>=5)pinRetryAfter=Date.now()+Math.min(300000,1000*2**Math.min(8,pinFailures-3));
+    var message=$("pinMsg");
+    if(message.textContent==="Enter 4 digits")message.textContent="Wrong PIN. Try again.";
+    state.value="";
+    state.busy=false;
+    updatePinDots();
+  }
+}
+function pinBack(){
+  if(!pinPromptState||pinPromptState.busy)return;
+  pinPromptState.value=pinPromptState.value.slice(0,-1);
   updatePinDots();
 }
-function pinPress(n){if(window._pinEntered.length>=4)return;window._pinEntered+=n;updatePinDots();if(window._pinEntered.length===4){setTimeout(function(){var p=window._pinEntered;if(window._pinMode==="verify"){if(p===window._pinExpected){closePinModal();window._pinCb&&window._pinCb(p)}else{var msg=document.getElementById("pinMsg");if(msg){msg.textContent="Wrong PIN. Try again";msg.style.color="#E53935"}window._pinEntered="";updatePinDots()}}else{closePinModal();window._pinCb&&window._pinCb(p)}},150)}}
-function pinBack(){window._pinEntered=window._pinEntered.slice(0,-1);updatePinDots()}
-function updatePinDots(){var d=document.getElementById("pinDots");if(!d)return;var html="";for(var i=0;i<4;i++)html+='<div class="pin-dot'+(i<window._pinEntered.length?" f":"")+'"></div>';d.innerHTML=html}
-function closePinModal(){var p=document.getElementById("pinPrompt");if(p)p.remove();window._pinEntered=""}
+function updatePinDots(){
+  var dots=$("pinDots");
+  if(!dots||!pinPromptState)return;
+  dots.innerHTML=Array.from({length:4},function(_,index){
+    return '<span class="pin-dot'+(index<pinPromptState.value.length?' f':'')+'"></span>';
+  }).join("");
+}
+function closePinModal(){
+  var panel=$("pinPrompt");
+  if(panel)panel.remove();
+  var app=$("AS");
+  if(app)app.inert=false;
+  pinPromptState=null;
+}
+function lockCashly(){
+  var user=auth?.currentUser;
+  if(!user||!isPinSet()||$("AS").classList.contains("hidden"))return;
+  unlockedUid=null;
+  itrUnlocked=false;
+  document.querySelectorAll("dialog[open]").forEach(function(dialog){dialog.close()});
+  $("OV").classList.add("hidden");
+  $("AS").classList.add("hidden");
+  closePinModal();
+  verifyPin(function(){
+    if(auth.currentUser?.uid!==user.uid)return;
+    unlockedUid=user.uid;
+    $("AS").classList.remove("hidden");
+    rC(true);
+  });
+}
 
 // ONBOARDING TOUR
 var onbStep=0;
@@ -331,7 +509,7 @@ function saveProfile(){
   if(ph&&ph.length!==10){toast("Phone must be 10 digits");return}
   ad.name=mS.editName.trim();
   if(ph)ad.phone=ph;
-  localStorage.setItem(AK,JSON.stringify(ad));
+  persistCashlyProfile();
   cloudSync();
   toast("Profile updated!");
   cM();rH();rM();
@@ -346,6 +524,7 @@ function rEditProfModal(){
 
 // PROFILE PICTURE
 function uploadProfilePic(){
+  var owner=uid;
   var inp=document.createElement("input");
   inp.type="file";inp.accept="image/*";inp.capture="user";
   inp.onchange=function(e){
@@ -353,8 +532,9 @@ function uploadProfilePic(){
     if(f.size>2*1024*1024){toast("Image too large (max 2MB)");return}
     var r=new FileReader();
     r.onload=function(ev){
+      if(!syncOwner(owner))return;
       ad.pic=ev.target.result;
-      localStorage.setItem(AK,JSON.stringify(ad));
+      persistCashlyProfile();
       cloudSync();toast("Profile updated!");rH();rM();
     };
     r.readAsDataURL(f);
@@ -388,24 +568,7 @@ function setupBiometric(){
   }).catch(function(e){toast("Setup failed: "+(e.message||"cancelled"))});
 }
 function loginBiometric(){
-  if(!isBiometricSupported()||!isBiometricEnabled()){toast("Biometric not available");return}
-  var idArr=JSON.parse(localStorage.getItem("mf_bio_id"));
-  var challenge=new Uint8Array(32);crypto.getRandomValues(challenge);
-  if(window.cashlyOtpAbort){try{window.cashlyOtpAbort.abort()}catch(e){}}
-  window.cashlyOtpAbort=ac;
-  navigator.credentials.get({
-    publicKey:{
-      challenge:challenge,
-      allowCredentials:[{id:new Uint8Array(idArr),type:"public-key"}],
-      userVerification:"required",
-      timeout:60000
-    }
-  }).then(function(){
-    var bioUser=JSON.parse(localStorage.getItem("mf_bio_user"));
-    ad=bioUser;ad["in"]=true;
-    localStorage.setItem(AK,JSON.stringify(ad));
-    toast("Welcome back!");goApp();
-  }).catch(function(e){toast("Authentication failed")});
+  toast("Sign in with your phone or Google first.");
 }
 function disableBiometric(){
   if(confirm("Disable fingerprint login?")){
@@ -457,11 +620,13 @@ function sendLinkOTP(){
   });
 }
 function confirmLinkOTP(){
+  var owner=uid;
   var code=(mS.linkOtp||"").replace(/[^0-9]/g,"");
   if(code.length!==6){toast("Enter the complete 6-digit OTP");return}
   if(!mS.linkConf){toast("Please request a new OTP");mS.linkStep="num";rM();return}
   var btn=$("lvBtn");if(btn){btn.disabled=true;btn.innerHTML='<span class="xspn"></span> Linking...'}
   mS.linkConf.confirm(code).then(function(){
+    if(!syncOwner(owner))return;
     if(ad){ad.phone=mS.linkPhoneFull;localStorage.setItem(AK,JSON.stringify(ad))}
     cloudSync();
     cM();toast("\u2705 Mobile number linked!");rH();
@@ -474,6 +639,7 @@ function confirmLinkOTP(){
 // Styled confirmation dialog (replaces native confirm)
 function showConfirm(title,msg,onYes,yesLabel,danger){
   var wrap=document.createElement("div");
+  wrap.dataset.cashlyOwnedDialog="";
   wrap.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px";
   var card=document.createElement("div");
   card.style.cssText="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:320px;text-align:center;animation:fadeUp .25s ease";

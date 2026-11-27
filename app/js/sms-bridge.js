@@ -76,8 +76,10 @@
   global.openSMSImport = async function () {
     if (SmsBridge.isNative() && SmsBridge.plugin()) {
       try {
+        var owner=uid;
         if (typeof toast === "function") toast("Reading SMS…");
         var result = await SmsBridge.importFromNative();
+        if(!syncOwner(owner))return;
         if (result && result.error === "permission_denied") {
           if (typeof toast === "function") toast("SMS permission denied");
           if (typeof _origOpen === "function") _origOpen();

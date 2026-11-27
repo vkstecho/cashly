@@ -190,5 +190,15 @@
   node.textContent=status;node.dataset.state='pending';
  }
  document.querySelectorAll('.calc-grid > details').forEach(detail=>detail.addEventListener('toggle',()=>{if(detail.open)document.querySelectorAll('.calc-grid > details').forEach(other=>{if(other!==detail)other.open=false;});}));
+ if(document.documentElement.classList.contains('cashly-embedded'))window.cashlyRetirementDraft={
+    read:()=>({answers:{...answers},step,lang,lifeEdited,reportShown}),
+    restore:draft=>{
+      for(const key of Object.keys(answers))if(Object.hasOwn(draft.answers,key))answers[key]=draft.answers[key];
+      step=Math.max(0,Math.min(groups.length-1,draft.step));
+      lang=draft.lang==='hi'?'hi':'en';
+      lifeEdited=!!draft.lifeEdited;
+      if(draft.reportShown)results();else show();
+    }
+ };
  show();const hash=location.hash.slice(1);if(hash&&$(hash)?.matches('details.calc-card'))$(hash).open=true;
 })();

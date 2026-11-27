@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Cashly by VKS Tech</title>
-<meta name="theme-color" content="#16A34A">
+<meta name="theme-color" content="#f3f6f4">
+<meta http-equiv="Content-Security-Policy" content="base-uri 'self'; object-src 'none'; frame-src 'self' https://cashly.vkstech.com https://www.youtube-nocookie.com https://www.youtube.com https://www.openstreetmap.org https://www.google.com https://recaptcha.google.com https://*.firebaseapp.com;">
 <meta name="description" content="Personal finance tracker – expenses, budgets, SMS import, statements & tax tools.">
 
 
 <link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/DM-Sans.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="stylesheet" href="css/styles.css">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -35,7 +36,6 @@
   <div class="hdr" id="AH"></div>
   <div class="cnt" id="CT"></div>
   <div class="nav" id="NV"></div>
-  <button class="fab" onclick="oM('add')" aria-label="Add transaction">+</button>
 </div>
 
 <div class="ov hidden" id="OV" onclick="cM()">
@@ -47,6 +47,7 @@
 <script src="js/config.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/sync.js"></script>
 <script src="js/data.js"></script>
 <script src="js/sms-bridge.js"></script>
 <script src="js/ui-core.js"></script>
@@ -54,6 +55,8 @@
 <script src="js/ui-itr.js"></script>
 <script src="js/export.js"></script>
 <script src="js/settings.js"></script>
+<script src="js/v7.js"></script>
+<script src="js/splits.js"></script>
 <script src="js/init.js"></script>
 </body>
 </html>

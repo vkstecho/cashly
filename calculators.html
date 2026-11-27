@@ -74,6 +74,25 @@
 @media(max-width:640px){.wizard-field.cashly-fields,.cashly-fields{grid-template-columns:1fr}.wizard-result td:last-child{width:38%}.calc-body{padding-left:14px!important;padding-right:14px!important}.wizard-actions button{min-width:0;flex:1}}
 </style>
 <link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>var embedParams=new URLSearchParams(location.search);
+if(embedParams.has('app')){
+ document.documentElement.classList.add('cashly-embedded');
+ if(embedParams.get('theme')==='dark')document.documentElement.classList.add('cashly-dark');
+}</script><style>.cashly-embedded header,.cashly-embedded footer,.cashly-embedded .page-hero{display:none}.cashly-embedded .calc-grid{display:block;max-width:600px;padding:0 12px}.cashly-embedded .calc-card{display:none;box-shadow:none;border-radius:8px}.cashly-embedded .calc-card:target{display:block}.cashly-embedded body{background:#f2f2f2}.cashly-embedded section{padding-top:12px!important}</style><style>
+@font-face{font-family:"Cashly DM Sans";src:url(app/assets/fonts/DM-Sans.ttf);font-weight:100 1000;font-display:swap}
+.cashly-embedded body,.cashly-embedded :is(button,input,select){font-family:"Cashly DM Sans","Noto Sans Devanagari",system-ui,sans-serif}
+.cashly-embedded body{background:#f3f6f4}
+.cashly-embedded .calc-grid{padding:0}
+.cashly-embedded .calc-card:target>summary{display:none}
+.cashly-dark{color-scheme:dark}
+.cashly-dark body,.cashly-dark .calc-card,.cashly-dark .calc-body{background:#18251e;color:#edf7f1}
+.cashly-dark :is(label,small,legend,.wizard-help,.wizard-question){color:#c8e0d2}
+.cashly-dark :is(input,select,button:not(.btn),.cashly-inline-edit,.cashly-edit-section){background:#24372b;color:#edf7f1;border-color:#526d5e}
+.cashly-dark .cashly-lang-switch button[aria-pressed=true]{background:#0f766e;color:#fff}
+</style><style>
+@font-face{font-family:"Noto Sans Devanagari";src:url(app/assets/fonts/NotoSansDevanagari.ttf) format("truetype");font-weight:100 900;font-display:swap}
+body,button,input,select{font-family:"DM Sans","Noto Sans Devanagari",system-ui,sans-serif}
+</style>
 </head>
 <body>
 <header class="nav">
@@ -349,5 +368,5 @@ calcEmi();
 calcInflation();
 </script>
 <script src="js/retire-today.js" defer></script>
-</body>
+<script>if(document.documentElement.classList.contains('cashly-embedded')){var card=document.getElementById(location.hash.slice(1));if(card&&card.tagName==='DETAILS')card.open=true;}</script></body>
 </html>

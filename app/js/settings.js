@@ -1,7 +1,6 @@
 /* Cashly – settings.js */
 // SETTINGS
 function rStM(){
-  var hasPic=ad&&ad.pic;
   var hasPhone=ad&&ad.phone&&ad.phone.length===10;
   var bioOn=isBiometricEnabled();
   var bioSupp=isBiometricSupported();
@@ -10,7 +9,7 @@ function rStM(){
   var h='<div class="mh"><span class="xmt">Settings</span><button class="xmc" onclick="cM()">\u00D7</button></div>';
   
   // Profile section
-  h+='<div style="text-align:center;padding:8px 0 20px"><div class="profile-pic-wrap" onclick="uploadProfilePic()"><div class="profile-pic">'+(hasPic?'<img src="'+ad.pic+'">':ini)+'</div><div class="profile-edit">\u270F\uFE0F</div></div><div style="font-weight:700;font-size:18px;color:#1a1a1a">'+esc(nm)+'</div><div style="color:#999;font-size:13px;margin-top:2px">'+(hasPhone?"+91 "+ad.phone:"No mobile linked")+'</div><button class="eb" style="margin-top:10px;padding:8px 20px;font-size:12px;background:#DCFCE7;color:#16A34A;font-weight:600" onclick="cM();editProfile()">\u270F\uFE0F Edit Profile</button></div>';
+  h+='<div style="text-align:center;padding:8px 0 20px"><div class="profile-pic-wrap" onclick="uploadProfilePic()"><div class="profile-pic">'+accountAvatar(ini)+'</div><div class="profile-edit">\u270F\uFE0F</div></div><div style="font-weight:700;font-size:18px;color:#1a1a1a">'+esc(nm)+'</div><div style="color:#999;font-size:13px;margin-top:2px">'+(hasPhone?"+91 "+ad.phone:"No mobile linked")+'</div><button class="eb" style="margin-top:10px;padding:8px 20px;font-size:12px;background:#DCFCE7;color:#16A34A;font-weight:600" onclick="cM();editProfile()">\u270F\uFE0F Edit Profile</button></div>';
   
   // Account section
   h+='<div class="section-divider">Account</div>';
@@ -23,7 +22,7 @@ function rStM(){
   h+='<div class="section-divider" id="accSection">Accounts & Sources</div>';
   ensureAccounts();
   getAccounts().forEach(function(a){
-    h+='<div class="set-card" style="padding:12px 14px;gap:12px">'+bankLogoHtml(a.name,36)+'<div class="set-text"><div class="set-title" style="font-size:13px">'+esc(a.name)+'</div><div class="set-sub">'+a.type+' · '+fF(a.balance||0)+'</div></div><button class="eb" style="padding:4px 10px;font-size:11px" onclick="editAccount(\''+a.id+'\')">Edit</button><button class="dl" onclick="deleteAccount(\''+a.id+'\')" style="margin-left:4px">\u00D7</button></div>';
+    h+='<div class="set-card" style="padding:12px 14px;gap:12px">'+bankLogoHtml(a.name,36)+'<div class="set-text"><div class="set-title" style="font-size:13px">'+esc(a.name)+'</div><div class="set-sub">'+esc(a.type)+' · Manual balance '+fF(a.balance||0)+'</div></div><button class="eb" style="padding:4px 10px;font-size:11px" onclick="editAccount(\''+a.id+'\')">Edit</button><button class="dl" onclick="deleteAccount(\''+a.id+'\')" style="margin-left:4px">\u00D7</button></div>';
   });
   h+='<div class="set-card" onclick="addAccount()"><div class="set-icon" style="background:#E8F5E9">\u2795</div><div class="set-text"><div class="set-title">Add Account</div><div class="set-sub">Cash, Bank, Card, Wallet...</div></div><div class="set-arrow">\u203A</div></div>';
   
@@ -41,9 +40,9 @@ function rStM(){
   if(bioSupp){
     h+='<div class="section-divider">Security</div>';
     if(bioOn){
-      h+='<div class="set-card" onclick="disableBiometric()"><div class="set-icon" style="background:#E8F5E9">\u{1F510}</div><div class="set-text"><div class="set-title">Fingerprint Login</div><div class="set-sub">Enabled - tap to disable</div></div><div class="set-toggle on"></div></div>';
+      h+='<div class="set-card" onclick="disableBiometric()"><div class="set-icon" style="background:#E8F5E9">\u{1F510}</div><div class="set-text"><div class="set-title">Tax device credential</div><div class="set-sub">Enabled - tap to disable</div></div><div class="set-toggle on"></div></div>';
     }else{
-      h+='<div class="set-card" onclick="setupBiometric()"><div class="set-icon" style="background:#FFF3E0">\u{1F510}</div><div class="set-text"><div class="set-title">Enable Fingerprint Login</div><div class="set-sub">Skip OTP next time</div></div><div class="set-toggle"></div></div>';
+      h+='<div class="set-card" onclick="setupBiometric()"><div class="set-icon" style="background:#FFF3E0">\u{1F510}</div><div class="set-text"><div class="set-title">Set up tax device credential</div><div class="set-sub">Verify your device inside the Tax tools</div></div><div class="set-toggle"></div></div>';
     }
   }
   
@@ -57,7 +56,7 @@ h+='<div class="section-divider">Categories</div>';
 var customCats=getCustomCats();
 h+='<div class="set-card" onclick="addCustomCategory()"><div class="set-icon" style="background:#E8F5E9">➕</div><div class="set-text"><div class="set-title">Add Custom Category</div><div class="set-sub">'+customCats.length+' custom categor'+(customCats.length===1?"y":"ies")+' added</div></div><div class="set-arrow">›</div></div>';
 customCats.forEach(function(c){
-  h+='<div class="set-card" style="padding:10px 14px"><div class="set-icon" style="background:'+c.c+'15;width:32px;height:32px;font-size:16px">'+c.i+'</div><div class="set-text"><div class="set-title" style="font-size:13px">'+esc(c.l)+'</div><div class="set-sub">'+c.g.charAt(0).toUpperCase()+c.g.slice(1)+'</div></div><button class="dl" onclick="deleteCustomCategory(\''+c.id+'\')">×</button></div>';
+  h+='<div class="set-card" style="padding:10px 14px"><div class="set-icon" style="background:'+c.c+'15;width:32px;height:32px;font-size:16px">'+categoryIcon(c.id)+'</div><div class="set-text"><div class="set-title" style="font-size:13px">'+esc(c.l)+'</div><div class="set-sub">'+c.g.charAt(0).toUpperCase()+c.g.slice(1)+'</div></div><button class="dl" onclick="deleteCustomCategory(\''+c.id+'\')">×</button></div>';
 });
 // PIN
 var pinOn=isPinSet();

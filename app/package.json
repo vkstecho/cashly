@@ -4,8 +4,8 @@
   "description": "Cashly by VKS Tech - Personal finance tracker with SMS import",
   "private": true,
   "scripts": {
-    "build": "echo 'Static PWA - no build step required'",
-    "cap:sync": "npx cap sync",
+    "build": "node ../scripts/stage.mjs",
+    "cap:sync": "npm run build && cap sync",
     "cap:android": "npx cap open android",
     "cap:ios": "npx cap open ios",
     "cap:add:android": "npx cap add android",

@@ -2,10 +2,10 @@
   "name": "Cashly by VKS Tech",
   "short_name": "Cashly",
   "description": "Personal finance tracker with budgets, SMS import, statements and tax tools",
-  "start_url": "/app/index.html",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#F4F6F9",
-  "theme_color": "#16A34A",
+  "background_color": "#f3f6f4",
+  "theme_color": "#f3f6f4",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -21,21 +21,11 @@
       "purpose": "any"
     }
   ],
-  "share_target": {
-    "action": "/app/?share=1",
-    "method": "GET",
-    "enctype": "application/x-www-form-urlencoded",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  },
   "shortcuts": [
     {
       "name": "Add Expense",
       "short_name": "Expense",
-      "url": "/app/?action=expense",
+      "url": "./?action=expense",
       "icons": [
         {
           "src": "assets/icon-192.png",
@@ -46,7 +36,7 @@
     {
       "name": "Add Income",
       "short_name": "Income",
-      "url": "/app/?action=income",
+      "url": "./?action=income",
       "icons": [
         {
           "src": "assets/icon-192.png",
@@ -57,7 +47,7 @@
     {
       "name": "Reports",
       "short_name": "Reports",
-      "url": "/app/?action=reports",
+      "url": "./?action=reports",
       "icons": [
         {
           "src": "assets/icon-192.png",
@@ -67,5 +57,5 @@
     }
   ],
   "id": "/app/",
-  "scope": "/app/"
+  "scope": "./"
 }
