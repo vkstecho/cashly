@@ -1,1 +1,121 @@
+name: Sync Cashly YouTube catalog
 
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+    inputs:
+      resolve_channel:
+        description: Resolve the public Cashly channel ID without generating or publishing
+        type: boolean
+        default: false
+      publish:
+        description: Publish a changed catalog to the configured branch
+        type: boolean
+        default: false
+      allow_empty:
+        description: Allow a verified intentionally empty catalog
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cashly-catalog-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: >-
+      github.repository == vars.CASHLY_CATALOG_REPOSITORY &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch) &&
+      vars.CASHLY_CATALOG_BRANCH != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    outputs:
+      revision: ${{ steps.publish.outputs.revision }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ format('refs/heads/{0}', vars.CASHLY_CATALOG_BRANCH) }}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - name: Verify and generate Cashly catalog
+        id: refresh
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CHANNEL_ID: ${{ vars.YOUTUBE_CHANNEL_ID }}
+          YOUTUBE_SHORTS_PLAYLIST_ID: ${{ vars.YOUTUBE_SHORTS_PLAYLIST_ID }}
+          RESOLVE_CHANNEL: ${{ inputs.resolve_channel }}
+          ALLOW_EMPTY_CATALOG: ${{ inputs.allow_empty }}
+        run: |
+          node scripts/validate-manifest.mjs content/videos.json
+          if [ -z "$YOUTUBE_API_KEY" ]; then
+            echo 'YouTube API key absent. Committed catalog retained.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if [ "$RESOLVE_CHANNEL" = true ]; then
+            node scripts/sync-youtube.mjs --resolve-channel >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if ! node scripts/sync-youtube.mjs || ! node scripts/validate-manifest.mjs content/videos.json; then
+            git restore --source=HEAD -- content/videos.json
+            echo 'YouTube verification failed. Committed catalog retained.' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          if ! git diff --quiet -- content/videos.json; then
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Validate optional Vercel hook configuration
+        if: >-
+          steps.refresh.outputs.changed == 'true' &&
+          vars.CASHLY_CATALOG_PUBLISH == 'true' &&
+          (github.event_name == 'schedule' || inputs.publish) &&
+          vars.CASHLY_VERCEL_DEPLOY_MODE == 'hook'
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: node scripts/trigger-vercel-hook.mjs --check
+      - name: Commit and push validated catalog
+        id: publish
+        if: >-
+          steps.refresh.outputs.changed == 'true' &&
+          vars.CASHLY_CATALOG_PUBLISH == 'true' &&
+          (github.event_name == 'schedule' || inputs.publish)
+        env:
+          CATALOG_BRANCH: ${{ vars.CASHLY_CATALOG_BRANCH }}
+          DEPLOY_MODE: ${{ vars.CASHLY_VERCEL_DEPLOY_MODE }}
+        run: |
+          if [ -n "$DEPLOY_MODE" ] && [ "$DEPLOY_MODE" != git ] && [ "$DEPLOY_MODE" != hook ]; then
+            echo 'Invalid CASHLY_VERCEL_DEPLOY_MODE.'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- content/videos.json
+          git commit -m 'Refresh Cashly YouTube catalog' -- content/videos.json
+          git push origin "HEAD:refs/heads/$CATALOG_BRANCH"
+          revision=$(git rev-parse HEAD)
+          printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"
+          printf 'Pushed validated catalog revision `%s`.\n' "$revision" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy-hook:
+    needs: sync
+    if: needs.sync.outputs.revision != '' && vars.CASHLY_VERCEL_DEPLOY_MODE == 'hook'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.sync.outputs.revision }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - name: Request Vercel deployment for the connected branch
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: node scripts/trigger-vercel-hook.mjs
