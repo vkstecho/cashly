@@ -5,7 +5,7 @@ var learnTabs=[["all","All"],["video","Videos"],["short","Shorts"],["article","B
 var learnOfficial="https://youtube.com/@cashlybyVKS";
 var learnOrigin=new URL(window.CASHLY_CONTENT_BASE||"https://cashly.vkstech.com/");
 if(learnOrigin.protocol!=="https:")learnOrigin=new URL("https://cashly.vkstech.com/");
-var learnDay=86400000;
+var learnPlaylists=[],learnPlaylist="",learnVideoVerification=null;
 var learnTopics=[
   {terms:["financial independence","can i retire","retire today"],tool:"retire-today"},
   {terms:["retirement","retire","सेवानिवृत्ति"],tool:"retirement"},
@@ -19,15 +19,6 @@ var learnTopics=[
 function learnProfileKey(name){return "cashly_learn_"+name+"_"+(uid||DK)}
 function learnRead(key,fallback){try{return JSON.parse(localStorage.getItem(key))||fallback}catch(error){return fallback}}
 function learnWrite(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(error){return false}}
-function learnLanguageSet(raw){
-  var languages=new Set();
-  for(var value of raw){
-    var normalized=String(value).toLowerCase().replace(/_/g,"-");
-    if(["mixed","hi-en","en-hi","hinglish","hi-latn"].includes(normalized)){languages.add("hi");languages.add("en");}
-    else if(/^(en|hi)(-|$)/.test(normalized))languages.add(normalized.slice(0,2));
-  }
-  return Array.from(languages);
-}
 function normalizeLearn(kind,data,base){
   var items=kind==="articles"?data?.posts:data?.schemaVersion===1&&data.videos;
   if(!Array.isArray(items))throw Error("Invalid content feed");
@@ -45,12 +36,13 @@ function normalizeLearn(kind,data,base){
     if(article){
       image=typeof item.cover==="string"&&/^blog\/[\w./-]+$/.test(item.cover)&&!item.cover.includes("..")?new URL(item.cover,base).href:"";
     }else{
-      image=typeof item.thumbnail==="string"&&/^https:\/\/i\.ytimg\.com\/vi(?:_webp)?\/[\w/-]+\.(?:jpg|webp)$/.test(item.thumbnail)?
-        item.thumbnail:"https://i.ytimg.com/vi/"+key+"/hqdefault.jpg";
+      image=CashlyCatalog.thumbnail(item.thumbnail)?item.thumbnail:"";
     }
+    var active=!article&&["live","upcoming"].includes(item.liveStatus);
     return {id:(article?"article:":"video:")+key,videoId:article?null:key,title:item.title,description:String(article?item.excerpt||"":item.description||""),
-      image,type:article?"article":type==="short"?"short":"video",featured:!article&&type==="video"&&classification==="creator-override"&&item.embeddable===true,
-      stamp,date,channel:String(data.channelName||"Cashly by VKS"),languages:learnLanguageSet([item.language,...(Array.isArray(item.languages)?item.languages:[])]),
+      image,type:article?"article":type==="short"?"short":"video",featured:!article&&!active&&type==="video"&&classification==="creator-override"&&item.embeddable===true,
+      stamp,date,channel:String(item.channelTitle||data.channelName||"Cashly by VKS"),languages:CashlyCatalog.languages([item.language]),
+      liveStatus:item.liveStatus,scheduledStartTime:item.scheduledStartTime,active,
       tags:Array.isArray(item.tags)?item.tags.filter(tag=>typeof tag==="string"):[],
       tools:Array.isArray(item.tools)?item.tools.filter(tool=>typeof tool==="string"):[],
       duration:Number(item.durationSeconds)||0,reading:Number(item.readingMinutes)||0,embeddable:item.embeddable===true,
@@ -61,9 +53,15 @@ function learnCatalogTime(kind,record){
   return kind==="videos"?Date.parse(record.manifest.lastSuccessfulSync):record.received;
 }
 function acceptLearnCatalog(kind,record){
-  var stamp=learnCatalogTime(kind,record);
-  if(kind==="videos"&&record.manifest.videos?.length&&(!Number.isFinite(stamp)||Date.now()-stamp>30*learnDay||stamp>Date.now()+learnDay))throw Error("Catalog expired");
+  if(kind==="videos")CashlyCatalog.accept(record.manifest);
   return normalizeLearn(kind,record.manifest,record.base);
+}
+function applyLearnCatalog(kind,items,manifest){
+  learnFeed[kind]=items;
+  if(kind!=="videos")return;
+  learnPlaylists=manifest?.playlists||[];
+  learnVideoVerification=manifest?.lastSuccessfulSync||null;
+  if(learnPlaylist&&!learnPlaylists.some(group=>group.id===learnPlaylist))learnPlaylist="";
 }
 async function loadCashlyBlogs(manual){
   if(!manual&&Date.now()-learnLastRefresh<5*60000)return;
@@ -76,8 +74,12 @@ async function loadCashlyBlogs(manual){
     var base=native?learnOrigin:local,relative=kind==="articles"?"blog/manifest.json":"content/videos.json";
     var cached=learnRead(key,null),cachedFeed=null;
     if(cached&&(cached.base===base.href||cached.base===local.href)){
-      try{cachedFeed=acceptLearnCatalog(kind,cached);learnFeed[kind]=cachedFeed}catch(error){learnFeed[kind]=[]}
-    }else learnFeed[kind]=[];
+      try{cachedFeed=acceptLearnCatalog(kind,cached);applyLearnCatalog(kind,cachedFeed,cached.manifest)}
+      catch(error){
+        applyLearnCatalog(kind,[],null);
+        if(kind==="videos")try{localStorage.removeItem(key)}catch(storageError){}
+      }
+    }else applyLearnCatalog(kind,[],null);
     updateLearnResults();
     async function fetchCatalog(origin,source){
       var response=await fetch(new URL(relative,origin),{cache:"no-cache",credentials:"omit",signal:AbortSignal.timeout(8000)});
@@ -89,13 +91,13 @@ async function loadCashlyBlogs(manual){
       var loaded=await fetchCatalog(base,native?"remote":"website");
       var old=learnCatalogTime(kind,cached||loaded.record),fresh=learnCatalogTime(kind,loaded.record);
       if(cachedFeed&&Number.isFinite(old)&&(!Number.isFinite(fresh)||fresh<old))throw Error("Older catalog");
-      learnFeed[kind]=loaded.items;learnStatus[kind]="ready";learnWrite(key,loaded.record);
+      applyLearnCatalog(kind,loaded.items,loaded.record.manifest);learnStatus[kind]="ready";learnWrite(key,loaded.record);
       trackLearnItems(kind,loaded.items);
     }catch(error){
       if(!cachedFeed&&native){
         try{
           var bundled=await fetchCatalog(local,"bundled");
-          learnFeed[kind]=bundled.items;learnStatus[kind]="stale";
+          applyLearnCatalog(kind,bundled.items,bundled.record.manifest);learnStatus[kind]="stale";
         }catch(failure){learnStatus[kind]="error";}
       }else learnStatus[kind]=cachedFeed?"stale":"error";
     }
@@ -152,9 +154,9 @@ function learnHeaderActions(){
 }
 function learnMeta(item){
   var date=new Intl.DateTimeFormat("en-IN",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"}).format(new Date(item.stamp));
-  var duration=item.duration?Math.floor(item.duration/60)+":"+String(Math.floor(item.duration%60)).padStart(2,"0"):"";
+  var duration=CashlyCatalog.duration(item.duration),broadcast=CashlyCatalog.liveLabel(item,learnVideoVerification);
   return esc(({article:"Blog",short:"Short",video:"Video"})[item.type]+" · "+date+
-    (duration?" · "+duration:item.reading?" · "+item.reading+" min read":""));
+    (duration?" · "+duration:item.reading?" · "+item.reading+" min read":"")+(broadcast?" · "+broadcast:""));
 }
 function learnCard(item,layout){
   var saved=learnSaved().includes(item.id);
@@ -166,21 +168,41 @@ function learnCard(item,layout){
     '<button class="learn-card-bookmark" data-id="'+esc(item.id)+'" aria-label="'+(saved?"Remove bookmark":"Bookmark")+
     '" aria-pressed="'+saved+'" onclick="toggleLearnSaved(this.dataset.id)">'+v7Icon("bookmark")+'</button></article>';
 }
+function learnPlaylistSection(selected){
+  if(!learnPlaylists.length)return "";
+  return '<section class="learn-section"><h2>Playlists</h2><label class="learn-language">Cashly playlists <select onchange="learnPlaylist=this.value;updateLearnResults()">'+
+    '<option value="">All videos and blogs</option>'+learnPlaylists.map(group=>'<option value="'+esc(group.id)+'"'+
+      (group===selected?' selected':'')+'>'+esc(group.title)+'</option>').join("")+'</select></label>'+
+    (selected&&selected.description?'<p class="learn-status">'+esc(selected.description)+'</p>':'')+'</section>';
+}
 function learnResults(){
   var visible=learnEntries().filter(item=>learnMatches(item,learnQuery)),status=Object.values(learnStatus);
-  var message=status.includes("error")?'<p class="learn-status" role="status">Some content is unavailable.</p>':
-    status.includes("stale")?'<p class="learn-status" role="status">Showing saved catalog. Connect to refresh.</p>':"";
-  var featured=learnFilter==="all"&&!learnQuery?visible.find(item=>item.featured):null;
+  var h=status.includes("stale")?'<p class="learn-status" role="status">Showing saved catalog. Connect to refresh.</p>':"";
+  if(learnVideoVerification&&learnStatus.videos==="ready")h+='<p class="learn-status">Video catalog verified '+esc(new Date(learnVideoVerification).toLocaleString())+'.</p>';
+  if(status.includes("error"))h+='<p class="learn-status" role="status">Some content is unavailable.</p>';
+  var selected=learnFilter==="all"?learnPlaylists.find(group=>group.id===learnPlaylist):null;
+  if(selected){
+    var byId=new Map(visible.map(item=>[item.videoId,item]));
+    var members=selected.videoIds.map(id=>byId.get(id)).filter(Boolean);
+    return h+learnPlaylistSection(selected)+'<section class="learn-section"><h2>'+esc(selected.title)+'</h2>'+
+      (members.length?'<div class="learn-feed-list">'+members.map(item=>learnCard(item,"feed-row")).join("")+'</div>':
+        '<p class="learn-empty" role="status">No matching videos.</p>')+'</section>';
+  }
+  var all=learnFilter==="all";
+  var featured=all&&!learnQuery?visible.find(item=>item.featured):null;
+  var broadcasts=all?visible.filter(item=>item.active):[];
   var shorts=visible.filter(item=>item.type==="short");
-  var latest=visible.filter(item=>learnFilter==="all"?item.type!=="short"&&item!==featured:item.type===learnFilter);
-  var h=message;
+  var latest=visible.filter(item=>all?item.type!=="short"&&item!==featured&&!item.active:item.type===learnFilter);
   if(featured)h+='<section class="learn-section"><h2>Featured Video</h2>'+learnCard(featured,"featured")+'</section>';
   if(learnFilter==="all"&&shorts.length)h+='<section class="learn-section"><div class="ledger-heading"><h2>Quick Learning · Shorts</h2>'+
     '<button class="cashly-action" onclick="setLearnFilter(\'short\')">View all</button></div><div class="learn-short-rail">'+
     shorts.slice(0,8).map(item=>learnCard(item,"short-card")).join("")+'</div></section>';
+  if(broadcasts.length)h+='<section class="learn-section"><h2>Live and Upcoming</h2><div class="learn-feed-list">'+
+    broadcasts.map(item=>learnCard(item,"feed-row")).join("")+'</div></section>';
+  if(all)h+=learnPlaylistSection(null);
   if(latest.length)h+='<section class="learn-section"><h2>'+({all:"Latest for you",short:"Shorts",video:"Videos",article:"Blogs"})[learnFilter]+'</h2>'+
     '<div class="'+(learnFilter==="short"?"learn-short-gallery":"learn-feed-list")+'">'+latest.map(item=>learnCard(item,learnFilter==="short"?"short-card":"feed-row")).join("")+'</div></section>';
-  else if(!featured&&!shorts.length||learnFilter!=="all")h+='<p class="learn-empty" role="status">'+(status.some(state=>state==="idle"||state==="loading")?"Loading content…":"No matching content.")+'</p>';
+  else if(!featured&&!shorts.length&&!broadcasts.length||!all)h+='<p class="learn-empty" role="status">'+(status.some(state=>state==="idle"||state==="loading")?"Loading content…":"No matching content.")+'</p>';
   if(learnFilter==="all")h+='<div class="cashly-row"><div class="cashly-row-main"><strong>Cashly by VKS</strong><small>Official YouTube channel</small></div>'+
     '<a class="cashly-action learn-link" href="'+learnOfficial+'" target="_blank" rel="noopener noreferrer">Subscribe</a></div>';
   return h;
@@ -190,7 +212,7 @@ function updateLearnResults(){
   if(list)list.innerHTML=cV==="learnSaved"?learnSavedResults():learnResults();
 }
 function setLearnFilter(filter){
-  learnFilter=filter;
+  learnFilter=filter;learnPlaylist="";
   document.querySelectorAll(".learn-filters button").forEach(item=>item.setAttribute("aria-pressed",String(item.dataset.filter===filter)));
   updateLearnResults();
 }

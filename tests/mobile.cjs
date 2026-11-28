@@ -21,7 +21,7 @@ async function run() {
       }
       if (url.origin !== base) return route.abort();
       if(catalogUnavailable&&url.pathname.endsWith('/content/videos.json'))return route.fulfill({status:503,body:'Fixture network error'});
-      if (url.pathname.endsWith('/content/videos.json')) return route.fulfill({json: {schemaVersion: 1, channelName:'Cashly by VKS', lastSuccessfulSync:new Date().toISOString(), videos: [
+      if (url.pathname.endsWith('/content/videos.json')) return route.fulfill({json: {schemaVersion: 1, handle:'@cashlybyVKS', channelId:'UC'+'x'.repeat(22), channelName:'Cashly by VKS', lastSuccessfulSync:new Date().toISOString(), videos: [
         {id: 'abcdefghijk', title: 'Fixture Short', description: 'Test Short description', language: 'hi',
           contentType: 'short', publishedAt: '2026-08-05T00:00:00Z', durationSeconds: 42, embeddable: true},
         {id: 'mnopqrstuvw', title: 'Fixture Video', description: 'Learn about SIP and compound interest', language: 'hinglish', classificationSource:'creator-override',
@@ -29,8 +29,14 @@ async function run() {
         {id:'aaaaabbbbbb',title:'Earlier Short',description:'Second Short',language:'hi',
           contentType:'short',publishedAt:'2026-08-02T00:00:00Z',durationSeconds:30,embeddable:true},
         {id:'bbbbbaaaaaa',title:'Unknown Video',description:'General catalog item',language:'und',
-          contentType:'unknown',publishedAt:'2026-08-01T00:00:00Z',durationSeconds:100,embeddable:false}
-      ]}});
+          contentType:'unknown',publishedAt:'2026-08-01T00:00:00Z',durationSeconds:100,embeddable:false},
+        {id:'liv00000001',title:'Fixture Broadcast',description:'Upcoming',language:'hi',contentType:'unknown',
+          publishedAt:'2026-08-01T00:00:00Z',durationSeconds:null,embeddable:true,liveStatus:'upcoming',
+          scheduledStartTime:new Date(Date.now()+3600000).toISOString()}
+      ].map(item=>({classificationSource:'unknown',thumbnail:'https://i.ytimg.com/vi/'+item.id+'/hqdefault.jpg',
+          watchUrl:'https://www.youtube.com/watch?v='+item.id,...item})),
+      playlists:[{id:'PLFixture',title:'SIP series',description:'Creator playlist',thumbnail:null,videoIds:['mnopqrstuvw','abcdefghijk']}]
+      }});
       return route.continue();
     });
     await fs.mkdir(process.env.CASHLY_SCREENSHOTS || 'screenshots', {recursive: true});
@@ -151,6 +157,13 @@ async function run() {
     await photo('learn-all');
     await photo('learn-featured');
     await photo('learn-shorts-carousel');
+    await page.getByRole('heading',{name:'Live and Upcoming'}).waitFor();
+    await page.getByLabel('Cashly playlists').selectOption('PLFixture');
+    await page.getByRole('heading',{name:'SIP series',exact:true}).waitFor();
+    await page.getByText('Fixture Video',{exact:true}).click();
+    await page.getByRole('button',{name:'Back',exact:true}).click();
+    assert.equal(await page.getByLabel('Cashly playlists').inputValue(),'PLFixture');
+    await page.getByLabel('Cashly playlists').selectOption('');
     await page.getByRole('button',{name:'Learn notifications',exact:true}).click();
     await page.getByRole('switch',{name:'New videos'}).check();
     await page.getByText('You’re caught up.').waitFor();

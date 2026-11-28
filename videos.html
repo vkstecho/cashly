@@ -26,13 +26,22 @@
 <section class="page-hero">
   <div class="container">
     <h1>Videos</h1>
-    <p>Pulled automatically from <a href="https://www.youtube.com/@cashlybyVks" target="_blank" rel="noopener" style="color:var(--green)">@cashlybyVks</a> — no manual embed list needed.</p>
+    <p>Pulled automatically from <a href="https://www.youtube.com/@cashlybyVks" target="_blank" rel="noopener" style="color:var(--green)">@cashlybyVks</a>.</p>
   </div>
 </section>
 
 <section style="padding-top:0">
   <div class="container">
+    <div class="catalog-controls" data-catalog-controls hidden>
+      <label>Search <input type="search" name="videoSearch" placeholder="Find a video"></label>
+      <label>Content <select name="videoType"><option value="all">All</option><option value="video">Videos</option><option value="short">Shorts</option><option value="broadcast">Live and recorded</option></select></label>
+      <label>Language <select name="videoLanguage"><option value="all">All</option><option value="en">English</option><option value="hi">हिंदी</option></select></label>
+      <label>Playlist <select name="videoPlaylist"><option value="">All playlists</option></select></label>
+    </div>
+    <div class="catalog-playlist" data-playlist-info hidden></div>
+    <p class="media-meta" data-catalog-status role="status">Loading videos…</p>
     <div class="media-grid" id="videoList"></div>
+    <button type="button" class="btn btn-ghost catalog-more" data-catalog-more hidden>Load more</button>
   </div>
 </section>
 
@@ -47,7 +56,14 @@
     </div>
   </div>
 </footer>
+<dialog id="cashly-video-player" class="catalog-player" aria-labelledby="catalog-player-title">
+  <form method="dialog"><button type="submit" class="btn btn-ghost">Close</button></form>
+  <h2 id="catalog-player-title">Video</h2>
+  <div data-player></div>
+  <p>If playback is unavailable here, <a target="_blank" rel="noopener noreferrer">open in YouTube</a>.</p>
+</dialog>
+<script src="app/js/video-catalog.js"></script>
 <script src="js/youtube.js"></script>
-<script>CashlyYT.renderInto(document.getElementById('videoList'), 24);</script>
+<script>CashlyYT.renderInto(document.getElementById('videoList'));</script>
 </body>
 </html>

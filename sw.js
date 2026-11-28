@@ -1,52 +1,32 @@
-/* Cashly service worker – basic offline shell */
-const CACHE = "cashly-v1";
-const ASSETS = [
-  "/",
-  "/index.html",
-  "/css/styles.css",
-  "/js/config.js",
-  "/js/constants.js",
-  "/js/auth.js",
-  "/js/data.js",
-  "/js/ui-core.js",
-  "/js/ui-itr.js",
-  "/js/export.js",
-  "/js/settings.js",
-  "/js/init.js",
-  "/manifest.json",
-  "/assets/icon-192.png",
-  "/assets/logo.jpeg"
-];
+/* Compatibility worker for existing registrations at the Cashly website root. */
+const CACHE = "cashly-site-v2";
+const ASSETS = new Set([
+  "/", "/index.html", "/videos.html", "/css/site.css", "/js/blog.js", "/js/youtube.js", "/app/js/video-catalog.js",
+  "/manifest.json", "/assets/cashly-icon.png", "/assets/icon-192.png",
+  "/assets/icon-512.png", "/assets/icon.jpeg"
+]);
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())
-  );
+self.addEventListener("install", event => {
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll([...ASSETS])).then(() => self.skipWaiting()));
 });
 
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
+self.addEventListener("activate", event => {
+  event.waitUntil(caches.delete("cashly-v1").then(() => self.clients.claim()));
 });
 
-self.addEventListener("fetch", (event) => {
+self.addEventListener("fetch", event => {
   const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetchPromise = fetch(event.request)
-        .then((res) => {
-          if (res && res.status === 200 && event.request.method === "GET") {
-            const clone = res.clone();
-            caches.open(CACHE).then((cache) => cache.put(event.request, clone));
-          }
-          return res;
-        })
-        .catch(() => cached);
-      return cached || fetchPromise;
-    })
-  );
+  if (event.request.method !== "GET" || url.origin !== self.location.origin || url.search || !ASSETS.has(url.pathname)) return;
+  event.respondWith(caches.open(CACHE).then(async cache => {
+    try {
+      const response = await fetch(event.request);
+      if (response.ok) {
+        await cache.put(event.request, response.clone()).catch(() => {});
+        return response;
+      }
+      return await cache.match(event.request) || response;
+    } catch {
+      return await cache.match(event.request) || Response.error();
+    }
+  }));
 });

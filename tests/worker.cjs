@@ -11,7 +11,7 @@ const assert=require('node:assert/strict');
     if(file==='/app/sw.js'){
       response.setHeader('Content-Type','application/javascript');
       response.setHeader('Cache-Control','no-store');
-      response.end(release==='v8'?workerV81.replace('cashly-app-v8.1-20261127','cashly-app-fixture-v8'):workerV81);
+      response.end(release==='v8'?workerV81.replace('cashly-app-v8.1-youtube-20261128','cashly-app-fixture-v8'):workerV81);
     }else if(file==='/app/'||file==='/app/index.html'){
       response.setHeader('Content-Type','text/html');
       response.end('<!doctype html><html><body><div id="release">'+release+'</div></body></html>');

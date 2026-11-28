@@ -1,8 +1,8 @@
 /* Versioned same-origin application shell. Public feed metadata uses its own cache. */
-const CACHE = 'cashly-app-v8.1-20261127';
+const CACHE = 'cashly-app-v8.1-youtube-20261128';
 const SHELL = [
   'index.html', 'css/styles.css', 'js/config.js', 'js/constants.js', 'js/auth.js', 'js/sync.js', 'js/data.js',
-  'js/ui-core.js', 'js/learn.js', 'js/splits.js', 'js/ui-itr.js', 'js/export.js', 'js/settings.js',
+  'js/ui-core.js', 'js/video-catalog.js', 'js/learn.js', 'js/splits.js', 'js/ui-itr.js', 'js/export.js', 'js/settings.js',
   'js/init.js', 'js/v7.js', 'js/sms-bridge.js', 'manifest.json', 'assets/icon-192.png',
   'assets/icon-512.png', 'assets/logo.jpeg', 'assets/fonts/DM-Sans.ttf', 'assets/fonts/NotoSansDevanagari.ttf'
 ];

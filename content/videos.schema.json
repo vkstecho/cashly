@@ -51,6 +51,26 @@
         "null"
       ],
       "format": "date-time"
+    },
+    "identityVerifiedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "lastSuccessfulPublication": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "playlists": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/playlist"
+      }
     }
   },
   "$defs": {
@@ -86,12 +106,18 @@
           "format": "date-time"
         },
         "thumbnail": {
-          "type": "string",
-          "pattern": "^https://i\\.ytimg\\.com/"
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^https://(?:i[0-9]?\\.ytimg\\.com|img\\.youtube\\.com)/"
         },
         "durationSeconds": {
-          "type": "integer",
-          "minimum": 1
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
         },
         "language": {
           "type": "string",
@@ -136,6 +162,129 @@
               "budget",
               "spends"
             ]
+          }
+        },
+        "channelId": {
+          "type": "string",
+          "pattern": "^UC[A-Za-z0-9_-]{22}$"
+        },
+        "channelTitle": {
+          "type": "string",
+          "minLength": 1
+        },
+        "categoryId": {
+          "type": "string",
+          "pattern": "^\\d+$"
+        },
+        "thumbnails": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^https://(?:i[0-9]?\\.ytimg\\.com|img\\.youtube\\.com)/"
+          }
+        },
+        "availability": {
+          "const": "public"
+        },
+        "liveStatus": {
+          "enum": [
+            "none",
+            "live",
+            "upcoming",
+            "recorded"
+          ]
+        },
+        "scheduledStartTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actualStartTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actualEndTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "defaultLanguage": {
+          "type": "string"
+        },
+        "defaultAudioLanguage": {
+          "type": "string"
+        },
+        "playlistIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{2,128}$"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "liveStatus": {
+                "enum": [
+                  "live",
+                  "upcoming"
+                ]
+              }
+            },
+            "required": [
+              "liveStatus"
+            ]
+          },
+          "else": {
+            "properties": {
+              "durationSeconds": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "playlist": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "description",
+        "thumbnail",
+        "videoIds"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{2,128}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "thumbnail": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^https://(?:i[0-9]?\\.ytimg\\.com|img\\.youtube\\.com)/"
+        },
+        "videoCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "videoIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{11}$"
           }
         }
       }

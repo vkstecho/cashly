@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
-const source=readFileSync(new URL('../app/js/learn.js',import.meta.url),'utf8');
+const source=['video-catalog.js','learn.js'].map(name=>readFileSync(new URL('../app/js/'+name,import.meta.url),'utf8')).join('\n');
 function learn(){
   const records=new Map();
   const ctx=vm.createContext({window:{},URL,uid:'a',DK:'fixture',localStorage:{getItem:key=>records.get(key)||null,
@@ -13,12 +13,13 @@ function learn(){
 }
 const stamp=Date.now();
 const date=delta=>new Date(stamp+delta).toISOString();
-const manifest={schemaVersion:1,channelName:'Cashly by VKS',lastSuccessfulSync:date(0),videos:[
+const manifest={schemaVersion:1,handle:'@cashlybyVKS',channelId:'UC'+'x'.repeat(22),channelName:'Cashly by VKS',lastSuccessfulSync:date(0),videos:[
   {id:'abcdefghijk',title:'Confirmed Long SIP Video',contentType:'video',classificationSource:'creator-override',
     language:'hinglish',publishedAt:date(-10000),embeddable:true},
   {id:'mnopqrstuvw',title:'Quick Fixture Short',contentType:'short',language:'hi',publishedAt:date(-2000)},
   {id:'zzzzzzzzzzz',title:'Unknown Fixture Video',contentType:'unknown',language:'und',publishedAt:date(-3500)}
-]};
+].map(item=>({description:'',thumbnail:null,durationSeconds:60,classificationSource:'unknown',embeddable:false,
+  watchUrl:'https://www.youtube.com/watch?v='+item.id,...item}))};
 const origin='https://cashly.vkstech.com/';
 test('mixed language includes Hindi and English; unknown remains in All; chronological sorting is numeric',()=>{
   const c=learn();

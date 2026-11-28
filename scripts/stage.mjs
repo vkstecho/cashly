@@ -33,7 +33,9 @@ if (native) {
   await writeFile(path.join(output, 'index.html'),
     '<!doctype html><html lang="en"><title>Cashly</title><meta http-equiv="refresh" content="0;url=app/"><a href="app/">Open Cashly</a></html>');
 } else {
-  await cp(path.join(root, 'index.html'), path.join(output, 'index.html'));
+  for (const name of ['index.html','privacy.html','support.html','terms.html','delete-account.html','manifest.json','sw.js']) {
+    await cp(path.join(root, name), path.join(output, name));
+  }
   for (const name of await readdir(root)) {
     if (/\.png$/.test(name) || name === 'robots.txt' || /^sitemap(?:-[\w-]+)?\.xml$/.test(name)) {
       await cp(path.join(root, name), path.join(output, name));
@@ -41,6 +43,7 @@ if (native) {
   }
   if (!staging) {
     await cp(path.join(root, 'admin.html'), path.join(output, 'admin.html'));
+    await cp(path.join(root, 'assetlinks.json'), path.join(output, 'assetlinks.json'));
     await mkdir(path.join(output, '.well-known'));
     await cp(path.join(root, '.well-known/assetlinks.json'), path.join(output, '.well-known/assetlinks.json'));
   }

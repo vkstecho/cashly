@@ -90,11 +90,11 @@ function rN(){
 var viewStack=new Map(),viewKey=null,viewDepth=0;
 function captureCashlyRoute(){
   return {view:cV,scroll:$("CT").scrollTop,sT,cF,catFilter,groupFilter,dateFrom,dateTo,txnTab,txnAccount,txnMerchant,
-    txnIncludedOnly,txnTrendReview,trendOffset,trendFilter,weeklyOffset,weeklyDay,learnFilter,learnLanguage,learnQuery,learnItem,learnSavedQuery,splitQuery,activeSplitId,v7Selected,accountReturn};
+    txnIncludedOnly,txnTrendReview,trendOffset,trendFilter,weeklyOffset,weeklyDay,learnFilter,learnLanguage,learnQuery,learnPlaylist,learnItem,learnSavedQuery,splitQuery,activeSplitId,v7Selected,accountReturn};
 }
 function applyCashlyRoute(state){
   ({view:cV,sT,cF,catFilter,groupFilter,dateFrom,dateTo,txnTab,txnAccount,txnMerchant,txnIncludedOnly,txnTrendReview,
-    trendOffset,trendFilter,weeklyOffset,weeklyDay,learnFilter,learnLanguage,learnQuery,learnItem,learnSavedQuery,splitQuery,activeSplitId,v7Selected,accountReturn}=state);
+    trendOffset,trendFilter,weeklyOffset,weeklyDay,learnFilter,learnLanguage,learnQuery,learnPlaylist,learnItem,learnSavedQuery,splitQuery,activeSplitId,v7Selected,accountReturn}=state);
   rN();rC();
   $("CT").scrollTop=state.scroll;
 }
@@ -102,7 +102,7 @@ function resetCashlyRoutes(){
   viewStack.clear();viewKey=null;viewDepth=0;
   sT="";catFilter="all";groupFilter="all";dateFrom="";dateTo="";cF="all";txnTab="txns";txnAccount="all";txnMerchant="";txnIncludedOnly=false;txnTrendReview=null;
   trendOffset=0;trendFilter={account:"all",categories:[],income:true,months:6};weeklyOffset=0;weeklyDay=null;
-  learnFilter="all";learnLanguage="all";learnQuery="";learnSavedQuery="";learnItem=null;activeSplitId=null;splitQuery="";accountReturn="spends";v7Selected=0;
+  learnFilter="all";learnLanguage="all";learnQuery="";learnPlaylist="";learnSavedQuery="";learnItem=null;activeSplitId=null;splitQuery="";accountReturn="spends";v7Selected=0;
   history.replaceState(null,"");
 }
 function sV(v,prepare){

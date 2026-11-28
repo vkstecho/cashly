@@ -219,3 +219,18 @@ footer{border-top:1px solid var(--line);padding:32px 0 44px;color:var(--muted);f
 .msg.err{color:#DC2626}.msg.ok{color:var(--green)}
 .admin-panel{display:none}.admin-panel.on{display:block}
 .empty{color:var(--muted);padding:20px;text-align:center}
+
+/* Controls for the shared YouTube catalog. */
+.catalog-controls { display:flex; flex-wrap:wrap; align-items:end; gap:12px; margin-bottom:16px; }
+.catalog-controls label { display:grid; gap:4px; min-width:0; font-size:.88rem; font-weight:600; }
+.catalog-controls input, .catalog-controls select { min-height:40px; padding:6px 10px; border:1px solid var(--border,#dde5e2); border-radius:8px; font:inherit; max-width:100%; }
+.catalog-playlist { display:flex; gap:12px; margin:12px 0; }
+.catalog-playlist img { width:112px; height:63px; object-fit:cover; border-radius:8px; }
+.catalog-playlist p { margin:4px 0; }
+.catalog-more { margin-top:16px; }
+.catalog-player { width:min(700px, calc(100% - 24px)); max-height:90vh; padding:16px; border:0; border-radius:14px; color:var(--text); background:white; }
+.catalog-player::backdrop { background:rgba(0,0,0,.65); }
+.catalog-player form { text-align:right; }
+.catalog-player a { color:var(--green); text-decoration:underline; }
+.cashly-video-embed { width:100%; aspect-ratio:16 / 9; border:0; }
+.catalog-controls[hidden], .catalog-playlist[hidden], .catalog-more[hidden] { display:none; }
