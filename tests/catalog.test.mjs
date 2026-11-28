@@ -29,14 +29,15 @@ test('sync paginates, ignores unchanged metadata writes, and preserves the file 
     await assert.rejects(sync,/Set YOUTUBE_API_KEY/);
     process.env.YOUTUBE_API_KEY='fixture-not-a-secret';
     globalThis.fetch=async (url, options)=>{
-      assert.equal(options.headers['X-Goog-Api-Key'], 'fixture-not-a-secret');
-      assert.equal(new URL(url).searchParams.has('key'), false);
+      assert.equal(new URL(url).searchParams.get('key'), 'fixture-not-a-secret');
+      assert.equal(options.redirect, 'error');
       const endpoint=new URL(url),type=endpoint.pathname.split('/').at(-1);
       if(mode==='quota')return new Response('{}',{status:403});
-      if(mode==='invalid')return new Response('{}',{status:400});
+      if(mode==='invalid')return Response.json({error:{status:'INVALID_ARGUMENT',message:'fixture-not-a-secret',details:[{reason:'API_KEY_INVALID'}]}},{status:400});
       if(mode==='timeout')throw new DOMException('Request timed out','TimeoutError');
       if(type==='channels'){
-        assert.equal(endpoint.searchParams.get('forHandle').toLowerCase(), '@cashlybyvks');
+        if(process.env.YOUTUBE_CHANNEL_ID){assert.equal(endpoint.searchParams.get('id'),process.env.YOUTUBE_CHANNEL_ID);assert.equal(endpoint.searchParams.has('forHandle'),false);}
+        else {assert.equal(endpoint.searchParams.get('forHandle').toLowerCase(),'cashlybyvks');assert.equal(endpoint.searchParams.has('id'),false);}
         return Response.json({items:[{id:channel,snippet:{title:'Cashly'},
         contentDetails:{relatedPlaylists:{uploads:'fixture'}}}]});
       }
@@ -50,6 +51,9 @@ test('sync paginates, ignores unchanged metadata writes, and preserves the file 
       throw Error('Unexpected endpoint');
     };
     assert.equal((await resolveChannel()).id, channel);
+    delete process.env.YOUTUBE_CHANNEL_ID;
+    assert.equal((await resolveChannel()).id, channel);
+    process.env.YOUTUBE_CHANNEL_ID=channel;
     process.env.YOUTUBE_CHANNEL_ID = 'UC' + 'z'.repeat(22);
     await assert.rejects(sync, /creator-verified channel/);
     assert.deepEqual(JSON.parse(await readFile(destination, 'utf8')), initial);
@@ -66,7 +70,7 @@ test('sync paginates, ignores unchanged metadata writes, and preserves the file 
     assert.equal(catalog.lastContentChange,catalog.lastSuccessfulSync);
     await sync();assert.equal(await readFile(destination,'utf8'),published);
     for(const failure of ['quota','invalid','timeout','empty']){
-      mode=failure;await assert.rejects(sync);
+      mode=failure;await assert.rejects(sync, failure==='invalid' ? error=>error.message.includes('API_KEY_INVALID')&&!error.message.includes('fixture-not-a-secret') : undefined);
       assert.equal(await readFile(destination,'utf8'),published);
     }
     mode = 'normal';
