@@ -8,7 +8,7 @@ import {createYouTubeApi} from './youtube-api.mjs';
 const defaultCatalog = fileURLToPath(new URL('../content/videos.json', import.meta.url));
 const defaultOverrides = new URL('../content/video-overrides.json', import.meta.url);
 const handle = '@cashlybyVKS';
-const expectedTitle = 'Cashly by VKS';
+const expectedTitle = 'Cashly';
 const channelCandidate = 'UCfhIm-gZXMWel81oPMSm2qQ';
 const channelId = /^UC[A-Za-z0-9_-]{22}$/;
 const videoId = /^[A-Za-z0-9_-]{11}$/;
